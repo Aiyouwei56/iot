@@ -3,274 +3,365 @@
 
 <head>
 
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
 
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<title>Smart Agriculture Dashboard</title>
+    <title>Smart Agriculture Dashboard</title>
 
-<!-- MQTT.js -->
-<script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <!-- MQTT.js -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
 
-<style>
+    <style>
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-body {
-    background: #f3f6f9;
-    color: #222;
-}
+        body {
+            background: #f3f6f9;
+            color: #222;
+        }
 
 
-/* =========================
-   HEADER
-========================= */
+        /* ==========================================
+           HEADER
+        ========================================== */
 
-header {
+        header {
+            background: #1f2937;
+            color: white;
 
-    background: #1f2937;
+            padding: 20px 40px;
 
-    color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    padding: 20px 40px;
+        header h1 {
+            font-size: 25px;
+        }
 
-    display: flex;
+        .connection {
+            display: flex;
+            align-items: center;
+            gap: 8px;
 
-    justify-content: space-between;
+            font-size: 14px;
+        }
 
-    align-items: center;
-}
+        .status-dot {
+            width: 12px;
+            height: 12px;
 
-header h1 {
-    font-size: 25px;
-}
+            border-radius: 50%;
 
-.connection {
+            background: #ef4444;
+        }
 
-    display: flex;
+        .status-dot.connected {
+            background: #22c55e;
+        }
 
-    align-items: center;
 
-    gap: 8px;
-}
+        /* ==========================================
+           MAIN
+        ========================================== */
 
-.status-dot {
+        main {
+            max-width: 1200px;
 
-    width: 12px;
+            margin: 30px auto;
 
-    height: 12px;
+            padding: 0 20px;
+        }
 
-    border-radius: 50%;
+        .section-title {
+            margin-bottom: 15px;
 
-    background: #ef4444;
-}
+            font-size: 20px;
 
-.status-dot.connected {
+            color: #374151;
+        }
 
-    background: #22c55e;
-}
 
+        /* ==========================================
+           SENSOR GRID
+        ========================================== */
 
-/* =========================
-   MAIN
-========================= */
+        .sensor-grid {
 
-main {
+            display: grid;
 
-    max-width: 1200px;
+            grid-template-columns:
+                repeat(auto-fit, minmax(220px, 1fr));
 
-    margin: 30px auto;
+            gap: 20px;
 
-    padding: 0 20px;
-}
+            margin-bottom: 30px;
+        }
 
-.section-title {
 
-    margin-bottom: 15px;
+        .sensor-card {
 
-    color: #374151;
-}
+            background: white;
 
+            padding: 22px;
 
-/* =========================
-   SENSOR CARDS
-========================= */
+            border-radius: 12px;
 
-.sensor-grid {
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.08);
 
-    display: grid;
+            border-left: 5px solid #3b82f6;
+        }
 
-    grid-template-columns:
-        repeat(auto-fit, minmax(220px, 1fr));
 
-    gap: 20px;
+        .sensor-card h3 {
 
-    margin-bottom: 30px;
-}
+            color: #6b7280;
 
-.sensor-card {
+            font-size: 15px;
 
-    background: white;
+            margin-bottom: 12px;
+        }
 
-    padding: 22px;
 
-    border-radius: 12px;
+        .sensor-value {
 
-    box-shadow:
-        0 3px 10px rgba(0,0,0,0.08);
+            font-size: 32px;
 
-    border-left: 5px solid #3b82f6;
-}
+            font-weight: bold;
 
-.sensor-card h3 {
+            color: #111827;
+        }
 
-    color: #6b7280;
 
-    margin-bottom: 12px;
+        .sensor-unit {
 
-    font-size: 15px;
-}
+            color: #6b7280;
 
-.sensor-value {
+            margin-left: 5px;
+        }
 
-    font-size: 32px;
 
-    font-weight: bold;
-}
+        .sensor-description {
 
-.unit {
+            margin-top: 8px;
 
-    color: #6b7280;
+            color: #6b7280;
 
-    margin-left: 5px;
-}
+            font-size: 13px;
+        }
 
 
-/* =========================
-   MODULE
-========================= */
+        /* ==========================================
+           MODULE
+        ========================================== */
 
-.module {
+        .module {
 
-    background: white;
+            background: white;
 
-    padding: 25px;
+            padding: 25px;
 
-    margin-bottom: 25px;
+            margin-bottom: 25px;
 
-    border-radius: 12px;
+            border-radius: 12px;
 
-    box-shadow:
-        0 3px 10px rgba(0,0,0,0.08);
-}
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.08);
+        }
 
-.module h2 {
 
-    margin-bottom: 20px;
+        .module h2 {
 
-    color: #1f2937;
-}
+            margin-bottom: 20px;
 
+            color: #1f2937;
+        }
 
-/* =========================
-   ACTUATORS
-========================= */
 
-.actuator-grid {
+        /* ==========================================
+           ACTUATORS
+        ========================================== */
 
-    display: grid;
+        .actuator-grid {
 
-    grid-template-columns:
-        repeat(auto-fit, minmax(200px, 1fr));
+            display: grid;
 
-    gap: 20px;
-}
+            grid-template-columns:
+                repeat(auto-fit, minmax(200px, 1fr));
 
-.actuator {
+            gap: 20px;
+        }
 
-    border: 1px solid #e5e7eb;
 
-    border-radius: 10px;
+        .actuator {
 
-    padding: 20px;
+            border: 1px solid #e5e7eb;
 
-    text-align: center;
-}
+            border-radius: 10px;
 
-.actuator h3 {
+            padding: 20px;
 
-    margin-bottom: 10px;
-}
+            text-align: center;
+        }
 
-.actuator-status {
 
-    font-weight: bold;
+        .actuator h3 {
 
-    margin-bottom: 15px;
+            margin-bottom: 10px;
+        }
 
-    color: #dc2626;
-}
 
-.actuator-status.on {
+        .actuator-status {
 
-    color: #16a34a;
-}
+            font-weight: bold;
 
+            margin-bottom: 15px;
 
-button {
+            color: #dc2626;
+        }
 
-    border: none;
 
-    padding: 10px 18px;
+        .actuator-status.on {
 
-    margin: 4px;
+            color: #16a34a;
+        }
 
-    border-radius: 7px;
 
-    cursor: pointer;
+        /* ==========================================
+           BUTTONS
+        ========================================== */
 
-    font-weight: bold;
-}
+        button {
 
-.on-button {
+            border: none;
 
-    background: #22c55e;
+            padding: 10px 18px;
 
-    color: white;
-}
+            margin: 4px;
 
-.off-button {
+            border-radius: 7px;
 
-    background: #ef4444;
+            cursor: pointer;
 
-    color: white;
-}
+            font-weight: bold;
+        }
 
-button:hover {
 
-    opacity: 0.8;
-}
+        .on-button {
 
+            background: #22c55e;
 
-footer {
+            color: white;
+        }
 
-    text-align: center;
 
-    padding: 25px;
+        .off-button {
 
-    color: #6b7280;
+            background: #ef4444;
 
-    font-size: 13px;
-}
+            color: white;
+        }
 
-</style>
+
+        button:hover {
+
+            opacity: 0.8;
+        }
+
+
+        /* ==========================================
+           MQTT STATUS
+        ========================================== */
+
+        .mqtt-status {
+
+            background: white;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.08);
+
+            margin-bottom: 25px;
+        }
+
+
+        .mqtt-status p {
+
+            margin: 6px 0;
+
+            font-size: 14px;
+        }
+
+
+        .mqtt-connected {
+
+            color: #16a34a;
+
+            font-weight: bold;
+        }
+
+
+        .mqtt-disconnected {
+
+            color: #dc2626;
+
+            font-weight: bold;
+        }
+
+
+        /* ==========================================
+           FOOTER
+        ========================================== */
+
+        footer {
+
+            text-align: center;
+
+            padding: 25px;
+
+            color: #6b7280;
+
+            font-size: 13px;
+        }
+
+
+        /* ==========================================
+           MOBILE
+        ========================================== */
+
+        @media (max-width: 600px) {
+
+            header {
+
+                padding: 18px;
+
+                flex-direction: column;
+
+                gap: 10px;
+
+                text-align: center;
+            }
+
+            header h1 {
+
+                font-size: 21px;
+            }
+        }
+
+    </style>
 
 </head>
 
@@ -278,15 +369,16 @@ footer {
 <body>
 
 
-<!-- =========================
+<!-- ==========================================
      HEADER
-========================= -->
+========================================== -->
 
 <header>
 
     <h1>
         🌱 Smart Agriculture Dashboard
     </h1>
+
 
     <div class="connection">
 
@@ -307,280 +399,361 @@ footer {
 <main>
 
 
-<!-- =========================
-     SENSOR MONITORING
-========================= -->
+    <!-- ======================================
+         MQTT CONNECTION
+    ======================================= -->
 
-<h2 class="section-title">
-    Sensor Monitoring
-</h2>
+    <div class="mqtt-status">
+
+        <h2>
+            MQTT Connection
+        </h2>
+
+        <p>
+            Broker:
+            <strong>broker.hivemq.com</strong>
+        </p>
+
+        <p>
+            WebSocket Port:
+            <strong>8884</strong>
+        </p>
+
+        <p>
+            Protocol:
+            <strong>MQTT over Secure WebSocket</strong>
+        </p>
+
+        <p>
+            Status:
+            <span id="mqttStatus"
+                  class="mqtt-disconnected">
+                Connecting...
+            </span>
+        </p>
+
+    </div>
 
 
-<div class="sensor-grid">
+
+    <!-- ======================================
+         SENSOR MONITORING
+    ======================================= -->
+
+    <h2 class="section-title">
+        Sensor Monitoring
+    </h2>
 
 
-    <!-- SOIL -->
+    <div class="sensor-grid">
 
-    <div class="sensor-card">
 
-        <h3>
-            🌱 Soil Moisture
-        </h3>
+        <!-- SOIL -->
 
-        <span id="soil"
-              class="sensor-value">
-            --
-        </span>
+        <div class="sensor-card">
 
-        <div>
-            Raw ADC Value
+            <h3>
+                🌱 Soil Moisture
+            </h3>
+
+            <span id="soil"
+                  class="sensor-value">
+                --
+            </span>
+
+            <div class="sensor-description">
+                Raw ADC Value (0–4095)
+            </div>
+
+        </div>
+
+
+        <!-- TEMPERATURE -->
+
+        <div class="sensor-card">
+
+            <h3>
+                🌡️ Temperature
+            </h3>
+
+            <span id="temperature"
+                  class="sensor-value">
+                --
+            </span>
+
+            <span class="sensor-unit">
+                °C
+            </span>
+
+        </div>
+
+
+        <!-- HUMIDITY -->
+
+        <div class="sensor-card">
+
+            <h3>
+                💧 Humidity
+            </h3>
+
+            <span id="humidity"
+                  class="sensor-value">
+                --
+            </span>
+
+            <span class="sensor-unit">
+                %
+            </span>
+
+        </div>
+
+
+        <!-- WATER -->
+
+        <div class="sensor-card">
+
+            <h3>
+                💦 Water Sensor
+            </h3>
+
+            <span id="water"
+                  class="sensor-value">
+                --
+            </span>
+
+            <div id="waterStatus"
+                 class="sensor-description">
+
+                Waiting for data...
+
+            </div>
+
+        </div>
+
+
+        <!-- WEIGHT -->
+
+        <div class="sensor-card">
+
+            <h3>
+                ⚖️ Weight Sensor
+            </h3>
+
+            <span id="weight"
+                  class="sensor-value">
+                --
+            </span>
+
+            <div class="sensor-description">
+
+                Raw Sensor Value
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ======================================
+         MODULE 1
+    ======================================= -->
+
+    <div class="module">
+
+        <h2>
+            Module 1 — Irrigation
+        </h2>
+
+
+        <div class="actuator-grid">
+
+
+            <div class="actuator">
+
+                <h3>
+                    💧 Water Pump
+                </h3>
+
+
+                <div id="pumpStatus"
+                     class="actuator-status">
+
+                    OFF
+
+                </div>
+
+
+                <button
+                    class="on-button"
+                    onclick="controlPump('ON')">
+
+                    ON
+
+                </button>
+
+
+                <button
+                    class="off-button"
+                    onclick="controlPump('OFF')">
+
+                    OFF
+
+                </button>
+
+            </div>
+
+
         </div>
 
     </div>
 
 
-    <!-- TEMPERATURE -->
 
-    <div class="sensor-card">
+    <!-- ======================================
+         MODULE 2
+    ======================================= -->
 
-        <h3>
-            🌡️ Temperature
-        </h3>
+    <div class="module">
 
-        <span id="temperature"
-              class="sensor-value">
-            --
-        </span>
-
-        <span class="unit">
-            °C
-        </span>
-
-    </div>
+        <h2>
+            Module 2 — Environment
+        </h2>
 
 
-    <!-- HUMIDITY -->
-
-    <div class="sensor-card">
-
-        <h3>
-            💧 Humidity
-        </h3>
-
-        <span id="humidity"
-              class="sensor-value">
-            --
-        </span>
-
-        <span class="unit">
-            %
-        </span>
-
-    </div>
+        <div class="actuator-grid">
 
 
-    <!-- WATER -->
+            <!-- FAN -->
 
-    <div class="sensor-card">
+            <div class="actuator">
 
-        <h3>
-            💦 Water Sensor
-        </h3>
+                <h3>
+                    🌀 Fan
+                </h3>
 
-        <span id="water"
-              class="sensor-value">
-            --
-        </span>
 
-        <div id="waterStatus">
-            Waiting...
+                <div id="fanStatus"
+                     class="actuator-status">
+
+                    OFF
+
+                </div>
+
+
+                <button
+                    class="on-button"
+                    onclick="controlFan('ON')">
+
+                    ON
+
+                </button>
+
+
+                <button
+                    class="off-button"
+                    onclick="controlFan('OFF')">
+
+                    OFF
+
+                </button>
+
+            </div>
+
+
+
+            <!-- LED -->
+
+            <div class="actuator">
+
+                <h3>
+                    💡 LED
+                </h3>
+
+
+                <div id="ledStatus"
+                     class="actuator-status">
+
+                    OFF
+
+                </div>
+
+
+                <button
+                    class="on-button"
+                    onclick="controlLED('ON')">
+
+                    ON
+
+                </button>
+
+
+                <button
+                    class="off-button"
+                    onclick="controlLED('OFF')">
+
+                    OFF
+
+                </button>
+
+            </div>
+
+
         </div>
 
     </div>
 
 
-    <!-- WEIGHT -->
 
-    <div class="sensor-card">
+    <!-- ======================================
+         MODULE 3
+    ======================================= -->
 
-        <h3>
-            ⚖️ Weight Sensor
-        </h3>
+    <div class="module">
 
-        <span id="weight"
-              class="sensor-value">
-            --
-        </span>
+        <h2>
+            Module 3 — Water & Weight
+        </h2>
 
-        <div>
-            Sensor Value
-        </div>
+
+        <p>
+            Water Sensor:
+            <strong id="waterFeedback">
+                Waiting...
+            </strong>
+        </p>
+
+
+        <br>
+
+
+        <p>
+            Weight Sensor:
+            <strong id="weightFeedback">
+                Waiting...
+            </strong>
+        </p>
 
     </div>
-
-</div>
-
-
-
-<!-- =========================
-     MODULE 1
-========================= -->
-
-<div class="module">
-
-<h2>
-    Module 1 — Irrigation
-</h2>
-
-
-<div class="actuator-grid">
-
-
-<div class="actuator">
-
-<h3>
-    💧 Water Pump
-</h3>
-
-<div id="pumpStatus"
-     class="actuator-status">
-
-    OFF
-
-</div>
-
-
-<button
-    class="on-button"
-    onclick="controlPump('ON')">
-
-    ON
-
-</button>
-
-
-<button
-    class="off-button"
-    onclick="controlPump('OFF')">
-
-    OFF
-
-</button>
-
-</div>
-
-
-</div>
-
-</div>
-
-
-
-<!-- =========================
-     MODULE 2
-========================= -->
-
-<div class="module">
-
-<h2>
-    Module 2 — Environment
-</h2>
-
-
-<div class="actuator-grid">
-
-
-<!-- FAN -->
-
-<div class="actuator">
-
-<h3>
-    🌀 Fan
-</h3>
-
-
-<div id="fanStatus"
-     class="actuator-status">
-
-    OFF
-
-</div>
-
-
-<button
-    class="on-button"
-    onclick="controlFan('ON')">
-
-    ON
-
-</button>
-
-
-<button
-    class="off-button"
-    onclick="controlFan('OFF')">
-
-    OFF
-
-</button>
-
-</div>
-
-
-
-<!-- LED -->
-
-<div class="actuator">
-
-<h3>
-    💡 LED
-</h3>
-
-
-<div id="ledStatus"
-     class="actuator-status">
-
-    OFF
-
-</div>
-
-
-<button
-    class="on-button"
-    onclick="controlLED('ON')">
-
-    ON
-
-</button>
-
-
-<button
-    class="off-button"
-    onclick="controlLED('OFF')">
-
-    OFF
-
-</button>
-
-</div>
-
-
-</div>
-
-</div>
 
 
 </main>
 
 
 
+<!-- ==========================================
+     FOOTER
+========================================== -->
+
 <footer>
 
-Smart Agriculture IoT System
+    Smart Agriculture IoT System
 
-<br>
+    <br><br>
 
-ESP32 → HiveMQ MQTT → HTML Dashboard
+    ESP32 → MQTT → HiveMQ → HTML Dashboard
 
 </footer>
 
@@ -589,50 +762,58 @@ ESP32 → HiveMQ MQTT → HTML Dashboard
 <script>
 
 
-// =====================================================
-// HIVEMQ MQTT
-// =====================================================
+// =================================================
+// HIVEMQ CONFIGURATION
+// =================================================
 
-// HiveMQ WebSocket
+// IMPORTANT:
+// GitHub Pages uses HTTPS.
+// Therefore use WSS instead of WS.
+
 const MQTT_URL =
-    "ws://broker.hivemq.com:8000/mqtt";
+    "wss://broker.hivemq.com:8884/mqtt";
 
 
-const options = {
+const MQTT_OPTIONS = {
 
     clientId:
-        "HTML_SmartFarm_" +
+        "SmartFarm_HTML_" +
         Math.random()
             .toString(16)
             .substring(2),
 
     clean: true,
 
-    connectTimeout: 5000,
+    connectTimeout: 10000,
 
     reconnectPeriod: 3000
+
 };
 
 
-// Connect
+// =================================================
+// CONNECT TO HIVEMQ
+// =================================================
 
 const client =
     mqtt.connect(
         MQTT_URL,
-        options
+        MQTT_OPTIONS
     );
 
 
-// =====================================================
-// MQTT CONNECTED
-// =====================================================
+// =================================================
+// CONNECTION SUCCESS
+// =================================================
 
-client.on("connect", function() {
+client.on("connect", function () {
 
     console.log(
-        "Connected to HiveMQ"
+        "Connected to HiveMQ!"
     );
 
+
+    // Header status
 
     document
         .getElementById(
@@ -648,53 +829,85 @@ client.on("connect", function() {
             "connectionText"
         )
         .textContent =
-            "Connected to HiveMQ";
+            "Connected";
 
 
-    // =================================================
-    // SUBSCRIBE
-    // =================================================
+    // MQTT status
+
+    const mqttStatus =
+        document.getElementById(
+            "mqttStatus"
+        );
+
+
+    mqttStatus.textContent =
+        "Connected";
+
+
+    mqttStatus.className =
+        "mqtt-connected";
+
+
+    // =============================================
+    // SUBSCRIBE TO SENSOR TOPICS
+    // =============================================
 
     client.subscribe(
         "smartfarm/module1/soil"
     );
 
+
     client.subscribe(
         "smartfarm/module2/temperature"
     );
+
 
     client.subscribe(
         "smartfarm/module2/humidity"
     );
 
+
     client.subscribe(
         "smartfarm/module3/water"
     );
+
 
     client.subscribe(
         "smartfarm/module3/weight"
     );
 
+
+    // =============================================
+    // SUBSCRIBE TO ACTUATOR FEEDBACK
+    // =============================================
+
     client.subscribe(
         "smartfarm/module1/pump"
     );
+
 
     client.subscribe(
         "smartfarm/module2/fan"
     );
 
+
     client.subscribe(
         "smartfarm/module2/led"
+    );
+
+
+    console.log(
+        "MQTT topics subscribed."
     );
 
 });
 
 
-// =====================================================
+// =================================================
 // MQTT ERROR
-// =====================================================
+// =================================================
 
-client.on("error", function(error) {
+client.on("error", function (error) {
 
     console.error(
         "MQTT Error:",
@@ -704,11 +917,33 @@ client.on("error", function(error) {
 });
 
 
-// =====================================================
-// MQTT DISCONNECTED
-// =====================================================
+// =================================================
+// MQTT OFFLINE
+// =================================================
 
-client.on("close", function() {
+client.on("offline", function () {
+
+    setDisconnected();
+
+});
+
+
+// =================================================
+// MQTT CLOSE
+// =================================================
+
+client.on("close", function () {
+
+    setDisconnected();
+
+});
+
+
+// =================================================
+// SET DISCONNECTED
+// =================================================
+
+function setDisconnected() {
 
     document
         .getElementById(
@@ -726,30 +961,46 @@ client.on("close", function() {
         .textContent =
             "Disconnected";
 
-});
+
+    const mqttStatus =
+        document.getElementById(
+            "mqttStatus"
+        );
 
 
-// =====================================================
+    mqttStatus.textContent =
+        "Disconnected";
+
+
+    mqttStatus.className =
+        "mqtt-disconnected";
+
+}
+
+
+// =================================================
 // RECEIVE MQTT MESSAGE
-// =====================================================
+// =================================================
 
 client.on(
     "message",
-    function(topic, message) {
+    function (topic, message) {
 
         const value =
             message.toString();
 
 
         console.log(
+            "MQTT:",
             topic,
+            "=>",
             value
         );
 
 
-        // =============================================
-        // SOIL
-        // =============================================
+        // =========================================
+        // MODULE 1 - SOIL
+        // =========================================
 
         if (
             topic ===
@@ -762,55 +1013,68 @@ client.on(
                 )
                 .textContent =
                     value;
+
         }
 
 
-        // =============================================
-        // TEMPERATURE
-        // =============================================
+        // =========================================
+        // MODULE 2 - TEMPERATURE
+        // =========================================
 
         else if (
             topic ===
             "smartfarm/module2/temperature"
         ) {
 
+            const temp =
+                Number(value);
+
+
             document
                 .getElementById(
                     "temperature"
                 )
                 .textContent =
-                    Number(value)
-                        .toFixed(1);
+                    temp.toFixed(1);
+
         }
 
 
-        // =============================================
-        // HUMIDITY
-        // =============================================
+        // =========================================
+        // MODULE 2 - HUMIDITY
+        // =========================================
 
         else if (
             topic ===
             "smartfarm/module2/humidity"
         ) {
 
+            const humidity =
+                Number(value);
+
+
             document
                 .getElementById(
                     "humidity"
                 )
                 .textContent =
-                    Number(value)
-                        .toFixed(1);
+                    humidity.toFixed(1);
+
         }
 
 
-        // =============================================
-        // WATER
-        // =============================================
+        // =========================================
+        // MODULE 3 - WATER
+        // =========================================
 
         else if (
             topic ===
             "smartfarm/module3/water"
         ) {
+
+            const water =
+                Number(value);
+
 
             document
                 .getElementById(
@@ -820,9 +1084,15 @@ client.on(
                     value;
 
 
-            if (
-                Number(value) > 500
-            ) {
+            document
+                .getElementById(
+                    "waterFeedback"
+                )
+                .textContent =
+                    value;
+
+
+            if (water > 500) {
 
                 document
                     .getElementById(
@@ -841,14 +1111,15 @@ client.on(
                     )
                     .textContent =
                         "No Water Detected";
+
             }
 
         }
 
 
-        // =============================================
-        // WEIGHT
-        // =============================================
+        // =========================================
+        // MODULE 3 - WEIGHT
+        // =========================================
 
         else if (
             topic ===
@@ -861,12 +1132,21 @@ client.on(
                 )
                 .textContent =
                     value;
+
+
+            document
+                .getElementById(
+                    "weightFeedback"
+                )
+                .textContent =
+                    value;
+
         }
 
 
-        // =============================================
+        // =========================================
         // PUMP
-        // =============================================
+        // =========================================
 
         else if (
             topic ===
@@ -877,12 +1157,13 @@ client.on(
                 "pumpStatus",
                 value
             );
+
         }
 
 
-        // =============================================
+        // =========================================
         // FAN
-        // =============================================
+        // =========================================
 
         else if (
             topic ===
@@ -893,12 +1174,13 @@ client.on(
                 "fanStatus",
                 value
             );
+
         }
 
 
-        // =============================================
+        // =========================================
         // LED
-        // =============================================
+        // =========================================
 
         else if (
             topic ===
@@ -909,15 +1191,16 @@ client.on(
                 "ledStatus",
                 value
             );
+
         }
 
     }
 );
 
 
-// =====================================================
-// ACTUATOR STATUS
-// =====================================================
+// =================================================
+// UPDATE ACTUATOR
+// =================================================
 
 function updateActuator(
     elementId,
@@ -940,24 +1223,45 @@ function updateActuator(
 
 
     if (
-        value === "ON"
+        value.toUpperCase() ===
+        "ON"
     ) {
 
         element.classList.add(
             "on"
         );
+
     }
 
 }
 
 
-// =====================================================
-// PUMP
-// =====================================================
+// =================================================
+// PUMP CONTROL
+// =================================================
 
 function controlPump(
     state
 ) {
+
+    if (
+        !client.connected
+    ) {
+
+        alert(
+            "MQTT is not connected."
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "Pump:",
+        state
+    );
+
 
     client.publish(
         "smartfarm/control/pump",
@@ -967,13 +1271,32 @@ function controlPump(
 }
 
 
-// =====================================================
-// FAN
-// =====================================================
+// =================================================
+// FAN CONTROL
+// =================================================
 
 function controlFan(
     state
 ) {
+
+    if (
+        !client.connected
+    ) {
+
+        alert(
+            "MQTT is not connected."
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "Fan:",
+        state
+    );
+
 
     client.publish(
         "smartfarm/control/fan",
@@ -983,13 +1306,32 @@ function controlFan(
 }
 
 
-// =====================================================
-// LED
-// =====================================================
+// =================================================
+// LED CONTROL
+// =================================================
 
 function controlLED(
     state
 ) {
+
+    if (
+        !client.connected
+    ) {
+
+        alert(
+            "MQTT is not connected."
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "LED:",
+        state
+    );
+
 
     client.publish(
         "smartfarm/control/led",

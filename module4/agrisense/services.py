@@ -16,6 +16,8 @@ LOGGER = logging.getLogger(__name__)
 
 
 class MqttService:
+    MIN_CAPTURE_INTERVAL_SECONDS = 15
+
     def __init__(self, settings: Settings, enabled: bool = True) -> None:
         self.settings = settings
         self.enabled = enabled
@@ -23,6 +25,8 @@ class MqttService:
         self._lock = threading.Lock()
         self._temperature: tuple[float, float] | None = None
         self._humidity: tuple[float, float] | None = None
+        self._interval_override: int | None = None
+        self._capture_requested = threading.Event()
         self._connected_event = threading.Event()
         self.client: mqtt.Client | None = None
 
@@ -58,7 +62,13 @@ class MqttService:
         self._connected_event.set()
         client.subscribe(self.topic("module2/temperature"))
         client.subscribe(self.topic("module2/humidity"))
-        LOGGER.info("MQTT connected; climate topics subscribed")
+        client.subscribe(self.topic("control/module4/capture"))
+        client.subscribe(self.topic("config/module4/capture_interval_seconds"))
+        LOGGER.info("MQTT connected; climate and capture-control topics subscribed")
+        self._publish(
+            "module4/capture_interval_seconds",
+            str(self.current_interval(self.settings.capture_interval_seconds)),
+        )
 
     def _on_disconnect(self, client, userdata, disconnect_flags, reason_code, properties) -> None:
         self.connected = False
@@ -67,10 +77,33 @@ class MqttService:
 
     def _on_message(self, client, userdata, message) -> None:
         try:
-            value = float(message.payload.decode("utf-8").strip())
-        except (UnicodeDecodeError, ValueError):
+            payload = message.payload.decode("utf-8").strip()
+        except UnicodeDecodeError:
+            LOGGER.warning("Ignored undecodable payload on %s", message.topic)
+            return
+
+        if message.topic == self.topic("control/module4/capture"):
+            self._capture_requested.set()
+            return
+
+        if message.topic == self.topic("config/module4/capture_interval_seconds"):
+            try:
+                seconds = max(self.MIN_CAPTURE_INTERVAL_SECONDS, int(float(payload)))
+            except ValueError:
+                LOGGER.warning("Ignored invalid capture interval payload: %s", payload)
+                return
+            with self._lock:
+                self._interval_override = seconds
+            LOGGER.info("Capture interval updated via MQTT to %ss", seconds)
+            self._publish("module4/capture_interval_seconds", str(seconds))
+            return
+
+        try:
+            value = float(payload)
+        except ValueError:
             LOGGER.warning("Ignored invalid climate payload on %s", message.topic)
             return
+
         now = time.time()
         with self._lock:
             if message.topic == self.topic("module2/temperature") and -40 <= value <= 85:
@@ -84,6 +117,16 @@ class MqttService:
             temperature = self._temperature[0] if self._temperature and self._temperature[1] >= cutoff else None
             humidity = self._humidity[0] if self._humidity and self._humidity[1] >= cutoff else None
         return temperature, humidity
+
+    def current_interval(self, default_seconds: int) -> int:
+        with self._lock:
+            return self._interval_override if self._interval_override is not None else default_seconds
+
+    def consume_capture_request(self) -> bool:
+        if self._capture_requested.is_set():
+            self._capture_requested.clear()
+            return True
+        return False
 
     def publish_invalid_image(self, message: str) -> None:
         self._publish("module4/status", "AMBER")

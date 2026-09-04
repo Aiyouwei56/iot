@@ -1,3 +1,4 @@
+.env
 node-red/runtime/
 module4/.venv/
 module4/captures/

@@ -171,8 +171,11 @@ def main() -> int:
                 if args.once or args.image:
                     return 0
 
-            deadline = time.monotonic() + settings.capture_interval_seconds
+            deadline = time.monotonic() + mqtt_service.current_interval(settings.capture_interval_seconds)
             while not stop_requested and time.monotonic() < deadline:
+                if mqtt_service.consume_capture_request():
+                    LOGGER.info("Manual capture requested via MQTT")
+                    break
                 time.sleep(0.25)
     finally:
         mqtt_service.stop()

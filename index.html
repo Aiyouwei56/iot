@@ -1025,6 +1025,20 @@
                 <p>Camera: <strong id="cropCamera">--</strong></p>
                 <p id="cropAlert" class="cloud-note">Waiting for image analysis...</p>
                 <p id="cropCaptured" class="cloud-note">--</p>
+
+                <div class="crop-controls" style="margin-top: 16px;">
+                    <label for="cropIntervalSelect">Auto-capture interval:</label>
+                    <select id="cropIntervalSelect" onchange="setModule4CaptureInterval(this.value)">
+                        <option value="60">Every 1 minute</option>
+                        <option value="120">Every 2 minutes</option>
+                        <option value="180">Every 3 minutes</option>
+                        <option value="300" selected>Every 5 minutes</option>
+                        <option value="600">Every 10 minutes</option>
+                        <option value="900">Every 15 minutes</option>
+                    </select>
+                    <button id="cropCaptureNowBtn" class="on-button" style="margin-left: 10px;" onclick="triggerModule4CaptureNow()">Capture Now</button>
+                    <p id="cropControlStatus" class="cloud-note"></p>
+                </div>
             </div>
 
             <div class="cloud-card">
@@ -1262,6 +1276,9 @@ const TOPICS = {
     fanModeControl: `${MQTT_BASE}/control/fan/mode`,
     ledControl: `${MQTT_BASE}/control/led`,
     ledModeControl: `${MQTT_BASE}/control/led/mode`,
+    module4CaptureTrigger: `${MQTT_BASE}/control/module4/capture`,
+    module4IntervalControl: `${MQTT_BASE}/config/module4/capture_interval_seconds`,
+    module4IntervalStatus: `${MQTT_BASE}/module4/capture_interval_seconds`,
     configSoilStart: `${MQTT_BASE}/config/soil/pump_on_percent`,
     configSoilStop: `${MQTT_BASE}/config/soil/pump_off_percent`,
     configFanOn: `${MQTT_BASE}/config/fan/on_temperature_c`,
@@ -1416,6 +1433,7 @@ client.on("connect", function () {
         TOPICS.led,
         TOPICS.ledMode,
         TOPICS.systemAlert,
+        TOPICS.module4IntervalStatus,
         ...AUTOMATION_CONFIG.map(setting => setting.topic)
     ]);
 
@@ -1759,6 +1777,16 @@ client.on(
             }
         }
 
+        else if (topic === TOPICS.module4IntervalStatus) {
+            const seconds = Number(value);
+            if (Number.isFinite(seconds)) {
+                const select = document.getElementById("cropIntervalSelect");
+                if ([...select.options].some(option => Number(option.value) === seconds)) {
+                    select.value = String(seconds);
+                }
+            }
+        }
+
     }
 );
 
@@ -1894,6 +1922,43 @@ function controlLED(
 
     publishManualCommand("led", TOPICS.ledControl, state);
 
+}
+
+
+// =================================================
+// MODULE 4 - CAPTURE CONTROL
+// =================================================
+
+function setModule4CaptureInterval(seconds) {
+    if (!client.connected) {
+        alert("MQTT is not connected.");
+        return;
+    }
+
+    client.publish(TOPICS.module4IntervalControl, String(seconds), { qos: 1, retain: true });
+    document.getElementById("cropControlStatus").textContent =
+        `Interval set to ${Math.round(seconds / 60)} min.`;
+}
+
+function triggerModule4CaptureNow() {
+    if (!client.connected) {
+        alert("MQTT is not connected.");
+        return;
+    }
+
+    const button = document.getElementById("cropCaptureNowBtn");
+    button.disabled = true;
+    button.textContent = "Capturing...";
+    document.getElementById("cropControlStatus").textContent = "Capture requested; waiting for upload...";
+
+    client.publish(TOPICS.module4CaptureTrigger, String(Date.now()), { qos: 0, retain: false });
+
+    setTimeout(async () => {
+        button.disabled = false;
+        button.textContent = "Capture Now";
+        document.getElementById("cropControlStatus").textContent = "";
+        await refreshCloudDashboard();
+    }, 12000);
 }
 
 

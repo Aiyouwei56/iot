@@ -37,7 +37,7 @@ class Settings:
 
     @classmethod
     def from_environment(cls, repo_root: Path) -> "Settings":
-        load_env_file(repo_root.parent / ".env")
+        load_env_file(repo_root / ".env")
         return cls(
             mqtt_host=os.getenv("MQTT_HOST", "broker.hivemq.com"),
             mqtt_port=int(os.getenv("MQTT_PORT", "1883")),

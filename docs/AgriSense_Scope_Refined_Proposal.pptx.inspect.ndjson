@@ -1,0 +1,425 @@
+{"kind":"deck","id":"pr/afwbla","name":"Deck"}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster1.xml","name":"","type":"master","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout1.xml","name":"BLANK","type":"blank","placeholders":[{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout2.xml","name":"TITLE","type":"title","placeholders":[{"name":"title","type":"title"},{"name":"subtitle","type":"subtitle"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout3.xml","name":"OBJECT","type":"obj","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout4.xml","name":"SECTION_HEADER","type":"secHead","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout5.xml","name":"TWO_OBJECTS","type":"twoObj","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout6.xml","name":"TWO_OBJECTS_WITH_TEXT","type":"twoTxTwoObj","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout7.xml","name":"TITLE_ONLY","type":"titleOnly","placeholders":[{"name":"title","type":"title"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout8.xml","name":"OBJECT_WITH_CAPTION_TEXT","type":"objTx","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"body","type":"body"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout9.xml","name":"PICTURE_WITH_CAPTION_TEXT","type":"picTx","placeholders":[{"name":"title","type":"title"},{"name":"picture","type":"picture"},{"name":"body","type":"body"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout10.xml","name":"VERTICAL_TEXT","type":"vertTx","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout11.xml","name":"VERTICAL_TITLE_AND_VERTICAL_TEXT","type":"vertTitleAndTx","placeholders":[{"name":"title","type":"title"},{"name":"body","type":"body"},{"name":"dateTime","type":"dateTime"},{"name":"footer","type":"footer"},{"name":"slideNumber","type":"slideNumber","textPreview":"‹#›"}]}
+{"kind":"layout","layoutId":"/ppt/slideMasters/slideMaster2.xml","name":"","type":"master"}
+{"kind":"layout","layoutId":"/ppt/slideLayouts/slideLayout12.xml","name":"DEFAULT"}
+{"kind":"slide","id":"sl/y90nupkv","slide":1,"title":"BMIT2123 INTERNET OF THINGS  |  PART I SYSTEM PROTOTYPE PROPOSAL","textShapes":6}
+{"kind":"shape","id":"sh/4bq1wzmp","slide":1,"name":"Google Shape;87;p15","bbox":[1017.6,-124.8,403.2,403.2]}
+{"kind":"shape","id":"sh/f6x0zu58","slide":1,"name":"Google Shape;88;p15","bbox":[-134.4,518.4,345.6,345.6]}
+{"kind":"shape","id":"sh/u5ojqpon","slide":1,"name":"Google Shape;89;p15","bbox":[86.4,129.6,91.2,91.2]}
+{"kind":"textbox","id":"sh/5cvy903q","slide":1,"name":"Google Shape;91;p15","text":"BMIT2123 INTERNET OF THINGS  |  PART I SYSTEM PROTOTYPE PROPOSAL","textPreview":"BMIT2123 INTERNET OF THINGS  |  PART I SYSTEM PROTOTYPE PROPOSAL","textChars":64,"textLines":1,"bbox":[57.6,244.8,1104,38.4]}
+{"kind":"textbox","id":"sh/ip4zyl4f","slide":1,"name":"Google Shape;92;p15","text":"AgriSense","textPreview":"AgriSense","textChars":9,"textLines":1,"bbox":[52.8,283.2,960,115.2]}
+{"kind":"textbox","id":"sh/jadg7ql0","slide":1,"name":"Google Shape;93;p15","text":"A Precision Farming System for Outdoor Canopy Plantations","textPreview":"A Precision Farming System for Outdoor Canopy Plantations","textChars":57,"textLines":1,"bbox":[57.6,388.8,1104,57.6]}
+{"kind":"textbox","id":"sh/sf6h4v2h","slide":1,"name":"Google Shape;94;p15","text":"Group Members:  Foo Tun Wei(Leader) · Kueh Jian Wei · Heng Jing Le · Tey Ying Heng","textPreview":"Group Members:  Foo Tun Wei(Leader) · Kueh Jian Wei · Heng Jing Le · Tey Ying Heng","textChars":82,"textLines":1,"bbox":[57.6,494.4,1008,38.4]}
+{"kind":"textbox","id":"sh/tgfyd032","slide":1,"name":"Google Shape;95;p15","text":"Programme & Group: RSD2S3 G3","textPreview":"Programme & Group: RSD2S3 G3","textChars":28,"textLines":1,"bbox":[57.6,532.8,960,38.4]}
+{"kind":"textbox","id":"sh/6d4z25kb","slide":1,"name":"Google Shape;96;p15","text":"1","textPreview":"1","textChars":1,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/8z6tofq5","slide":1,"name":"Google Shape;90;p15","bbox":[99.17,142.37,65.66,65.66]}
+{"kind":"notes","id":"nt/y90nupkv","slide":1,"text":""}
+{"kind":"slide","id":"sl/hwbqtkby","slide":2,"title":"OVERVIEW","textShapes":19}
+{"kind":"textbox","id":"sh/gjyx87y5","slide":2,"name":"Google Shape;102;p16","text":"OVERVIEW","textPreview":"OVERVIEW","textChars":8,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/hk7y1czq","slide":2,"name":"Google Shape;103;p16","text":"Agenda","textPreview":"Agenda","textChars":6,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"shape","id":"sh/2lgfahgb","slide":2,"name":"Google Shape;104;p16","bbox":[57.6,163.2,532.8,55.68]}
+{"kind":"shape","id":"sh/3mpg3mhw","slide":2,"name":"Google Shape;105;p16","bbox":[72,167.04,48,48]}
+{"kind":"textbox","id":"sh/po7y5czm","slide":2,"name":"Google Shape;107;p16","text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[129.6,167.04,57.6,48]}
+{"kind":"textbox","id":"sh/qpgfehg7","slide":2,"name":"Google Shape;108;p16","text":"Background & Problem Statement","textPreview":"Background & Problem Statement","textChars":30,"textLines":1,"bbox":[182.4,163.2,398.4,55.68]}
+{"kind":"shape","id":"sh/rq9g7mhs","slide":2,"name":"Google Shape;109;p16","bbox":[57.6,232.32,532.8,55.68]}
+{"kind":"shape","id":"sh/1kbidgju","slide":2,"name":"Google Shape;110;p16","bbox":[72,236.16,48,48]}
+{"kind":"textbox","id":"sh/zit0bq14","slide":2,"name":"Google Shape;112;p16","text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[129.6,236.16,57.6,48]}
+{"kind":"textbox","id":"sh/eh0z2l0j","slide":2,"name":"Google Shape;113;p16","text":"System Overview & Objectives","textPreview":"System Overview & Objectives","textChars":28,"textLines":1,"bbox":[182.4,232.32,398.4,55.68]}
+{"kind":"shape","id":"sh/98bih0j6","slide":2,"name":"Google Shape;114;p16","bbox":[57.6,301.44,532.8,55.68]}
+{"kind":"shape","id":"sh/on218vil","slide":2,"name":"Google Shape;115;p16","bbox":[72,305.28,48,48]}
+{"kind":"textbox","id":"sh/mlkj6l0f","slide":2,"name":"Google Shape;117;p16","text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[129.6,305.28,57.6,48]}
+{"kind":"textbox","id":"sh/xcvil0j2","slide":2,"name":"Google Shape;118;p16","text":"Targeted Users","textPreview":"Targeted Users","textChars":14,"textLines":1,"bbox":[182.4,301.44,398.4,55.68]}
+{"kind":"shape","id":"sh/wbm1cvix","slide":2,"name":"Google Shape;119;p16","bbox":[57.6,370.56,532.8,55.68]}
+{"kind":"shape","id":"sh/gful8jqt","slide":2,"name":"Google Shape;120;p16","bbox":[72,374.4,48,48]}
+{"kind":"textbox","id":"sh/uts3698n","slide":2,"name":"Google Shape;122;p16","text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[129.6,374.4,57.6,48]}
+{"kind":"textbox","id":"sh/vulkfep8","slide":2,"name":"Google Shape;123;p16","text":"System Architecture","textPreview":"System Architecture","textChars":19,"textLines":1,"bbox":[182.4,370.56,398.4,55.68]}
+{"kind":"shape","id":"sh/4julcjq5","slide":2,"name":"Google Shape;124;p16","bbox":[638.4,163.2,532.8,55.68]}
+{"kind":"shape","id":"sh/5k32lo7a","slide":2,"name":"Google Shape;125;p16","bbox":[652.8,167.04,48,48]}
+{"kind":"textbox","id":"sh/3ilkjepk","slide":2,"name":"Google Shape;127;p16","text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[710.4,167.04,57.6,48]}
+{"kind":"textbox","id":"sh/kna10zql","slide":2,"name":"Google Shape;128;p16","text":"Functional Modules 1–4","textPreview":"Functional Modules 1–4","textChars":22,"textLines":1,"bbox":[763.2,163.2,398.4,55.68]}
+{"kind":"shape","id":"sh/loj294r6","slide":2,"name":"Google Shape;129;p16","bbox":[638.4,232.32,532.8,55.68]}
+{"kind":"shape","id":"sh/nu9wvmd0","slide":2,"name":"Google Shape;130;p16","bbox":[652.8,236.16,48,48]}
+{"kind":"textbox","id":"sh/9grexwv6","slide":2,"name":"Google Shape;132;p16","text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[710.4,236.16,57.6,48]}
+{"kind":"textbox","id":"sh/ovix4rel","slide":2,"name":"Google Shape;133;p16","text":"Cross-Module Design Standards","textPreview":"Cross-Module Design Standards","textChars":29,"textLines":1,"bbox":[763.2,232.32,398.4,55.68]}
+{"kind":"shape","id":"sh/zq9wrmd4","slide":2,"name":"Google Shape;134;p16","bbox":[638.4,301.44,532.8,55.68]}
+{"kind":"shape","id":"sh/epgfyhwj","slide":2,"name":"Google Shape;135;p16","bbox":[652.8,305.28,48,48]}
+{"kind":"textbox","id":"sh/0rix0re9","slide":2,"name":"Google Shape;137;p16","text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[710.4,305.28,57.6,48]}
+{"kind":"textbox","id":"sh/rmpwn2ds","slide":2,"name":"Google Shape;138;p16","text":"Data Contract, Plant Profile & Override","textPreview":"Data Contract, Plant Profile & Override","textChars":39,"textLines":1,"bbox":[763.2,301.44,398.4,55.68]}
+{"kind":"shape","id":"sh/qlgvuxw7","slide":2,"name":"Google Shape;139;p16","bbox":[638.4,370.56,532.8,55.68]}
+{"kind":"shape","id":"sh/6t0jy5sr","slide":2,"name":"Google Shape;140;p16","bbox":[652.8,374.4,48,48]}
+{"kind":"textbox","id":"sh/svi10fax","slide":2,"name":"Google Shape;142;p16","text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[710.4,374.4,57.6,48]}
+{"kind":"textbox","id":"sh/twbitkri","slide":2,"name":"Google Shape;143;p16","text":"Task Allocation, Priorities & Timeline","textPreview":"Task Allocation, Priorities & Timeline","textChars":38,"textLines":1,"bbox":[763.2,370.56,398.4,55.68]}
+{"kind":"textbox","id":"sh/i50zu5sv","slide":2,"name":"Google Shape;144;p16","text":"2","textPreview":"2","textChars":1,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/ahcvy9sf","slide":2,"name":"Google Shape;106;p16","bbox":[78.72,173.76,34.56,34.56]}
+{"kind":"image","id":"im/x43et4rq","slide":2,"name":"Google Shape;111;p16","bbox":[78.72,242.88,34.56,34.56]}
+{"kind":"image","id":"im/wjud0za5","slide":2,"name":"Google Shape;116;p16","bbox":[78.72,312,34.56,34.56]}
+{"kind":"image","id":"im/ne1cnu9o","slide":2,"name":"Google Shape;121;p16","bbox":[78.72,381.12,34.56,34.56]}
+{"kind":"image","id":"im/mdsvups3","slide":2,"name":"Google Shape;126;p16","bbox":[659.52,173.76,34.56,34.56]}
+{"kind":"image","id":"im/cjqt4vq1","slide":2,"name":"Google Shape;131;p16","bbox":[659.52,242.88,34.56,34.56]}
+{"kind":"image","id":"im/dkzax07m","slide":2,"name":"Google Shape;136;p16","bbox":[659.52,312,34.56,34.56]}
+{"kind":"image","id":"im/qh8b2l8v","slide":2,"name":"Google Shape;141;p16","bbox":[659.52,381.12,34.56,34.56]}
+{"kind":"notes","id":"nt/hwbqtkby","slide":2,"text":""}
+{"kind":"slide","id":"sl/ofy9wn61","slide":3,"title":"BACKGROUND","textShapes":11}
+{"kind":"textbox","id":"sh/k7mlsval","slide":3,"name":"Google Shape;150;p17","text":"BACKGROUND","textPreview":"BACKGROUND","textChars":10,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/l8fmlgb6","slide":3,"name":"Google Shape;151;p17","text":"The Problem with Manual Outdoor Plantation Care","textPreview":"The Problem with Manual Outdoor Plantation Care","textChars":47,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"shape","id":"sh/y543qlsf","slide":3,"name":"Google Shape;152;p17","bbox":[57.6,168,566.4,206.4]}
+{"kind":"shape","id":"sh/z6d4jqt0","slide":3,"name":"Google Shape;153;p17","bbox":[86.4,196.8,57.6,57.6]}
+{"kind":"textbox","id":"sh/x4vmhgbu","slide":3,"name":"Google Shape;155;p17","text":"Blind Watering","textPreview":"Blind Watering","textChars":14,"textLines":1,"bbox":[163.2,194.88,432,38.4]}
+{"kind":"textbox","id":"sh/ah43m1sj","slide":3,"name":"Google Shape;156;p17","text":"Fixed-schedule irrigation ignores rain and humidity, wasting water or under-feeding crops.","textPreview":"Fixed-schedule irrigation ignores rain and humidity, wasting water or under-feeding crops.","textChars":90,"textLines":1,"bbox":[86.4,259.2,508.8,100.8]}
+{"kind":"shape","id":"sh/b2d4f6t4","slide":3,"name":"Google Shape;157;p17","bbox":[662.4,168,566.4,206.4]}
+{"kind":"shape","id":"sh/of2lkrad","slide":3,"name":"Google Shape;158;p17","bbox":[691.2,196.8,57.6,57.6]}
+{"kind":"textbox","id":"sh/pwn2hs3m","slide":3,"name":"Google Shape;160;p17","text":"Weather Blind Spots","textPreview":"Weather Blind Spots","textChars":19,"textLines":1,"bbox":[768,194.88,432,38.4]}
+{"kind":"textbox","id":"sh/4bu1on21","slide":3,"name":"Google Shape;161;p17","text":"Sudden rain can still trigger unnecessary irrigation if the system only reads soil moisture.","textPreview":"Sudden rain can still trigger unnecessary irrigation if the system only reads soil moisture.","textChars":92,"textLines":1,"bbox":[691.2,259.2,508.8,100.8]}
+{"kind":"shape","id":"sh/3al0filg","slide":3,"name":"Google Shape;162;p17","bbox":[57.6,408,566.4,206.4]}
+{"kind":"shape","id":"sh/29cjmdkb","slide":3,"name":"Google Shape;163;p17","bbox":[86.4,436.8,57.6,57.6]}
+{"kind":"textbox","id":"sh/g7u1kn25","slide":3,"name":"Google Shape;165;p17","text":"Late Health Detection","textPreview":"Late Health Detection","textChars":21,"textLines":1,"bbox":[163.2,434.88,432,38.4]}
+{"kind":"textbox","id":"sh/f6l0bilk","slide":3,"name":"Google Shape;166;p17","text":"Leaf stress or disease is usually noticed only during physical rounds, often after visible damage.","textPreview":"Leaf stress or disease is usually noticed only during physical rounds, often after visible damage.","textChars":98,"textLines":1,"bbox":[86.4,499.2,508.8,100.8]}
+{"kind":"shape","id":"sh/u5cjid4z","slide":3,"name":"Google Shape;167;p17","bbox":[662.4,408,566.4,206.4]}
+{"kind":"shape","id":"sh/1472pc3u","slide":3,"name":"Google Shape;168;p17","bbox":[691.2,436.8,57.6,57.6]}
+{"kind":"textbox","id":"sh/y98za90r","slide":3,"name":"Google Shape;170;p17","text":"No Historical Insight","textPreview":"No Historical Insight","textChars":21,"textLines":1,"bbox":[768,434.88,432,38.4]}
+{"kind":"textbox","id":"sh/jahgje1c","slide":3,"name":"Google Shape;171;p17","text":"Without logged data, managers cannot analyse trends or plan resource use ahead of time.","textPreview":"Without logged data, managers cannot analyse trends or plan resource use ahead of time.","textChars":87,"textLines":1,"bbox":[691.2,499.2,508.8,100.8]}
+{"kind":"textbox","id":"sh/kbqhcjix","slide":3,"name":"Google Shape;172;p17","text":"3","textPreview":"3","textChars":1,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/sj2tsrm5","slide":3,"name":"Google Shape;154;p17","bbox":[94.46,204.86,41.47,41.47]}
+{"kind":"image","id":"im/ju9sfm5o","slide":3,"name":"Google Shape;159;p17","bbox":[699.26,204.86,41.47,41.47]}
+{"kind":"image","id":"im/it0rmh43","slide":3,"name":"Google Shape;164;p17","bbox":[94.46,444.86,41.47,41.47]}
+{"kind":"image","id":"im/5grahcnu","slide":3,"name":"Google Shape;169;p17","bbox":[699.26,444.86,41.47,41.47]}
+{"kind":"notes","id":"nt/ofy9wn61","slide":3,"text":""}
+{"kind":"slide","id":"sl/jyx0ra1s","slide":4,"title":"(A) SYSTEM TITLE","textShapes":12}
+{"kind":"textbox","id":"sh/byt87epo","slide":4,"name":"Google Shape;178;p18","text":"(A) SYSTEM TITLE","textPreview":"(A) SYSTEM TITLE","textChars":16,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/axk7e9o3","slide":4,"name":"Google Shape;179;p18","text":"AgriSense: Precision Farming System","textPreview":"AgriSense: Precision Farming System","textChars":35,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"textbox","id":"sh/m90fq1sv","slide":4,"name":"Google Shape;180;p18","text":"AgriSense connects ESP32 sensors and actuators with a laptop, HiveMQ, Node-RED and Supabase — combining weather-aware irrigation, climate control, low-water protection and crop-health warnings.","textPreview":"AgriSense connects ESP32 sensors and actuators with a laptop, HiveMQ, Node-RED and Supabase — combining weather-aware irrigation, climate...","textChars":193,"textLines":1,"bbox":[57.6,153.6,1142.4,86.4]}
+{"kind":"shape","id":"sh/7a9wz69g","slide":4,"name":"Google Shape;181;p18","bbox":[57.6,264,273.6,244.8]}
+{"kind":"shape","id":"sh/8bixsra1","slide":4,"name":"Google Shape;182;p18","bbox":[163.2,290.88,62.4,62.4]}
+{"kind":"textbox","id":"sh/y5gvmhsz","slide":4,"name":"Google Shape;184;p18","text":"Rain-Aware Irrigation","textPreview":"Rain-Aware Irrigation","textChars":21,"textLines":1,"bbox":[72,364.8,244.8,48]}
+{"kind":"textbox","id":"sh/z6pwvm9k","slide":4,"name":"Google Shape;185;p18","text":"Use soil moisture, humidity and a weather forecast — not a hardware rain sensor.","textPreview":"Use soil moisture, humidity and a weather forecast — not a hardware rain sensor.","textChars":80,"textLines":1,"bbox":[76.8,412.8,235.2,86.4]}
+{"kind":"shape","id":"sh/07idora5","slide":4,"name":"Google Shape;186;p18","bbox":[358.08,264,273.6,244.8]}
+{"kind":"shape","id":"sh/l8rexwrq","slide":4,"name":"Google Shape;187;p18","bbox":[463.68,290.88,62.4,62.4]}
+{"kind":"textbox","id":"sh/bipwr298","slide":4,"name":"Google Shape;189;p18","text":"Low-Water Safety","textPreview":"Low-Water Safety","textChars":16,"textLines":1,"bbox":[372.48,364.8,244.8,48]}
+{"kind":"textbox","id":"sh/twvixkb6","slide":4,"name":"Google Shape;190;p18","text":"Force the pump OFF whenever the calibrated tank level reaches the safety threshold.","textPreview":"Force the pump OFF whenever the calibrated tank level reaches the safety threshold.","textChars":83,"textLines":1,"bbox":[377.28,412.8,235.2,86.4]}
+{"kind":"shape","id":"sh/svmhofal","slide":4,"name":"Google Shape;191;p18","bbox":[658.56,264,273.6,244.8]}
+{"kind":"shape","id":"sh/rudgvat0","slide":4,"name":"Google Shape;192;p18","bbox":[764.16,290.88,62.4,62.4]}
+{"kind":"textbox","id":"sh/58vyt0bu","slide":4,"name":"Google Shape;194;p18","text":"Historical Monitoring","textPreview":"Historical Monitoring","textChars":21,"textLines":1,"bbox":[672.96,364.8,244.8,48]}
+{"kind":"textbox","id":"sh/47mhkvu9","slide":4,"name":"Google Shape;195;p18","text":"Log sensor history, pump runtime estimates and crop-health images for review.","textPreview":"Log sensor history, pump runtime estimates and crop-health images for review.","textChars":77,"textLines":1,"bbox":[677.76,412.8,235.2,86.4]}
+{"kind":"shape","id":"sh/j6dgrqto","slide":4,"name":"Google Shape;196;p18","bbox":[959.04,264,273.6,244.8]}
+{"kind":"shape","id":"sh/i5kzi5c3","slide":4,"name":"Google Shape;197;p18","bbox":[1064.64,290.88,62.4,62.4]}
+{"kind":"textbox","id":"sh/w32hgvud","slide":4,"name":"Google Shape;199;p18","text":"Crop-Flexible Design","textPreview":"Crop-Flexible Design","textChars":20,"textLines":1,"bbox":[973.44,364.8,244.8,48]}
+{"kind":"textbox","id":"sh/p4bmhgve","slide":4,"name":"Google Shape;200;p18","text":"Switchable Plant Profiles let the same system adapt to different crops.","textPreview":"Switchable Plant Profiles let the same system adapt to different crops.","textChars":71,"textLines":1,"bbox":[978.24,412.8,235.2,86.4]}
+{"kind":"textbox","id":"sh/432l8but","slide":4,"name":"Google Shape;201;p18","text":"4","textPreview":"4","textChars":1,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/e9or2x0n","slide":4,"name":"Google Shape;183;p18","bbox":[171.94,299.62,44.93,44.93]}
+{"kind":"image","id":"im/faxsvih8","slide":4,"name":"Google Shape;188;p18","bbox":[472.42,299.62,44.93,44.93]}
+{"kind":"image","id":"im/ofq987ip","slide":4,"name":"Google Shape;193;p18","bbox":[772.9,299.62,44.93,44.93]}
+{"kind":"image","id":"im/9gza1cza","slide":4,"name":"Google Shape;198;p18","bbox":[1073.38,299.62,44.93,44.93]}
+{"kind":"notes","id":"nt/jyx0ra1s","slide":4,"text":""}
+{"kind":"slide","id":"sl/i107q5of","slide":5,"title":"(B) DESCRIPTION & TARGETED USERS","textShapes":11}
+{"kind":"textbox","id":"sh/mh0jadwn","slide":5,"name":"Google Shape;207;p19","text":"(B) DESCRIPTION & TARGETED USERS","textPreview":"(B) DESCRIPTION & TARGETED USERS","textChars":32,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/xob2psfa","slide":5,"name":"Google Shape;208;p19","text":"Who Is AgriSense For?","textPreview":"Who Is AgriSense For?","textChars":21,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"textbox","id":"sh/wn21gnep","slide":5,"name":"Google Shape;209;p19","text":"AgriSense is deployed on the plantation's existing canopy-sheltered outdoor plot. It targets everyone involved in day-to-day operations and planning:","textPreview":"AgriSense is deployed on the plantation's existing canopy-sheltered outdoor plot. It targets everyone involved in day-to-day operations a...","textChars":149,"textLines":1,"bbox":[57.6,158.4,1142.4,48]}
+{"kind":"shape","id":"sh/uhs7ul8v","slide":5,"name":"Google Shape;210;p19","bbox":[57.6,225.6,369.6,336]}
+{"kind":"shape","id":"sh/vilonq9g","slide":5,"name":"Google Shape;211;p19","bbox":[206.4,254.4,72,72]}
+{"kind":"textbox","id":"sh/hk3qp0rm","slide":5,"name":"Google Shape;213;p19","text":"Farm Owners / Managers","textPreview":"Farm Owners / Managers","textChars":22,"textLines":1,"bbox":[76.8,345.6,331.2,57.6]}
+{"kind":"textbox","id":"sh/ilc7y587","slide":5,"name":"Google Shape;214;p19","text":"Get a live overview of plot conditions and resource usage to make faster decisions.","textPreview":"Get a live overview of plot conditions and resource usage to make faster decisions.","textChars":83,"textLines":1,"bbox":[86.4,408,312,139.2]}
+{"kind":"shape","id":"sh/3ml8ra9s","slide":5,"name":"Google Shape;215;p19","bbox":[457.92,225.6,369.6,336]}
+{"kind":"shape","id":"sh/4nup0fqd","slide":5,"name":"Google Shape;216;p19","bbox":[606.72,254.4,72,72]}
+{"kind":"textbox","id":"sh/qpw72583","slide":5,"name":"Google Shape;218;p19","text":"Field Workers / Technicians","textPreview":"Field Workers / Technicians","textChars":27,"textLines":1,"bbox":[477.12,345.6,331.2,57.6]}
+{"kind":"textbox","id":"sh/rq58va9o","slide":5,"name":"Google Shape;219;p19","text":"Receive actionable alerts (e.g. \"Tank low\", \"Crop stress detected\") instead of walking the whole site.","textPreview":"Receive actionable alerts (e.g. \"Tank low\", \"Crop stress detected\") instead of walking the whole site.","textChars":102,"textLines":1,"bbox":[486.72,408,312,139.2]}
+{"kind":"shape","id":"sh/ne5oja5w","slide":5,"name":"Google Shape;220;p19","bbox":[858.24,225.6,369.6,336]}
+{"kind":"shape","id":"sh/2tw7qpob","slide":5,"name":"Google Shape;221;p19","bbox":[1007.04,254.4,72,72]}
+{"kind":"textbox","id":"sh/ofepsf6h","slide":5,"name":"Google Shape;223;p19","text":"Agronomists / Analysts","textPreview":"Agronomists / Analysts","textChars":22,"textLines":1,"bbox":[877.44,345.6,331.2,57.6]}
+{"kind":"textbox","id":"sh/fq5ofa50","slide":5,"name":"Google Shape;224;p19","text":"Use logged trends (moisture, climate, growth photos, resource usage) to study crop health and plan ahead.","textPreview":"Use logged trends (moisture, climate, growth photos, resource usage) to study crop health and plan ahead.","textChars":105,"textLines":1,"bbox":[887.04,408,312,139.2]}
+{"kind":"textbox","id":"sh/epwnm5of","slide":5,"name":"Google Shape;225;p19","text":"Deployment setting:  Outdoor plot under a fixed protective canopy — sheltering electronics and the webcam from direct rain/sun while still allowing natural light and airflow.","textPreview":"Deployment setting:  Outdoor plot under a fixed protective canopy — sheltering electronics and the webcam from direct rain/sun while stil...","textChars":174,"textLines":1,"bbox":[57.6,580.8,1142.4,57.6]}
+{"kind":"textbox","id":"sh/1sn6hknq","slide":5,"name":"Google Shape;226;p19","text":"5","textPreview":"5","textChars":1,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/lo3mh4f2","slide":5,"name":"Google Shape;212;p19","bbox":[216.48,264.48,51.84,51.84]}
+{"kind":"image","id":"im/ep83u5w7","slide":5,"name":"Google Shape;217;p19","bbox":[616.8,264.48,51.84,51.84]}
+{"kind":"image","id":"im/zqhk3axs","slide":5,"name":"Google Shape;222;p19","bbox":[1017.12,264.48,51.84,51.84]}
+{"kind":"notes","id":"nt/i107q5of","slide":5,"text":""}
+{"kind":"slide","id":"sl/x8f69ofe","slide":6,"title":"(B) SYSTEM OVERVIEW DIAGRAM","textShapes":24}
+{"kind":"textbox","id":"sh/hgb6toza","slide":6,"name":"Google Shape;232;p20","text":"(B) SYSTEM OVERVIEW DIAGRAM","textPreview":"(B) SYSTEM OVERVIEW DIAGRAM","textChars":27,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/gf250jyp","slide":6,"name":"Google Shape;233;p20","text":"Overall System Architecture","textPreview":"Overall System Architecture","textChars":27,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"textbox","id":"sh/7a94nehs","slide":6,"name":"Google Shape;234;p20","text":"One ESP32 runs Modules 1–3; the Laptop runs Node-RED and Module 4, linked through MQTT and Supabase","textPreview":"One ESP32 runs Modules 1–3; the Laptop runs Node-RED and Module 4, linked through MQTT and Supabase","textChars":99,"textLines":1,"bbox":[57.6,136.32,1132.8,33.6]}
+{"kind":"shape","id":"sh/690nu9g7","slide":6,"name":"Google Shape;235;p20","bbox":[57.6,177.6,1161.6,48]}
+{"kind":"shape","id":"sh/tcrmpozy","slide":6,"name":"Google Shape;236;p20","bbox":[72,182.4,38.4,38.4]}
+{"kind":"textbox","id":"sh/j6p4juhw","slide":6,"name":"Google Shape;238;p20","text":"EXTERNAL DATA · Open-Meteo forecast → Node-RED weather decision","textPreview":"EXTERNAL DATA · Open-Meteo forecast → Node-RED weather decision","textChars":63,"textLines":1,"bbox":[120,177.6,1084.8,48]}
+{"kind":"shape","id":"sh/ylgnq9gb","slide":6,"name":"Google Shape;239;p20","bbox":[57.6,244.8,369.6,379.2]}
+{"kind":"textbox","id":"sh/etkruxcv","slide":6,"name":"Google Shape;240;p20","text":"EDGE LAYER  ·  ESP32 + LAPTOP","textPreview":"EDGE LAYER  ·  ESP32 + LAPTOP","textChars":29,"textLines":1,"bbox":[76.8,257.28,331.2,28.8]}
+{"kind":"shape","id":"sh/zet8n2dg","slide":6,"name":"Google Shape;241;p20","bbox":[72.96,285.12,338.88,72.96]}
+{"kind":"shape","id":"sh/0f29w7u1","slide":6,"name":"Google Shape;242;p20","bbox":[84.48,302.4,38.4,38.4]}
+{"kind":"textbox","id":"sh/qp0rqxcz","slide":6,"name":"Google Shape;244;p20","text":"1 — Smart Irrigation","textPreview":"1 — Smart Irrigation","textChars":20,"textLines":1,"bbox":[134.4,290.88,273.6,30.72]}
+{"kind":"textbox","id":"sh/rq98j2dk","slide":6,"name":"Google Shape;245;p20","text":"Soil + humidity + forecast → pump; AUTO/MANUAL + safety lock","textPreview":"Soil + humidity + forecast → pump; AUTO/MANUAL + safety lock","textChars":60,"textLines":1,"bbox":[134.4,321.6,273.6,33.6]}
+{"kind":"shape","id":"sh/cri9snup","slide":6,"name":"Google Shape;246;p20","bbox":[72.96,366.72,338.88,72.96]}
+{"kind":"shape","id":"sh/dsrqlsva","slide":6,"name":"Google Shape;247;p20","bbox":[84.48,384,38.4,38.4]}
+{"kind":"textbox","id":"sh/3m98fid8","slide":6,"name":"Google Shape;249;p20","text":"2 — Climate Control","textPreview":"2 — Climate Control","textChars":19,"textLines":1,"bbox":[134.4,372.48,273.6,30.72]}
+{"kind":"textbox","id":"sh/5gfu1gfq","slide":6,"name":"Google Shape;250;p20","text":"DHT11 + LDR → fan + prototype grow-light LED","textPreview":"DHT11 + LDR → fan + prototype grow-light LED","textChars":44,"textLines":1,"bbox":[134.4,403.2,273.6,33.6]}
+{"kind":"shape","id":"sh/kf6tsbe5","slide":6,"name":"Google Shape;251;p20","bbox":[72.96,448.32,338.88,72.96]}
+{"kind":"shape","id":"sh/jexcz6xk","slide":6,"name":"Google Shape;252;p20","bbox":[84.48,465.6,38.4,38.4]}
+{"kind":"textbox","id":"sh/xcvuxgfu","slide":6,"name":"Google Shape;254;p20","text":"3 — Water Tank & Resource Mgmt","textPreview":"3 — Water Tank & Resource Mgmt","textChars":30,"textLines":1,"bbox":[134.4,454.08,273.6,30.72]}
+{"kind":"textbox","id":"sh/wbmtobe9","slide":6,"name":"Google Shape;255;p20","text":"Water-level brick → calibrated % + pump lock + runtime estimate","textPreview":"Water-level brick → calibrated % + pump lock + runtime estimate","textChars":63,"textLines":1,"bbox":[134.4,484.8,273.6,33.6]}
+{"kind":"shape","id":"sh/vadcv6xo","slide":6,"name":"Google Shape;256;p20","bbox":[72.96,529.92,338.88,72.96]}
+{"kind":"shape","id":"sh/a94bm1w3","slide":6,"name":"Google Shape;257;p20","bbox":[84.48,547.2,38.4,38.4]}
+{"kind":"textbox","id":"sh/8nmtkrex","slide":6,"name":"Google Shape;259;p20","text":"4 — Farm Safety & Crop Health","textPreview":"4 — Farm Safety & Crop Health","textChars":29,"textLines":1,"bbox":[134.4,535.68,273.6,30.72]}
+{"kind":"textbox","id":"sh/0rqt0bmt","slide":6,"name":"Google Shape;260;p20","text":"USB webcam (Laptop) + MQTT climate → warning + growth diary","textPreview":"USB webcam (Laptop) + MQTT climate → warning + growth diary","textChars":59,"textLines":1,"bbox":[134.4,566.4,273.6,33.6]}
+{"kind":"shape","id":"sh/1szu9wne","slide":6,"name":"Google Shape;261;p20","bbox":[432,415.2,48,38.4]}
+{"kind":"shape","id":"sh/epoby143","slide":6,"name":"Google Shape;262;p20","bbox":[484.8,244.8,292.8,379.2]}
+{"kind":"textbox","id":"sh/zqhc7658","slide":6,"name":"Google Shape;263;p20","text":"MQTT + CLOUD","textPreview":"MQTT + CLOUD","textChars":12,"textLines":1,"bbox":[504,259.2,254.4,28.8]}
+{"kind":"textbox","id":"sh/c36twr6x","slide":6,"name":"Google Shape;264;p20","text":"HiveMQ + Supabase","textPreview":"HiveMQ + Supabase","textChars":17,"textLines":1,"bbox":[504,288.96,254.4,28.8]}
+{"kind":"shape","id":"sh/dofu5wni","slide":6,"name":"Google Shape;265;p20","bbox":[583.2,340.8,96,96]}
+{"kind":"textbox","id":"sh/r2xc3m5c","slide":6,"name":"Google Shape;267;p20","text":"HiveMQ carries live telemetry and control; Supabase stores readings, alerts and growth-diary images.","textPreview":"HiveMQ carries live telemetry and control; Supabase stores readings, alerts and growth-diary images.","textChars":100,"textLines":1,"bbox":[508.8,460.8,244.8,153.6]}
+{"kind":"shape","id":"sh/wzad8vm1","slide":6,"name":"Google Shape;268;p20","bbox":[782.4,415.2,48,38.4]}
+{"kind":"shape","id":"sh/xkjuhgnm","slide":6,"name":"Google Shape;269;p20","bbox":[830.4,244.8,388.8,379.2]}
+{"kind":"textbox","id":"sh/7q5onet0","slide":6,"name":"Google Shape;270;p20","text":"DASHBOARD + NODE-RED","textPreview":"DASHBOARD + NODE-RED","textChars":20,"textLines":1,"bbox":[849.6,257.28,350.4,28.8]}
+{"kind":"textbox","id":"sh/6pwnu9sf","slide":6,"name":"Google Shape;271;p20","text":"GitHub dashboard for live control · Node-RED weather logic on Laptop","textPreview":"GitHub dashboard for live control · Node-RED weather logic on Laptop","textChars":68,"textLines":1,"bbox":[849.6,287.04,350.4,28.8]}
+{"kind":"shape","id":"sh/tsn6pob6","slide":6,"name":"Google Shape;272;p20","bbox":[849.6,345.6,11.52,11.52]}
+{"kind":"textbox","id":"sh/sre5wjal","slide":6,"name":"Google Shape;273;p20","text":"Live status, trend charts & growth photo timeline","textPreview":"Live status, trend charts & growth photo timeline","textChars":49,"textLines":1,"bbox":[873.6,331.2,326.4,57.6]}
+{"kind":"shape","id":"sh/fuporytc","slide":6,"name":"Google Shape;274;p20","bbox":[849.6,410.88,11.52,11.52]}
+{"kind":"textbox","id":"sh/utwnytsr","slide":6,"name":"Google Shape;275;p20","text":"Rule-triggered log + module Health Status","textPreview":"Rule-triggered log + module Health Status","textChars":41,"textLines":1,"bbox":[873.6,396.48,326.4,57.6]}
+{"kind":"shape","id":"sh/hw76tob2","slide":6,"name":"Google Shape;276;p20","bbox":[849.6,476.16,11.52,11.52]}
+{"kind":"textbox","id":"sh/gvyp03ah","slide":6,"name":"Google Shape;277;p20","text":"Dashboard and MQTT alerts with module health","textPreview":"Dashboard and MQTT alerts with module health","textChars":44,"textLines":1,"bbox":[873.6,461.76,326.4,57.6]}
+{"kind":"shape","id":"sh/vylofuts","slide":6,"name":"Google Shape;278;p20","bbox":[849.6,541.44,11.52,11.52]}
+{"kind":"textbox","id":"sh/axcnmpc7","slide":6,"name":"Google Shape;279;p20","text":"Manual control for pump, fan and prototype light","textPreview":"Manual control for pump, fan and prototype light","textChars":48,"textLines":1,"bbox":[873.6,527.04,326.4,57.6]}
+{"kind":"textbox","id":"sh/yd8na9cb","slide":6,"name":"Google Shape;280;p20","text":"Priority: LOW-WATER LOCK > MANUAL > AUTO. Module 4 warns only; no automatic treatment.","textPreview":"Priority: LOW-WATER LOCK > MANUAL > AUTO. Module 4 warns only; no automatic treatment.","textChars":86,"textLines":1,"bbox":[57.6,638.4,1161.6,48]}
+{"kind":"textbox","id":"sh/zyh43edg","slide":6,"name":"Google Shape;281;p20","text":"6","textPreview":"6","textChars":1,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/xg3q94vm","slide":6,"name":"Google Shape;237;p20","bbox":[77.38,187.78,27.65,27.65]}
+{"kind":"image","id":"im/cfu90zu1","slide":6,"name":"Google Shape;243;p20","bbox":[89.86,307.78,27.65,27.65]}
+{"kind":"image","id":"im/na183udk","slide":6,"name":"Google Shape;248;p20","bbox":[89.86,389.38,27.65,27.65]}
+{"kind":"image","id":"im/29s7upcz","slide":6,"name":"Google Shape;253;p20","bbox":[89.86,470.98,27.65,27.65]}
+{"kind":"image","id":"im/pcjq54va","slide":6,"name":"Google Shape;258;p20","bbox":[89.86,552.58,27.65,27.65]}
+{"kind":"image","id":"im/obapwzup","slide":6,"name":"Google Shape;266;p20","bbox":[596.64,354.24,69.12,69.12]}
+{"kind":"notes","id":"nt/x8f69ofe","slide":6,"text":""}
+{"kind":"slide","id":"sl/gnmp4jqx","slide":7,"title":"(C) FUNCTIONAL MODULE — MEMBER 1","textShapes":15}
+{"kind":"textbox","id":"sh/3e9grmlg","slide":7,"name":"Google Shape;287;p21","text":"(C) FUNCTIONAL MODULE — MEMBER 1","textPreview":"(C) FUNCTIONAL MODULE — MEMBER 1","textChars":32,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/43ex8nmh","slide":7,"name":"Google Shape;288;p21","text":"Smart Irrigation Management","textPreview":"Smart Irrigation Management","textChars":27,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"textbox","id":"sh/54nehs32","slide":7,"name":"Google Shape;289;p21","text":"Weather-aware watering with AUTO/MANUAL control and a hard low-water lock","textPreview":"Weather-aware watering with AUTO/MANUAL control and a hard low-water lock","textChars":73,"textLines":1,"bbox":[57.6,132.48,1132.8,38.4]}
+{"kind":"shape","id":"sh/7ax83u9w","slide":7,"name":"Google Shape;290;p21","bbox":[57.6,182.4,273.6,436.8]}
+{"kind":"shape","id":"sh/m9orap8b","slide":7,"name":"Google Shape;291;p21","bbox":[136.8,211.2,115.2,115.2]}
+{"kind":"textbox","id":"sh/8b69cfqh","slide":7,"name":"Google Shape;293;p21","text":"Module 1\nKueh Jian Wei","textPreview":"Module 1 | Kueh Jian Wei","textChars":22,"textLines":2,"bbox":[72,345.6,244.8,38.4]}
+{"kind":"textbox","id":"sh/z6d8za9k","slide":7,"name":"Google Shape;294;p21","text":"ESP32 ","textPreview":"ESP32","textChars":6,"textLines":1,"bbox":[72,384,244.8,33.6]}
+{"kind":"shape","id":"sh/cnet4fat","slide":7,"name":"Google Shape;295;p21","bbox":[96,427.2,196.8,0]}
+{"kind":"textbox","id":"sh/l8vq1krq","slide":7,"name":"Google Shape;296;p21","text":"Owns full Input → Process → Output loop","textPreview":"Owns full Input → Process → Output loop","textChars":39,"textLines":1,"bbox":[76.8,441.6,235.2,86.4]}
+{"kind":"shape","id":"sh/k7m98fq5","slide":7,"name":"Google Shape;297;p21","bbox":[360,182.4,38.4,38.4]}
+{"kind":"textbox","id":"sh/ah4r25s3","slide":7,"name":"Google Shape;299;p21","text":"Input","textPreview":"Input","textChars":5,"textLines":1,"bbox":[415.68,179.52,769.92,30.72]}
+{"kind":"textbox","id":"sh/dczqtgjm","slide":7,"name":"Google Shape;300;p21","text":"Soil moisture · humidity from Module 2 · Weather API forecast through Node-RED · low-water lock from Module 3.","textPreview":"Soil moisture · humidity from Module 2 · Weather API forecast through Node-RED · low-water lock from Module 3.","textChars":110,"textLines":1,"bbox":[415.68,211.2,769.92,72]}
+{"kind":"shape","id":"sh/cbqp0bi1","slide":7,"name":"Google Shape;301;p21","bbox":[360,288.96,38.4,38.4]}
+{"kind":"textbox","id":"sh/q987y10v","slide":7,"name":"Google Shape;303;p21","text":"Process — Rule-01 (Irrigation)","textPreview":"Process — Rule-01 (Irrigation)","textChars":30,"textLines":1,"bbox":[415.68,286.08,769.92,30.72]}
+{"kind":"textbox","id":"sh/lgjqxgji","slide":7,"name":"Google Shape;304;p21","text":"Dry soil + no rain expected → Pump ON. Rain expected soon → delay. Moist soil → Pump OFF.","textPreview":"Dry soil + no rain expected → Pump ON. Rain expected soon → delay. Moist soil → Pump OFF.","textChars":89,"textLines":1,"bbox":[415.68,317.76,769.92,72]}
+{"kind":"shape","id":"sh/0fa94vix","slide":7,"name":"Google Shape;305;p21","bbox":[360,395.52,38.4,38.4]}
+{"kind":"textbox","id":"sh/ydsr2l07","slide":7,"name":"Google Shape;307;p21","text":"Process — Control Priority","textPreview":"Process — Control Priority","textChars":26,"textLines":1,"bbox":[415.68,392.64,769.92,30.72]}
+{"kind":"textbox","id":"sh/1kfqlwje","slide":7,"name":"Google Shape;308;p21","text":"LOW-WATER LOCK > MANUAL > AUTO. Automatic rules never overwrite MANUAL; the safety lock can still force Pump OFF.","textPreview":"LOW-WATER LOCK > MANUAL > AUTO. Automatic rules never overwrite MANUAL; the safety lock can still force Pump OFF.","textChars":113,"textLines":1,"bbox":[415.68,424.32,769.92,72]}
+{"kind":"shape","id":"sh/gj6psrit","slide":7,"name":"Google Shape;309;p21","bbox":[360,502.08,38.4,38.4]}
+{"kind":"textbox","id":"sh/7etwfyd0","slide":7,"name":"Google Shape;311;p21","text":"Output & Design Note","textPreview":"Output & Design Note","textChars":20,"textLines":1,"bbox":[415.68,499.2,769.92,30.72]}
+{"kind":"textbox","id":"sh/sf2x83ul","slide":7,"name":"Google Shape;312;p21","text":"Water pump + 16×2 LCD + dashboard alert + irrigation history. Safety feedback confirms the actual pump state.","textPreview":"Water pump + 16×2 LCD + dashboard alert + irrigation history. Safety feedback confirms the actual pump state.","textChars":109,"textLines":1,"bbox":[415.68,530.88,769.92,72]}
+{"kind":"textbox","id":"sh/tgbeh8v6","slide":7,"name":"Google Shape;313;p21","text":"7","textPreview":"7","textChars":1,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/2x0j6lc7","slide":7,"name":"Google Shape;292;p21","bbox":[152.93,227.33,82.94,82.94]}
+{"kind":"image","id":"im/3y90fqts","slide":7,"name":"Google Shape;298;p21","bbox":[365.38,187.78,27.65,27.65]}
+{"kind":"image","id":"im/dsbm5kva","slide":7,"name":"Google Shape;302;p21","bbox":[365.38,294.34,27.65,27.65]}
+{"kind":"image","id":"im/cr2lwfep","slide":7,"name":"Google Shape;306;p21","bbox":[365.38,400.9,27.65,27.65]}
+{"kind":"image","id":"im/rqt43ud4","slide":7,"name":"Google Shape;310;p21","bbox":[365.38,507.46,27.65,27.65]}
+{"kind":"notes","id":"nt/gnmp4jqx","slide":7,"text":""}
+{"kind":"slide","id":"sl/fu1gfa1s","slide":8,"title":"(C) FUNCTIONAL MODULE — MEMBER 2","textShapes":15}
+{"kind":"textbox","id":"sh/ydsfq9c7","slide":8,"name":"Google Shape;319;p22","text":"(C) FUNCTIONAL MODULE — MEMBER 2","textPreview":"(C) FUNCTIONAL MODULE — MEMBER 2","textChars":32,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/m5kru107","slide":8,"name":"Google Shape;320;p22","text":"Climate Control","textPreview":"Climate Control","textChars":15,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"textbox","id":"sh/n6tsn6hc","slide":8,"name":"Google Shape;321;p22","text":"Monitor temperature, humidity and light with confirmed prototype hardware","textPreview":"Monitor temperature, humidity and light with confirmed prototype hardware","textChars":73,"textLines":1,"bbox":[57.6,132.48,1132.8,38.4]}
+{"kind":"shape","id":"sh/o72twbix","slide":8,"name":"Google Shape;322;p22","bbox":[57.6,182.4,273.6,436.8]}
+{"kind":"shape","id":"sh/98bapgzi","slide":8,"name":"Google Shape;323;p22","bbox":[136.8,211.2,115.2,115.2]}
+{"kind":"textbox","id":"sh/zi9sj6hg","slide":8,"name":"Google Shape;325;p22","text":"Module 2\nTey Ying Heng","textPreview":"Module 2 | Tey Ying Heng","textChars":22,"textLines":2,"bbox":[72,345.6,244.8,38.4]}
+{"kind":"textbox","id":"sh/0ji9sbi1","slide":8,"name":"Google Shape;326;p22","text":"ESP32 ","textPreview":"ESP32","textChars":6,"textLines":1,"bbox":[72,384,244.8,33.6]}
+{"kind":"shape","id":"sh/6xgnqd47","slide":8,"name":"Google Shape;327;p22","bbox":[96,427.2,196.8,0]}
+{"kind":"textbox","id":"sh/qd0rmh0z","slide":8,"name":"Google Shape;328;p22","text":"Owns full Input → Process → Output loop","textPreview":"Owns full Input → Process → Output loop","textChars":39,"textLines":1,"bbox":[76.8,441.6,235.2,86.4]}
+{"kind":"shape","id":"sh/re9sfmhk","slide":8,"name":"Google Shape;329;p22","bbox":[360,182.4,38.4,38.4]}
+{"kind":"textbox","id":"sh/s76dsz2h","slide":8,"name":"Google Shape;331;p22","text":"Input","textPreview":"Input","textChars":5,"textLines":1,"bbox":[415.68,179.52,769.92,30.72]}
+{"kind":"textbox","id":"sh/76xcju1w","slide":8,"name":"Google Shape;332;p22","text":"DHT11 (temperature/humidity) · LDR (raw light level).","textPreview":"DHT11 (temperature/humidity) · LDR (raw light level).","textChars":53,"textLines":1,"bbox":[415.68,211.2,769.92,72]}
+{"kind":"shape","id":"sh/65ovqpkb","slide":8,"name":"Google Shape;333;p22","bbox":[360,288.96,38.4,38.4]}
+{"kind":"textbox","id":"sh/k36dof25","slide":8,"name":"Google Shape;335;p22","text":"Process — Rule-03","textPreview":"Process — Rule-03","textChars":17,"textLines":1,"bbox":[415.68,286.08,769.92,30.72]}
+{"kind":"textbox","id":"sh/j2dcfa1k","slide":8,"name":"Google Shape;336;p22","text":"LDR below its calibrated raw threshold → ordinary yellow LED ON as a prototype grow-light indicator.","textPreview":"LDR below its calibrated raw threshold → ordinary yellow LED ON as a prototype grow-light indicator.","textChars":100,"textLines":1,"bbox":[415.68,317.76,769.92,72]}
+{"kind":"shape","id":"sh/i14vm5kf","slide":8,"name":"Google Shape;337;p22","bbox":[360,395.52,38.4,38.4]}
+{"kind":"textbox","id":"sh/wzmdkf29","slide":8,"name":"Google Shape;339;p22","text":"Process — Rule-04 / 04b","textPreview":"Process — Rule-04 / 04b","textChars":23,"textLines":1,"bbox":[415.68,392.64,769.92,30.72]}
+{"kind":"textbox","id":"sh/crud4fyt","slide":8,"name":"Google Shape;340;p22","text":"Temperature ≥ 30°C → fan ON; temperature ≤ 28°C → fan OFF, using hysteresis to avoid rapid switching.","textPreview":"Temperature ≥ 30°C → fan ON; temperature ≤ 28°C → fan OFF, using hysteresis to avoid rapid switching.","textChars":101,"textLines":1,"bbox":[415.68,424.32,769.92,72]}
+{"kind":"shape","id":"sh/xs3udkfe","slide":8,"name":"Google Shape;341;p22","bbox":[360,502.08,38.4,38.4]}
+{"kind":"textbox","id":"sh/bqlcbaxo","slide":8,"name":"Google Shape;343;p22","text":"Output","textPreview":"Output","textChars":6,"textLines":1,"bbox":[415.68,499.2,769.92,30.72]}
+{"kind":"textbox","id":"sh/kved8zy5","slide":8,"name":"Google Shape;344;p22","text":"Fan + ordinary yellow LED (prototype indicator, not a real agricultural grow light); LCD and dashboard status.","textPreview":"Fan + ordinary yellow LED (prototype indicator, not a real agricultural grow light); LCD and dashboard status.","textChars":110,"textLines":1,"bbox":[415.68,530.88,769.92,72]}
+{"kind":"textbox","id":"sh/lwnuhkfq","slide":8,"name":"Google Shape;345;p22","text":"8","textPreview":"8","textChars":1,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/bq18jyls","slide":8,"name":"Google Shape;324;p22","bbox":[152.93,227.33,82.94,82.94]}
+{"kind":"image","id":"im/qps7atk7","slide":8,"name":"Google Shape;330;p22","bbox":[365.38,187.78,27.65,27.65]}
+{"kind":"image","id":"im/dcjqlo3y","slide":8,"name":"Google Shape;334;p22","bbox":[365.38,294.34,27.65,27.65]}
+{"kind":"image","id":"im/crapcj2d","slide":8,"name":"Google Shape;338;p22","bbox":[365.38,400.9,27.65,27.65]}
+{"kind":"image","id":"im/3m18felg","slide":8,"name":"Google Shape;342;p22","bbox":[365.38,507.46,27.65,27.65]}
+{"kind":"notes","id":"nt/fu1gfa1s","slide":8,"text":""}
+{"kind":"slide","id":"sl/udsvah03","slide":9,"title":"(C) FUNCTIONAL MODULE — MEMBER 3","textShapes":15}
+{"kind":"textbox","id":"sh/at8zipgf","slide":9,"name":"Google Shape;351;p23","text":"(C) FUNCTIONAL MODULE — MEMBER 3","textPreview":"(C) FUNCTIONAL MODULE — MEMBER 3","textChars":32,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/xgjyd4z6","slide":9,"name":"Google Shape;352;p23","text":"Water Tank & Resource Management","textPreview":"Water Tank & Resource Management","textChars":32,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"textbox","id":"sh/cvahkzyl","slide":9,"name":"Google Shape;353;p23","text":"One analog level sensor supports calibration, safety locking and honest usage estimates","textPreview":"One analog level sensor supports calibration, safety locking and honest usage estimates","textChars":87,"textLines":1,"bbox":[57.6,132.48,1132.8,38.4]}
+{"kind":"shape","id":"sh/zi1gfehc","slide":9,"name":"Google Shape;354;p23","bbox":[57.6,182.4,273.6,436.8]}
+{"kind":"shape","id":"sh/yhszm9gr","slide":9,"name":"Google Shape;355;p23","bbox":[136.8,211.2,115.2,115.2]}
+{"kind":"textbox","id":"sh/kjahojyx","slide":9,"name":"Google Shape;357;p23","text":"Module 3\nHeng Jing Le","textPreview":"Module 3 | Heng Jing Le","textChars":21,"textLines":2,"bbox":[72,345.6,244.8,38.4]}
+{"kind":"textbox","id":"sh/fmxg3ahs","slide":9,"name":"Google Shape;358;p23","text":"ESP32 ","textPreview":"ESP32","textChars":6,"textLines":1,"bbox":[72,384,244.8,33.6]}
+{"kind":"shape","id":"sh/adwvy1gv","slide":9,"name":"Google Shape;359;p23","bbox":[96,427.2,196.8,0]}
+{"kind":"textbox","id":"sh/ihwjid0v","slide":9,"name":"Google Shape;360;p23","text":"Owns full Input → Process → Output loop","textPreview":"Owns full Input → Process → Output loop","textChars":39,"textLines":1,"bbox":[76.8,441.6,235.2,86.4]}
+{"kind":"shape","id":"sh/ji5kri1g","slide":9,"name":"Google Shape;361;p23","bbox":[360,182.4,38.4,38.4]}
+{"kind":"textbox","id":"sh/5kn2tsjm","slide":9,"name":"Google Shape;363;p23","text":"Input","textPreview":"Input","textChars":5,"textLines":1,"bbox":[415.68,179.52,769.92,30.72]}
+{"kind":"textbox","id":"sh/udcjed0z","slide":9,"name":"Google Shape;364;p23","text":"Analog High-Sensitivity Water Level Brick Sensor connected to ESP32 ADC1.","textPreview":"Analog High-Sensitivity Water Level Brick Sensor connected to ESP32 ADC1.","textChars":73,"textLines":1,"bbox":[415.68,211.2,769.92,72]}
+{"kind":"shape","id":"sh/velkni1k","slide":9,"name":"Google Shape;365;p23","bbox":[360,288.96,38.4,38.4]}
+{"kind":"textbox","id":"sh/hgn2p8ja","slide":9,"name":"Google Shape;367;p23","text":"Process — Calibration & Safety","textPreview":"Process — Calibration & Safety","textChars":30,"textLines":1,"bbox":[415.68,286.08,769.92,30.72]}
+{"kind":"textbox","id":"sh/mpcjat0n","slide":9,"name":"Google Shape;368;p23","text":"Map raw readings between measured empty/full points. At ≤15%, force Pump OFF and publish a non-bypassable lock.","textPreview":"Map raw readings between measured empty/full points. At ≤15%, force Pump OFF and publish a non-bypassable lock.","textChars":111,"textLines":1,"bbox":[415.68,317.76,769.92,72]}
+{"kind":"shape","id":"sh/7alkjy18","slide":9,"name":"Google Shape;369;p23","bbox":[360,395.52,38.4,38.4]}
+{"kind":"textbox","id":"sh/o3i5gb2l","slide":9,"name":"Google Shape;371;p23","text":"Process — Runtime Estimate","textPreview":"Process — Runtime Estimate","textChars":26,"textLines":1,"bbox":[415.68,392.64,769.92,30.72]}
+{"kind":"textbox","id":"sh/n294n6l0","slide":9,"name":"Google Shape;372;p23","text":"Estimate water use from pump ON time only; label it as an estimate until a calibrated flow sensor is installed.","textPreview":"Estimate water use from pump ON time only; label it as an estimate until a calibrated flow sensor is installed.","textChars":111,"textLines":1,"bbox":[415.68,424.32,769.92,72]}
+{"kind":"shape","id":"sh/210ne1kf","slide":9,"name":"Google Shape;373;p23","bbox":[360,502.08,38.4,38.4]}
+{"kind":"textbox","id":"sh/0fi5cr29","slide":9,"name":"Google Shape;375;p23","text":"Output","textPreview":"Output","textChars":6,"textLines":1,"bbox":[415.68,499.2,769.92,30.72]}
+{"kind":"textbox","id":"sh/fe94jmlo","slide":9,"name":"Google Shape;376;p23","text":"Buzzer, LCD and dashboard warning; MQTT pump-lock state; water-level history and estimated usage.","textPreview":"Buzzer, LCD and dashboard warning; MQTT pump-lock state; water-level history and estimated usage.","textChars":97,"textLines":1,"bbox":[415.68,530.88,769.92,72]}
+{"kind":"textbox","id":"sh/edgnahk3","slide":9,"name":"Google Shape;377;p23","text":"9","textPreview":"9","textChars":1,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/knmton6p","slide":9,"name":"Google Shape;356;p23","bbox":[152.93,227.33,82.94,82.94]}
+{"kind":"image","id":"im/5ovaxsna","slide":9,"name":"Google Shape;362;p23","bbox":[365.38,187.78,27.65,27.65]}
+{"kind":"image","id":"im/69obqxov","slide":9,"name":"Google Shape;366;p23","bbox":[365.38,294.34,27.65,27.65]}
+{"kind":"image","id":"im/7axsz25g","slide":9,"name":"Google Shape;370;p23","bbox":[365.38,400.9,27.65,27.65]}
+{"kind":"image","id":"im/sb6ts761","slide":9,"name":"Google Shape;374;p23","bbox":[365.38,507.46,27.65,27.65]}
+{"kind":"notes","id":"nt/udsvah03","slide":9,"text":""}
+{"kind":"slide","id":"sl/m90b6t0r","slide":10,"title":"(C) FUNCTIONAL MODULE — MEMBER 4","textShapes":15}
+{"kind":"textbox","id":"sh/vu143218","slide":10,"name":"Google Shape;383;p24","text":"(C) FUNCTIONAL MODULE — MEMBER 4","textPreview":"(C) FUNCTIONAL MODULE — MEMBER 4","textChars":32,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/4zu5072p","slide":10,"name":"Google Shape;384;p24","text":"Farm Safety & Crop Health Monitoring","textPreview":"Farm Safety & Crop Health Monitoring","textChars":36,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"textbox","id":"sh/5k369cja","slide":10,"name":"Google Shape;385;p24","text":"One USB webcam, two uses: growth diary and early health warning — warns, doesn't act automatically","textPreview":"One USB webcam, two uses: growth diary and early health warning — warns, doesn't act automatically","textChars":98,"textLines":1,"bbox":[57.6,132.48,1132.8,38.4]}
+{"kind":"shape","id":"sh/ixsnyhkj","slide":10,"name":"Google Shape;386;p24","bbox":[57.6,182.4,273.6,436.8]}
+{"kind":"shape","id":"sh/3y1o7214","slide":10,"name":"Google Shape;387;p24","bbox":[136.8,211.2,115.2,115.2]}
+{"kind":"textbox","id":"sh/do36dwj6","slide":10,"name":"Google Shape;389;p24","text":"Module 4\nFoo Tun Wei","textPreview":"Module 4 | Foo Tun Wei","textChars":20,"textLines":2,"bbox":[72,345.6,244.8,38.4]}
+{"kind":"textbox","id":"sh/ni583ql8","slide":10,"name":"Google Shape;390;p24","text":"Laptop + USB Webcam","textPreview":"Laptop + USB Webcam","textChars":19,"textLines":1,"bbox":[72,384,244.8,33.6]}
+{"kind":"shape","id":"sh/exsrqx8v","slide":10,"name":"Google Shape;391;p24","bbox":[96,427.2,196.8,0]}
+{"kind":"textbox","id":"sh/9k7q503e","slide":10,"name":"Google Shape;392;p24","text":"Owns full Input → Process → Output loop","textPreview":"Owns full Input → Process → Output loop","textChars":39,"textLines":1,"bbox":[76.8,441.6,235.2,86.4]}
+{"kind":"shape","id":"sh/ojypwvmt","slide":10,"name":"Google Shape;393;p24","bbox":[360,182.4,38.4,38.4]}
+{"kind":"textbox","id":"sh/etw7614r","slide":10,"name":"Google Shape;395;p24","text":"Input","textPreview":"Input","textChars":5,"textLines":1,"bbox":[415.68,179.52,769.92,30.72]}
+{"kind":"textbox","id":"sh/1gnq1g3i","slide":10,"name":"Google Shape;396;p24","text":"USB webcam connected directly to Laptop · temperature/humidity subscribed through MQTT.","textPreview":"USB webcam connected directly to Laptop · temperature/humidity subscribed through MQTT.","textChars":87,"textLines":1,"bbox":[415.68,211.2,769.92,72]}
+{"kind":"shape","id":"sh/0fep8bmx","slide":10,"name":"Google Shape;397;p24","bbox":[360,288.96,38.4,38.4]}
+{"kind":"textbox","id":"sh/y9gr254v","slide":10,"name":"Google Shape;399;p24","text":"Process — Dual Use","textPreview":"Process — Dual Use","textChars":18,"textLines":1,"bbox":[415.68,286.08,769.92,30.72]}
+{"kind":"textbox","id":"sh/nq9k3qlw","slide":10,"name":"Google Shape;400;p24","text":"Validate each image, archive it in the growth diary, then use HSV segmentation for green/yellow area percentages.","textPreview":"Validate each image, archive it in the growth diary, then use HSV segmentation for green/yellow area percentages.","textChars":113,"textLines":1,"bbox":[415.68,317.76,769.92,72]}
+{"kind":"shape","id":"sh/mp03u54b","slide":10,"name":"Google Shape;401;p24","bbox":[360,395.52,38.4,38.4]}
+{"kind":"textbox","id":"sh/8rilwvm1","slide":10,"name":"Google Shape;403;p24","text":"Process — Rule-06","textPreview":"Process — Rule-06","textChars":17,"textLines":1,"bbox":[415.68,392.64,769.92,30.72]}
+{"kind":"textbox","id":"sh/zm9kzqlk","slide":10,"name":"Google Shape;404;p24","text":"Rising yellowing trend plus high humidity → higher prototype risk score and GREEN/AMBER/RED warning.","textPreview":"Rising yellowing trend plus high humidity → higher prototype risk score and GREEN/AMBER/RED warning.","textChars":100,"textLines":1,"bbox":[415.68,424.32,769.92,72]}
+{"kind":"shape","id":"sh/elg3ql4z","slide":10,"name":"Google Shape;405;p24","bbox":[360,502.08,38.4,38.4]}
+{"kind":"textbox","id":"sh/0nilsvm5","slide":10,"name":"Google Shape;407;p24","text":"Output — Indicator + UI (by design)","textPreview":"Output — Indicator + UI (by design)","textChars":35,"textLines":1,"bbox":[415.68,499.2,769.92,30.72]}
+{"kind":"textbox","id":"sh/jitkbulo","slide":10,"name":"Google Shape;408;p24","text":"ESP32 RGB light + buzzer receive MQTT status; dashboard and Supabase store warnings. Colour stress is a proxy — no diagnosis or automatic treatment.","textPreview":"ESP32 RGB light + buzzer receive MQTT status; dashboard and Supabase store warnings. Colour stress is a proxy — no diagnosis or automatic...","textChars":148,"textLines":1,"bbox":[415.68,530.88,769.92,72]}
+{"kind":"textbox","id":"sh/ihk32p4j","slide":10,"name":"Google Shape;409;p24","text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"image","id":"im/kfih0jq9","slide":10,"name":"Google Shape;388;p24","bbox":[152.93,227.33,82.94,82.94]}
+{"kind":"image","id":"im/5gry94ru","slide":10,"name":"Google Shape;394;p24","bbox":[365.38,187.78,27.65,27.65]}
+{"kind":"image","id":"im/it0zy983","slide":10,"name":"Google Shape;398;p24","bbox":[365.38,294.34,27.65,27.65]}
+{"kind":"image","id":"im/je9g7e9o","slide":10,"name":"Google Shape;402;p24","bbox":[365.38,400.9,27.65,27.65]}
+{"kind":"image","id":"im/4bmhc3qd","slide":10,"name":"Google Shape;406;p24","bbox":[365.38,507.46,27.65,27.65]}
+{"kind":"notes","id":"nt/m90b6t0r","slide":10,"text":""}
+{"kind":"slide","id":"sl/jetc3ut0","slide":11,"title":"CROSS-MODULE DESIGN STANDARDS","textShapes":10}
+{"kind":"textbox","id":"sh/14jmp8r6","slide":11,"name":"Google Shape;415;p25","text":"CROSS-MODULE DESIGN STANDARDS","textPreview":"CROSS-MODULE DESIGN STANDARDS","textChars":29,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/e18nud8v","slide":11,"name":"Google Shape;416;p25","text":"Shared Standards Across All 4 Modules","textPreview":"Shared Standards Across All 4 Modules","textChars":37,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"shape","id":"sh/f214ni90","slide":11,"name":"Google Shape;417;p25","bbox":[57.6,196.8,369.6,340.8]}
+{"kind":"shape","id":"sh/szq5s3qp","slide":11,"name":"Google Shape;418;p25","bbox":[206.4,225.6,72,72]}
+{"kind":"textbox","id":"sh/9k7u90fm","slide":11,"name":"Google Shape;420;p25","text":"Rule Table, not if-else","textPreview":"Rule Table, not if-else","textChars":23,"textLines":1,"bbox":[76.8,316.8,331.2,57.6]}
+{"kind":"textbox","id":"sh/8jyt0ve1","slide":11,"name":"Google Shape;421;p25","text":"Keep each decision as Condition → Action with a rule ID, so the dashboard explains why an actuator changed.","textPreview":"Keep each decision as Condition → Action with a rule ID, so the dashboard explains why an actuator changed.","textChars":107,"textLines":1,"bbox":[86.4,379.2,312,144]}
+{"kind":"shape","id":"sh/nipc7qxw","slide":11,"name":"Google Shape;422;p25","bbox":[457.92,196.8,369.6,340.8]}
+{"kind":"shape","id":"sh/mhgbylgb","slide":11,"name":"Google Shape;423;p25","bbox":[606.72,225.6,72,72]}
+{"kind":"textbox","id":"sh/0fytwvy5","slide":11,"name":"Google Shape;425;p25","text":"Per-Module Health Status","textPreview":"Per-Module Health Status","textChars":24,"textLines":1,"bbox":[477.12,316.8,331.2,57.6]}
+{"kind":"textbox","id":"sh/zepc3qxk","slide":11,"name":"Google Shape;426;p25","text":"Each module reports Healthy / Warning / Fault for its own hardware (e.g. \"Pump: Healthy\"), giving an at-a-glance system health view.","textPreview":"Each module reports Healthy / Warning / Fault for its own hardware (e.g. \"Pump: Healthy\"), giving an at-a-glance system health view.","textChars":132,"textLines":1,"bbox":[486.72,379.2,312,144]}
+{"kind":"shape","id":"sh/ytgbulgz","slide":11,"name":"Google Shape;427;p25","bbox":[858.24,196.8,369.6,340.8]}
+{"kind":"shape","id":"sh/5cbuhkfu","slide":11,"name":"Google Shape;428;p25","bbox":[1007.04,225.6,72,72]}
+{"kind":"textbox","id":"sh/2xcr2hwr","slide":11,"name":"Google Shape;430;p25","text":"Trend, not just a Point Value","textPreview":"Trend, not just a Point Value","textChars":29,"textLines":1,"bbox":[877.44,316.8,331.2,57.6]}
+{"kind":"textbox","id":"sh/3yl8vmdc","slide":11,"name":"Google Shape;431;p25","text":"Dashboards show change over time (e.g. \"Humidity 90% ↑ +10% past 3h\") — because in real farming, the trend matters more than one reading.","textPreview":"Dashboards show change over time (e.g. \"Humidity 90% ↑ +10% past 3h\") — because in real farming, the trend matters more than one reading.","textChars":137,"textLines":1,"bbox":[887.04,379.2,312,144]}
+{"kind":"textbox","id":"sh/pk3qxwvi","slide":11,"name":"Google Shape;433;p25","text":"Example rules reflect weather-aware irrigation and the non-bypassable low-water lock:","textPreview":"Example rules reflect weather-aware irrigation and the non-bypassable low-water lock:","textChars":85,"textLines":1,"bbox":[465.6,547.2,753.6,40.32]}
+{"kind":"textbox","id":"sh/etsryxwv","slide":11,"name":"Google Shape;434;p25","text":"11","textPreview":"11","textChars":2,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"table","id":"tb/fyhormds","slide":11,"name":"Google Shape;432;p25","rows":4,"cols":3,"preview":"Rule ID | Condition | Action","bbox":[465.6,590.4,314.96,314.96]}
+{"kind":"image","id":"im/yp03i50n","slide":11,"name":"Google Shape;419;p25","bbox":[216.48,235.68,51.84,51.84]}
+{"kind":"image","id":"im/lsrmd0zy","slide":11,"name":"Google Shape;424;p25","bbox":[616.8,235.68,51.84,51.84]}
+{"kind":"image","id":"im/krilkvid","slide":11,"name":"Google Shape;429;p25","bbox":[1017.12,235.68,51.84,51.84]}
+{"kind":"notes","id":"nt/jetc3ut0","slide":11,"text":""}
+{"kind":"slide","id":"sl/8f2psfyx","slide":12,"title":"DATA CONTRACT & FLEXIBILITY","textShapes":15}
+{"kind":"textbox","id":"sh/j2p07mdk","slide":12,"name":"Google Shape;440;p26","text":"DATA CONTRACT & FLEXIBILITY","textPreview":"DATA CONTRACT & FLEXIBILITY","textChars":27,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/y1gzyhcz","slide":12,"name":"Google Shape;441;p26","text":"Data Contract · Plant Profile · Manual Override","textPreview":"Data Contract · Plant Profile · Manual Override","textChars":47,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"shape","id":"sh/l4ri9cvq","slide":12,"name":"Google Shape;442;p26","bbox":[57.6,177.6,388.8,446.4]}
+{"kind":"shape","id":"sh/k3yh07u5","slide":12,"name":"Google Shape;443;p26","bbox":[76.8,196.8,48,48]}
+{"kind":"textbox","id":"sh/adgzuxw3","slide":12,"name":"Google Shape;445;p26","text":"Shared Data Contract","textPreview":"Shared Data Contract","textChars":20,"textLines":1,"bbox":[139.2,204.48,292.8,38.4]}
+{"kind":"textbox","id":"sh/x07i5cve","slide":12,"name":"Google Shape;446;p26","text":"MQTT topics carry live values; Supabase stores a consistent history for the dashboard.","textPreview":"MQTT topics carry live values; Supabase stores a consistent history for the dashboard.","textChars":86,"textLines":1,"bbox":[81.6,259.2,340.8,62.4]}
+{"kind":"textbox","id":"sh/wzyhw7ut","slide":12,"name":"Google Shape;447;p26","text":"{\n  \"module\": \"irrigation\",\n  \"value\": 28,\n  \"trend\": \"+5% (3h)\",\n  \"health_status\": \"Healthy\",\n  \"rule_triggered\": \"Rule-01\",\n  \"timestamp\": \"...\"\n}","textPreview":"{ |   \"module\": \"irrigation\", |   \"value\": 28, |   \"trend\": \"+5% (3h)\", |   \"health_status\": \"Healthy\", |   \"rule_triggered\": \"Rule-01\", ...","textChars":149,"textLines":8,"bbox":[81.6,326.4,340.8,278.4]}
+{"kind":"shape","id":"sh/fa90z6ds","slide":12,"name":"Google Shape;448;p26","bbox":[480,177.6,379.2,446.4]}
+{"kind":"shape","id":"sh/u90j61c7","slide":12,"name":"Google Shape;449;p26","bbox":[499.2,196.8,48,48]}
+{"kind":"textbox","id":"sh/d4j6d47y","slide":12,"name":"Google Shape;451;p26","text":"Plant Profile","textPreview":"Plant Profile","textChars":13,"textLines":1,"bbox":[561.6,204.48,283.2,38.4]}
+{"kind":"textbox","id":"sh/q1snip87","slide":12,"name":"Google Shape;452;p26","text":"Business rules read their thresholds from the active profile — switch crops without touching code.","textPreview":"Business rules read their thresholds from the active profile — switch crops without touching code.","textChars":98,"textLines":1,"bbox":[504,259.2,331.2,57.6]}
+{"kind":"shape","id":"sh/07u5oz6p","slide":12,"name":"Google Shape;454;p26","bbox":[892.8,177.6,326.4,446.4]}
+{"kind":"shape","id":"sh/1836h47u","slide":12,"name":"Google Shape;455;p26","bbox":[912,196.8,48,48]}
+{"kind":"textbox","id":"sh/f61ofep4","slide":12,"name":"Google Shape;457;p26","text":"Manual Override","textPreview":"Manual Override","textChars":15,"textLines":1,"bbox":[974.4,204.48,230.4,38.4]}
+{"kind":"textbox","id":"sh/ovupsj6l","slide":12,"name":"Google Shape;458;p26","text":"Manual commands help testing, but never bypass the low-water safety lock.","textPreview":"Manual commands help testing, but never bypass the low-water safety lock.","textChars":73,"textLines":1,"bbox":[916.8,259.2,278.4,48]}
+{"kind":"shape","id":"sh/pw36lo76","slide":12,"name":"Google Shape;459;p26","bbox":[916.8,326.4,55.2,105.6]}
+{"kind":"textbox","id":"sh/xsz65oza","slide":12,"name":"Google Shape;460;p26","text":"AUTO Mode\n(default)","textPreview":"AUTO Mode | (default)","textChars":19,"textLines":2,"bbox":[916.32,331.2,48,96]}
+{"kind":"shape","id":"sh/wrq5wjyp","slide":12,"name":"Google Shape;461;p26","bbox":[973.92,364.8,15.36,28.8]}
+{"kind":"shape","id":"sh/bqho3eh4","slide":12,"name":"Google Shape;462;p26","bbox":[991.2,326.4,55.2,105.6]}
+{"kind":"textbox","id":"sh/ap8nu9gj","slide":12,"name":"Google Shape;463;p26","text":"User switches\nto MANUAL","textPreview":"User switches | to MANUAL","textChars":23,"textLines":2,"bbox":[991.19,343.49,55.21,81.01]}
+{"kind":"shape","id":"sh/lgj69oz6","slide":12,"name":"Google Shape;464;p26","bbox":[1048.32,364.8,15.36,28.8]}
+{"kind":"shape","id":"sh/kfa50jy1","slide":12,"name":"Google Shape;465;p26","bbox":[1065.6,326.4,55.2,105.6]}
+{"kind":"textbox","id":"sh/ju1o7ehg","slide":12,"name":"Google Shape;466;p26","text":"Direct actuator\ncontrol (e.g. Pump\nON 10s)","textPreview":"Direct actuator | control (e.g. Pump | ON 10s)","textChars":42,"textLines":3,"bbox":[1065.59,336,55.21,96]}
+{"kind":"shape","id":"sh/yt8nytgv","slide":12,"name":"Google Shape;467;p26","bbox":[1122.72,364.8,15.36,28.8]}
+{"kind":"shape","id":"sh/1kf6x4z2","slide":12,"name":"Google Shape;468;p26","bbox":[1140,326.4,55.2,105.6]}
+{"kind":"textbox","id":"sh/0j65ozyh","slide":12,"name":"Google Shape;469;p26","text":"Returns to\nAUTO Mode","textPreview":"Returns to | AUTO Mode","textChars":20,"textLines":2,"bbox":[1147.68,331.2,39.84,96]}
+{"kind":"textbox","id":"sh/qp43y5wf","slide":12,"name":"Google Shape;470;p26","text":"Available for water pump, fan and the prototype grow-light indicator.","textPreview":"Available for water pump, fan and the prototype grow-light indicator.","textChars":69,"textLines":1,"bbox":[916.8,460.8,278.4,144]}
+{"kind":"textbox","id":"sh/rqdk7qx0","slide":12,"name":"Google Shape;471;p26","text":"12","textPreview":"12","textChars":2,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"table","id":"tb/7q1g3e9o","slide":12,"name":"Google Shape;453;p26","rows":4,"cols":3,"preview":"Parameter | Tomato | Chili","bbox":[504,331.2,314.96,314.96]}
+{"kind":"image","id":"im/1s7q90zi","slide":12,"name":"Google Shape;444;p26","bbox":[83.52,203.52,34.56,34.56]}
+{"kind":"image","id":"im/0ryp0vix","slide":12,"name":"Google Shape;450;p26","bbox":[505.92,203.52,34.56,34.56]}
+{"kind":"image","id":"im/2tg72503","slide":12,"name":"Google Shape;456;p26","bbox":[918.72,203.52,34.56,34.56]}
+{"kind":"notes","id":"nt/8f2psfyx","slide":12,"text":""}
+{"kind":"slide","id":"sl/hgzapcr6","slide":13,"title":"(D) TASK ALLOCATIONS","textShapes":3}
+{"kind":"textbox","id":"sh/qd47qhor","slide":13,"name":"Google Shape;477;p27","text":"(D) TASK ALLOCATIONS","textPreview":"(D) TASK ALLOCATIONS","textChars":20,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/xczqdgnm","slide":13,"name":"Google Shape;478;p27","text":"Task Allocation","textPreview":"Task Allocation","textChars":15,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"textbox","id":"sh/87utwfq9","slide":13,"name":"Google Shape;480;p27","text":"13","textPreview":"13","textChars":2,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"table","id":"tb/cr2hsj2t","slide":13,"name":"Google Shape;479;p27","rows":5,"cols":3,"preview":"Member | Module | Key Responsibilities","bbox":[57.6,163.2,314.96,314.96]}
+{"kind":"notes","id":"nt/hgzapcr6","slide":13,"text":""}
+{"kind":"slide","id":"sl/6lsnupw7","slide":14,"title":"RISK MANAGEMENT","textShapes":18}
+{"kind":"textbox","id":"sh/hgvqtgr2","slide":14,"name":"Google Shape;486;p28","text":"RISK MANAGEMENT","textPreview":"RISK MANAGEMENT","textChars":15,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/wfm9kbah","slide":14,"name":"Google Shape;487;p28","text":"Development Priority: MVP First, Stretch Later","textPreview":"Development Priority: MVP First, Stretch Later","textChars":46,"textLines":1,"bbox":[57.6,69.12,1132.8,67.2]}
+{"kind":"textbox","id":"sh/faxs3a9g","slide":14,"name":"Google Shape;488;p28","text":"Ensures a stable, complete demo even if advanced features run out of time","textPreview":"Ensures a stable, complete demo even if advanced features run out of time","textChars":73,"textLines":1,"bbox":[57.6,136.32,1132.8,33.6]}
+{"kind":"shape","id":"sh/e9oru58v","slide":14,"name":"Google Shape;489;p28","bbox":[57.6,196.8,561.6,340.8]}
+{"kind":"textbox","id":"sh/cfiponqd","slide":14,"name":"Google Shape;490;p28","text":"MUST-HAVE (MVP)","textPreview":"MUST-HAVE (MVP)","textChars":15,"textLines":1,"bbox":[81.6,214.08,513.6,33.6]}
+{"kind":"shape","id":"sh/xgr6hs7y","slide":14,"name":"Google Shape;491;p28","bbox":[86.4,264,9.6,9.6]}
+{"kind":"textbox","id":"sh/adgnmx87","slide":14,"name":"Google Shape;492;p28","text":"ESP32 Modules 1–3: sensor → rule → output loops","textPreview":"ESP32 Modules 1–3: sensor → rule → output loops","textChars":47,"textLines":1,"bbox":[110.4,251.52,484.8,38.4]}
+{"kind":"shape","id":"sh/be9of2ps","slide":14,"name":"Google Shape;493;p28","bbox":[86.4,309.12,9.6,9.6]}
+{"kind":"textbox","id":"sh/kjips7q9","slide":14,"name":"Google Shape;494;p28","text":"Laptop OS platform: Node-RED + Python/OpenCV","textPreview":"Laptop OS platform: Node-RED + Python/OpenCV","textChars":44,"textLines":1,"bbox":[110.4,296.64,484.8,38.4]}
+{"kind":"shape","id":"sh/lkr6lc7u","slide":14,"name":"Google Shape;495;p28","bbox":[86.4,354.24,9.6,9.6]}
+{"kind":"textbox","id":"sh/yh07qx8j","slide":14,"name":"Google Shape;496;p28","text":"AUTO/MANUAL control with low-water priority","textPreview":"AUTO/MANUAL control with low-water priority","textChars":43,"textLines":1,"bbox":[110.4,341.76,484.8,38.4]}
+{"kind":"shape","id":"sh/zi9oj2p4","slide":14,"name":"Google Shape;497;p28","bbox":[86.4,399.36,9.6,9.6]}
+{"kind":"textbox","id":"sh/872pw76l","slide":14,"name":"Google Shape;498;p28","text":"Weather API decision through Node-RED","textPreview":"Weather API decision through Node-RED","textChars":37,"textLines":1,"bbox":[110.4,386.88,484.8,38.4]}
+{"kind":"shape","id":"sh/98b6pc76","slide":14,"name":"Google Shape;499;p28","bbox":[86.4,444.48,9.6,9.6]}
+{"kind":"textbox","id":"sh/6dw7y1gn","slide":14,"name":"Google Shape;500;p28","text":"Module 4 warnings + Supabase growth diary","textPreview":"Module 4 warnings + Supabase growth diary","textChars":41,"textLines":1,"bbox":[110.4,432,484.8,38.4]}
+{"kind":"shape","id":"sh/7e5or6x8","slide":14,"name":"Google Shape;501;p28","bbox":[86.4,489.6,9.6,9.6]}
+{"kind":"textbox","id":"sh/8fep0byt","slide":14,"name":"Google Shape;502;p28","text":"2 Plant Profiles (Tomato, Chili) — fixed presets","textPreview":"2 Plant Profiles (Tomato, Chili) — fixed presets","textChars":48,"textLines":1,"bbox":[110.4,477.12,484.8,38.4]}
+{"kind":"shape","id":"sh/tg7qtgfy","slide":14,"name":"Google Shape;503;p28","bbox":[657.6,196.8,561.6,340.8]}
+{"kind":"textbox","id":"sh/y9w7u1gb","slide":14,"name":"Google Shape;504;p28","text":"STRETCH (If Time Allows)","textPreview":"STRETCH (If Time Allows)","textChars":24,"textLines":1,"bbox":[681.6,214.08,513.6,33.6]}
+{"kind":"shape","id":"sh/ja5onmxw","slide":14,"name":"Google Shape;505;p28","bbox":[686.4,264,9.6,9.6]}
+{"kind":"textbox","id":"sh/kbepwryh","slide":14,"name":"Google Shape;506;p28","text":"More growth images + adjustable capture interval","textPreview":"More growth images + adjustable capture interval","textChars":48,"textLines":1,"bbox":[710.4,251.52,484.8,38.4]}
+{"kind":"shape","id":"sh/lcn6pwf2","slide":14,"name":"Google Shape;507;p28","bbox":[686.4,309.12,9.6,9.6]}
+{"kind":"textbox","id":"sh/25g76lgv","slide":14,"name":"Google Shape;508;p28","text":"Trend arrows across all dashboard widgets","textPreview":"Trend arrows across all dashboard widgets","textChars":41,"textLines":1,"bbox":[710.4,296.64,484.8,38.4]}
+{"kind":"shape","id":"sh/36p8zqxg","slide":14,"name":"Google Shape;509;p28","bbox":[686.4,354.24,9.6,9.6]}
+{"kind":"textbox","id":"sh/d0ba5kzi","slide":14,"name":"Google Shape;510;p28","text":"Editable Plant Profiles from the dashboard","textPreview":"Editable Plant Profiles from the dashboard","textChars":42,"textLines":1,"bbox":[710.4,341.76,484.8,38.4]}
+{"kind":"shape","id":"sh/czi9wfix","slide":14,"name":"Google Shape;511;p28","bbox":[686.4,399.36,9.6,9.6]}
+{"kind":"textbox","id":"sh/re9s3ahc","slide":14,"name":"Google Shape;512;p28","text":"Optional notification integration","textPreview":"Optional notification integration","textChars":33,"textLines":1,"bbox":[710.4,386.88,484.8,38.4]}
+{"kind":"shape","id":"sh/qd0rup0r","slide":14,"name":"Google Shape;513;p28","bbox":[686.4,444.48,9.6,9.6]}
+{"kind":"textbox","id":"sh/pcra1kz6","slide":14,"name":"Google Shape;514;p28","text":"Optional calibrated flow sensor for precise volume","textPreview":"Optional calibrated flow sensor for precise volume","textChars":50,"textLines":1,"bbox":[710.4,432,484.8,38.4]}
+{"kind":"shape","id":"sh/4bi9sfi1","slide":14,"name":"Google Shape;515;p28","bbox":[686.4,489.6,9.6,9.6]}
+{"kind":"textbox","id":"sh/3a9szahg","slide":14,"name":"Google Shape;516;p28","text":"Additional calibrated cameras and lighting checks","textPreview":"Additional calibrated cameras and lighting checks","textChars":49,"textLines":1,"bbox":[710.4,477.12,484.8,38.4]}
+{"kind":"textbox","id":"sh/290rq50v","slide":14,"name":"Google Shape;517;p28","text":"14","textPreview":"14","textChars":2,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"notes","id":"nt/6lsnupw7","slide":14,"text":""}
+{"kind":"slide","id":"sl/vaxsvy10","slide":15,"title":"CONCLUSION","textShapes":10}
+{"kind":"shape","id":"sh/3udoj2ho","slide":15,"name":"Google Shape;523;p29","bbox":[1017.6,441.6,384,384]}
+{"kind":"textbox","id":"sh/g725o7ix","slide":15,"name":"Google Shape;524;p29","text":"CONCLUSION","textPreview":"CONCLUSION","textChars":10,"textLines":1,"bbox":[57.6,40.32,912,33.6]}
+{"kind":"textbox","id":"sh/h8b6hczi","slide":15,"name":"Google Shape;525;p29","text":"Expected Outcomes","textPreview":"Expected Outcomes","textChars":17,"textLines":1,"bbox":[57.6,72,960,67.2]}
+{"kind":"shape","id":"sh/u5knmx07","slide":15,"name":"Google Shape;526;p29","bbox":[57.6,196.8,360,220.8]}
+{"kind":"textbox","id":"sh/f6tof2hc","slide":15,"name":"Google Shape;527;p29","text":"Water Savings","textPreview":"Water Savings","textChars":13,"textLines":1,"bbox":[81.6,217.92,312,52.8]}
+{"kind":"textbox","id":"sh/s325kni1","slide":15,"name":"Google Shape;528;p29","text":"Rain-aware irrigation avoids blind over-watering compared to fixed-schedule systems.","textPreview":"Rain-aware irrigation avoids blind over-watering compared to fixed-schedule systems.","textChars":84,"textLines":1,"bbox":[81.6,278.4,312,129.6]}
+{"kind":"shape","id":"sh/t4b6dszm","slide":15,"name":"Google Shape;529;p29","bbox":[451.2,196.8,360,220.8]}
+{"kind":"textbox","id":"sh/vy9onil8","slide":15,"name":"Google Shape;530;p29","text":"Traceable Monitoring","textPreview":"Traceable Monitoring","textChars":20,"textLines":1,"bbox":[475.2,217.92,312,52.8]}
+{"kind":"textbox","id":"sh/ax07udkn","slide":15,"name":"Google Shape;531;p29","text":"Supabase logs sensor history, pump-runtime estimates and growth images without claiming precise flow.","textPreview":"Supabase logs sensor history, pump-runtime estimates and growth images without claiming precise flow.","textChars":101,"textLines":1,"bbox":[475.2,278.4,312,129.6]}
+{"kind":"shape","id":"sh/x0rqpsje","slide":15,"name":"Google Shape;532;p29","bbox":[844.8,196.8,360,220.8]}
+{"kind":"textbox","id":"sh/wzipwn2t","slide":15,"name":"Google Shape;533;p29","text":"Faster, Safer Response","textPreview":"Faster, Safer Response","textChars":22,"textLines":1,"bbox":[868.8,217.92,312,52.8]}
+{"kind":"textbox","id":"sh/j2t8r21k","slide":15,"name":"Google Shape;534;p29","text":"Low-water lock and crop-health warnings guide inspection; Manual control remains subordinate to safety.","textPreview":"Low-water lock and crop-health warnings guide inspection; Manual control remains subordinate to safety.","textChars":103,"textLines":1,"bbox":[868.8,278.4,312,129.6]}
+{"kind":"textbox","id":"sh/i107yxkz","slide":15,"name":"Google Shape;535;p29","text":"Scope refined · implementation aligned","textPreview":"Scope refined · implementation aligned","textChars":38,"textLines":1,"bbox":[57.6,465.6,1104,57.6]}
+{"kind":"textbox","id":"sh/54bqtsja","slide":15,"name":"Google Shape;536;p29","text":"15","textPreview":"15","textChars":2,"textLines":1,"bbox":[1204.8,679.68,48,28.8]}
+{"kind":"notes","id":"nt/vaxsvy10","slide":15,"text":""}

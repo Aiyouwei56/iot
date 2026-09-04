@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriSense PC Simulator</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <style>
+        :root {
+            color-scheme: light;
+            --navy: #172033;
+            --blue: #2563eb;
+            --green: #16a34a;
+            --red: #dc2626;
+            --amber: #d97706;
+            --muted: #64748b;
+            --line: #dbe3ee;
+            --surface: #ffffff;
+            --background: #eef3f8;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            color: #1e293b;
+            background: var(--background);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 18px clamp(18px, 5vw, 64px);
+            color: #fff;
+            background: var(--navy);
+        }
+
+        header h1 { margin: 0; font-size: clamp(21px, 3vw, 28px); }
+        header p { margin: 4px 0 0; color: #cbd5e1; font-size: 13px; }
+
+        .connection {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            font-weight: 700;
+        }
+
+        .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+
+        .dot.connected { background: #22c55e; }
+
+        main {
+            width: min(1180px, calc(100% - 28px));
+            margin: 24px auto 50px;
+        }
+
+        .panel {
+            margin-bottom: 18px;
+            padding: 22px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+        }
+
+        .panel h2 { margin: 0 0 8px; font-size: 20px; }
+        .panel-intro { margin: 0 0 18px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+
+        .warning {
+            margin-bottom: 18px;
+            padding: 14px 16px;
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            background: #fffbeb;
+            color: #92400e;
+            line-height: 1.5;
+        }
+
+        .workflow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        button, .link-button {
+            min-height: 46px;
+            border: 0;
+            border-radius: 10px;
+            padding: 11px 16px;
+            cursor: pointer;
+            font: inherit;
+            font-weight: 750;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 120ms ease, opacity 120ms ease;
+        }
+
+        button:hover, .link-button:hover { transform: translateY(-1px); opacity: 0.9; }
+        button:disabled { cursor: not-allowed; opacity: 0.45; transform: none; }
+        .primary { color: #fff; background: var(--blue); }
+        .secondary { color: #fff; background: #475569; }
+        .danger { color: #fff; background: var(--red); }
+        .quiet { color: #334155; border: 1px solid #cbd5e1; background: #f8fafc; }
+
+        .control-footer {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .stream-state {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 11px;
+            border-radius: 999px;
+            color: #991b1b;
+            background: #fee2e2;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .stream-state.running { color: #166534; background: #dcfce7; }
+        .stream-state.ready { color: #1e40af; background: #dbeafe; }
+        #lastAction { color: var(--muted); font-size: 13px; }
+
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .scenario {
+            min-height: 58px;
+            color: #1e3a8a;
+            border: 1px solid #bfdbfe;
+            background: #eff6ff;
+        }
+
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+        }
+
+        .sensor-card, .feedback-card {
+            padding: 17px;
+            border: 1px solid var(--line);
+            border-radius: 13px;
+            background: #fff;
+        }
+
+        .sensor-card h3, .feedback-card h3 {
+            margin: 0 0 12px;
+            color: #475569;
+            font-size: 14px;
+        }
+
+        .reading {
+            margin-bottom: 10px;
+            font-size: 29px;
+            font-weight: 850;
+        }
+
+        .reading small {
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        input[type="range"] { width: 100%; accent-color: var(--blue); }
+
+        .helper {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 14px;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .feedback-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .actuator-state {
+            margin: 4px 0 10px;
+            color: var(--red);
+            font-size: 28px;
+            font-weight: 900;
+        }
+
+        .actuator-state.on { color: var(--green); }
+
+        .mode-line, .reason {
+            margin: 5px 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .mode-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 999px;
+            color: #1e40af;
+            background: #dbeafe;
+            font-weight: 800;
+        }
+
+        .weather-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .info-box {
+            padding: 13px;
+            border-radius: 11px;
+            background: #f8fafc;
+        }
+
+        .info-box span { display: block; color: var(--muted); font-size: 12px; }
+        .info-box strong { display: block; margin-top: 5px; font-size: 16px; }
+
+        details summary { cursor: pointer; font-weight: 800; }
+        .log {
+            min-height: 150px;
+            max-height: 300px;
+            margin: 14px 0 0;
+            overflow: auto;
+            padding: 14px;
+            border-radius: 10px;
+            color: #d1fae5;
+            background: #0f172a;
+            white-space: pre-wrap;
+            font: 12px/1.5 Consolas, monospace;
+        }
+
+        @media (max-width: 820px) {
+            .workflow, .feedback-grid { grid-template-columns: 1fr; }
+            .scenario-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .weather-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 520px) {
+            body { overflow-x: hidden; }
+            header {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 16px;
+            }
+            header p { max-width: 100%; line-height: 1.45; }
+            main { width: calc(100% - 20px); margin-top: 16px; }
+            .panel { padding: 18px; }
+            .panel h2 { font-size: 18px; overflow-wrap: anywhere; }
+            .control-footer > div { width: 100%; }
+            .control-footer > div:last-child {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .control-footer .quiet { display: block; width: 100%; }
+            #lastAction { display: block; margin-top: 8px; }
+            .scenario-grid, .weather-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div>
+        <h1>🧪 AgriSense PC Simulator</h1>
+        <p>Hardware fallback for testing the Dashboard, Node-RED and Supabase</p>
+    </div>
+    <div class="connection">
+        <span id="connectionDot" class="dot"></span>
+        <span id="connectionText">Connecting to HiveMQ...</span>
+    </div>
+</header>
+
+<main>
+    <div class="warning">
+        <strong>Testing only:</strong>
+        Do not run this simulator together with the physical ESP32.
+        Stop the simulator before powering the ESP32 because both use the same MQTT topics.
+    </div>
+
+    <section class="panel">
+        <h2>1. Start or stop the simulation</h2>
+        <p class="panel-intro">
+            AUTO/MANUAL is controlled from the main Dashboard. This page only sends simulated sensors
+            and shows how the virtual actuators respond.
+        </p>
+        <div class="workflow">
+            <button id="sendOnceButton" class="secondary" type="button">
+                Send Current Readings
+            </button>
+            <button id="startButton" class="primary" type="button">
+                Start Live Sensor Stream<br>Every 5 seconds
+            </button>
+            <button id="stopButton" class="danger" type="button">
+                Stop &amp; Turn All OFF
+            </button>
+        </div>
+        <div class="control-footer">
+            <div>
+                <span id="streamState" class="stream-state">STOPPED</span>
+                <span id="lastAction">No simulated data is being sent.</span>
+            </div>
+            <div>
+                <button id="resetButton" class="quiet" type="button">Reset Values</button>
+                <a class="link-button quiet" href="index.html">Open Main Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>2. Quick test scenarios</h2>
+        <p class="panel-intro">Each button changes the sliders and immediately sends one reading.</p>
+        <div class="scenario-grid">
+            <button class="scenario" data-scenario="normal" type="button">✅ Normal</button>
+            <button class="scenario" data-scenario="dry" type="button">🌵 Dry Soil</button>
+            <button class="scenario" data-scenario="hot" type="button">🔥 Hot Day</button>
+            <button class="scenario" data-scenario="lowWater" type="button">🚱 Low Water</button>
+            <button class="scenario" data-scenario="dark" type="button">🌙 Dark</button>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>3. Simulated sensor readings</h2>
+        <p class="panel-intro">
+            Moving a slider only changes the value on this page. Press “Send Current Readings” or start the live stream to publish it.
+        </p>
+        <div class="sensor-grid">
+            <article class="sensor-card">
+                <h3>🌱 Soil Moisture</h3>
+                <div class="reading"><span id="soilValue">30.0</span>%</div>
+                <input id="soilInput" type="range" min="0" max="100" value="30" step="1">
+                <p class="helper">Raw ADC: <strong id="soilRawValue">2600</strong>. Below <span id="soilStartThreshold">30</span>% requests irrigation; <span id="soilStopThreshold">45</span>% clears demand.</p>
+            </article>
+
+            <article class="sensor-card">
+                <h3>🌡️ Temperature</h3>
+                <div class="reading"><span id="temperatureValue">28.0</span>°C</div>
+                <input id="temperatureInput" type="range" min="10" max="50" value="28" step="0.5">
+                <p class="helper">Fan AUTO: ON at <span id="fanOnThreshold">30</span>°C or above, OFF at <span id="fanOffThreshold">28</span>°C or below.</p>
+            </article>
+
+            <article class="sensor-card">
+                <h3>💧 Humidity</h3>
+                <div class="reading"><span id="humidityValue">65.0</span>%</div>
+                <input id="humidityInput" type="range" min="0" max="100" value="65" step="1">
+                <p class="helper"><span id="humidityDelayThreshold">85</span>% or above delays AUTO irrigation in Node-RED.</p>
+            </article>
+
+            <article class="sensor-card">
+                <h3>💦 Water Tank Level</h3>
+                <div class="reading"><span id="waterValue">34.0</span>%</div>
+                <input id="waterInput" type="range" min="0" max="100" value="34" step="1">
+                <p class="helper">Raw ADC: <strong id="waterRawValue">850</strong>. Below <span id="lowWaterThreshold">20</span>% locks the pump OFF.</p>
+            </article>
+
+            <article class="sensor-card">
+                <h3>☀️ LDR Light Raw</h3>
+                <div class="reading"><span id="lightValue">1800</span> <small id="lightDescription">BRIGHT</small></div>
+                <input id="lightInput" type="range" min="0" max="4095" value="1800" step="1">
+                <p class="helper">Below <span id="ldrDarkThreshold">1200</span> turns the prototype grow-light indicator ON in AUTO.</p>
+            </article>
+        </div>
+        <label class="option-row">
+            <input id="randomVariation" type="checkbox">
+            Add small natural sensor variation
+        </label>
+    </section>
+
+    <section class="panel">
+        <h2>4. Virtual actuator result</h2>
+        <p class="panel-intro">
+            These are virtual MQTT feedback values, not the state of a physical relay.
+            Change AUTO/MANUAL and manual ON/OFF from the main Dashboard.
+        </p>
+        <div class="feedback-grid">
+            <article class="feedback-card">
+                <h3>💧 Pump</h3>
+                <div id="pumpState" class="actuator-state">OFF</div>
+                <p class="mode-line">Mode: <span id="pumpMode" class="mode-badge">AUTO</span></p>
+                <p id="pumpReason" class="reason">Waiting for Node-RED decision.</p>
+            </article>
+
+            <article class="feedback-card">
+                <h3>🌀 Fan</h3>
+                <div id="fanState" class="actuator-state">OFF</div>
+                <p class="mode-line">Mode: <span id="fanMode" class="mode-badge">AUTO</span></p>
+                <p id="fanReason" class="reason">Waiting for simulated temperature.</p>
+            </article>
+
+            <article class="feedback-card">
+                <h3>💡 Grow-Light Indicator</h3>
+                <div id="ledState" class="actuator-state">OFF</div>
+                <p class="mode-line">Mode: <span id="ledMode" class="mode-badge">AUTO</span></p>
+                <p id="ledReason" class="reason">Waiting for simulated light level.</p>
+            </article>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Node-RED weather and irrigation status</h2>
+        <div class="weather-grid">
+            <div class="info-box"><span>Weather status</span><strong id="weatherStatus">Waiting...</strong></div>
+            <div class="info-box"><span>Rain probability</span><strong><span id="rainProbability">--</span>%</strong></div>
+            <div class="info-box"><span>Rain expected</span><strong id="rainExpected">--</strong></div>
+            <div class="info-box"><span>Irrigation rule</span><strong id="irrigationRule">Waiting...</strong></div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <details>
+            <summary>Technical MQTT activity (optional)</summary>
+            <pre id="activityLog" class="log">Waiting for MQTT connection...</pre>
+        </details>
+    </section>
+</main>
+
+<script>
+    const MQTT_URL = "wss://broker.hivemq.com:8884/mqtt";
+    const MQTT_BASE = "smartfarm/rsd2s3g3";
+    const topic = function (suffix) { return MQTT_BASE + "/" + suffix; };
+
+    const TOPICS = {
+        soil: topic("module1/soil"),
+        soilPercent: topic("module1/soil_percent"),
+        temperature: topic("module2/temperature"),
+        humidity: topic("module2/humidity"),
+        light: topic("module2/light"),
+        water: topic("module3/water"),
+        waterPercent: topic("module3/water_percent"),
+        lowWater: topic("module3/low_water"),
+        pumpLock: topic("module3/pump_lock"),
+        pumpFeedback: topic("module1/pump"),
+        fanFeedback: topic("module2/fan"),
+        ledFeedback: topic("module2/led"),
+        pumpModeFeedback: topic("module1/pump/mode"),
+        fanModeFeedback: topic("module2/fan/mode"),
+        ledModeFeedback: topic("module2/led/mode"),
+        pumpControl: topic("control/pump"),
+        fanControl: topic("control/fan"),
+        ledControl: topic("control/led"),
+        pumpModeControl: topic("control/pump/mode"),
+        fanModeControl: topic("control/fan/mode"),
+        ledModeControl: topic("control/led/mode"),
+        pumpAuto: topic("control/pump/auto"),
+        rainProbability: topic("weather/rain_probability"),
+        rainExpected: topic("weather/rain_expected"),
+        weatherStatus: topic("weather/status"),
+        irrigationRule: topic("module1/irrigation_rule"),
+        source: topic("system/source"),
+        configSoilStart: topic("config/soil/pump_on_percent"),
+        configSoilStop: topic("config/soil/pump_off_percent"),
+        configFanOn: topic("config/fan/on_temperature_c"),
+        configFanOff: topic("config/fan/off_temperature_c"),
+        configLdrDark: topic("config/light/dark_raw"),
+        configLowWater: topic("config/water/low_percent"),
+        configRainDelay: topic("config/irrigation/rain_probability"),
+        configHumidityDelay: topic("config/irrigation/humidity_percent")
+    };
+
+    const settings = {
+        soilStart: 30,
+        soilStop: 45,
+        fanOn: 30,
+        fanOff: 28,
+        ldrDark: 1200,
+        lowWater: 20,
+        rainDelay: 65,
+        humidityDelay: 85
+    };
+
+    const CONFIG_BY_TOPIC = {};
+    CONFIG_BY_TOPIC[TOPICS.configSoilStart] = "soilStart";
+    CONFIG_BY_TOPIC[TOPICS.configSoilStop] = "soilStop";
+    CONFIG_BY_TOPIC[TOPICS.configFanOn] = "fanOn";
+    CONFIG_BY_TOPIC[TOPICS.configFanOff] = "fanOff";
+    CONFIG_BY_TOPIC[TOPICS.configLdrDark] = "ldrDark";
+    CONFIG_BY_TOPIC[TOPICS.configLowWater] = "lowWater";
+    CONFIG_BY_TOPIC[TOPICS.configRainDelay] = "rainDelay";
+    CONFIG_BY_TOPIC[TOPICS.configHumidityDelay] = "humidityDelay";
+
+    const inputs = {
+        soil: document.getElementById("soilInput"),
+        temperature: document.getElementById("temperatureInput"),
+        humidity: document.getElementById("humidityInput"),
+        water: document.getElementById("waterInput"),
+        light: document.getElementById("lightInput")
+    };
+
+    const state = {
+        active: false,
+        modes: { pump: "AUTO", fan: "AUTO", led: "AUTO" },
+        pump: "OFF",
+        fan: "OFF",
+        led: "OFF",
+        pumpLocked: false,
+        autoPumpDecision: "OFF",
+        pumpSoaking: false
+    };
+
+    let publishTimer = null;
+    let pumpPulseTimer = null;
+    let pumpSoakTimer = null;
+
+    const client = mqtt.connect(MQTT_URL, {
+        clientId: "AgriSense_PC_Simulator_" + Math.random().toString(16).slice(2),
+        clean: true,
+        keepalive: 30,
+        connectTimeout: 20000,
+        reconnectPeriod: 3000,
+        resubscribe: true,
+        protocolVersion: 4
+    });
+
+    function clamp(value, minimum, maximum) {
+        return Math.max(minimum, Math.min(maximum, value));
+    }
+
+    function log(message) {
+        const element = document.getElementById("activityLog");
+        const timestamp = new Date().toLocaleTimeString("en-MY");
+        element.textContent = ("[" + timestamp + "] " + message + "\n" + element.textContent).slice(0, 10000);
+    }
+
+    function setLastAction(message) {
+        document.getElementById("lastAction").textContent = message;
+    }
+
+    function setStreamState(text, style) {
+        const element = document.getElementById("streamState");
+        element.textContent = text;
+        element.className = "stream-state" + (style ? " " + style : "");
+    }
+
+    function updateConnection(connected, message) {
+        document.getElementById("connectionDot").classList.toggle("connected", connected);
+        document.getElementById("connectionText").textContent =
+            message || (connected ? "Connected to HiveMQ" : "Disconnected — reconnecting...");
+        document.getElementById("sendOnceButton").disabled = !connected;
+        document.getElementById("startButton").disabled = !connected;
+    }
+
+    function soilRawFromPercent(percent) {
+        return Math.round(clamp(3200 + (1200 - 3200) * percent / 100, 0, 4095));
+    }
+
+    function waterRawFromPercent(percent) {
+        return Math.round(clamp(percent * 2500 / 100, 0, 4095));
+    }
+
+    function renderInputs() {
+        const soil = Number(inputs.soil.value);
+        const water = Number(inputs.water.value);
+        const light = Number(inputs.light.value);
+        document.getElementById("soilValue").textContent = soil.toFixed(1);
+        document.getElementById("soilRawValue").textContent = soilRawFromPercent(soil);
+        document.getElementById("temperatureValue").textContent = Number(inputs.temperature.value).toFixed(1);
+        document.getElementById("humidityValue").textContent = Number(inputs.humidity.value).toFixed(1);
+        document.getElementById("waterValue").textContent = water.toFixed(1);
+        document.getElementById("waterRawValue").textContent = waterRawFromPercent(water);
+        document.getElementById("lightValue").textContent = Math.round(light);
+        document.getElementById("lightDescription").textContent = light < settings.ldrDark ? "DARK" : "BRIGHT";
+    }
+
+    function renderThresholds() {
+        document.getElementById("soilStartThreshold").textContent = settings.soilStart;
+        document.getElementById("soilStopThreshold").textContent = settings.soilStop;
+        document.getElementById("fanOnThreshold").textContent = settings.fanOn;
+        document.getElementById("fanOffThreshold").textContent = settings.fanOff;
+        document.getElementById("humidityDelayThreshold").textContent = settings.humidityDelay;
+        document.getElementById("lowWaterThreshold").textContent = settings.lowWater;
+        document.getElementById("ldrDarkThreshold").textContent = settings.ldrDark;
+        document.getElementById("lightDescription").textContent =
+            Number(inputs.light.value) < settings.ldrDark ? "DARK" : "BRIGHT";
+    }
+
+    function markInputChange() {
+        renderInputs();
+        setLastAction(publishTimer
+            ? "Values changed; they will be sent within 5 seconds."
+            : "Values changed; press Send Current Readings.");
+    }
+
+    function readValue(name, variation) {
+        const base = Number(inputs[name].value);
+        if (!document.getElementById("randomVariation").checked) return base;
+        return clamp(base + (Math.random() * variation * 2 - variation), Number(inputs[name].min), Number(inputs[name].max));
+    }
+
+    function currentValues() {
+        const soilPercent = readValue("soil", 1);
+        const waterPercent = readValue("water", 1);
+        return {
+            soilPercent: soilPercent,
+            soilRaw: soilRawFromPercent(soilPercent),
+            temperature: readValue("temperature", 0.3),
+            humidity: readValue("humidity", 0.5),
+            waterPercent: waterPercent,
+            waterRaw: waterRawFromPercent(waterPercent),
+            light: Math.round(readValue("light", 8))
+        };
+    }
+
+    function renderMode(name) {
+        document.getElementById(name + "Mode").textContent = state.modes[name];
+    }
+
+    function setActuator(name, requestedState, reason, force) {
+        if (!state.active && !force) return;
+        let actualState = requestedState;
+        if (name === "pump" && state.pumpLocked && requestedState === "ON") actualState = "OFF";
+        state[name] = actualState;
+
+        const stateElement = document.getElementById(name + "State");
+        stateElement.textContent = actualState;
+        stateElement.classList.toggle("on", actualState === "ON");
+        document.getElementById(name + "Reason").textContent = reason;
+
+        if (client.connected) {
+            client.publish(TOPICS[name + "Feedback"], actualState, { qos: 0, retain: false });
+        }
+        log(reason + ": " + name.toUpperCase() + " " + actualState);
+    }
+
+    function clearPumpTimers() {
+        if (pumpPulseTimer) window.clearTimeout(pumpPulseTimer);
+        if (pumpSoakTimer) window.clearTimeout(pumpSoakTimer);
+        pumpPulseTimer = null;
+        pumpSoakTimer = null;
+        state.pumpSoaking = false;
+    }
+
+    function applyAutoPumpDecision(decision) {
+        if (["ON", "OFF", "DELAY"].includes(decision)) state.autoPumpDecision = decision;
+        if (!state.active || state.modes.pump !== "AUTO") return;
+
+        if (state.pumpLocked || state.autoPumpDecision !== "ON") {
+            clearPumpTimers();
+            const reason = state.pumpLocked
+                ? "LOW WATER: safety lock forced the pump OFF"
+                : "Node-RED AUTO decision: " + state.autoPumpDecision;
+            setActuator("pump", "OFF", reason, false);
+            return;
+        }
+
+        if (state.pump === "ON" || state.pumpSoaking) return;
+
+        setActuator("pump", "ON", "Node-RED AUTO: 10-second irrigation pulse", false);
+        pumpPulseTimer = window.setTimeout(function () {
+            pumpPulseTimer = null;
+            setActuator("pump", "OFF", "AUTO pulse complete; soaking for 60 seconds", false);
+            state.pumpSoaking = true;
+            pumpSoakTimer = window.setTimeout(function () {
+                pumpSoakTimer = null;
+                state.pumpSoaking = false;
+                applyAutoPumpDecision(state.autoPumpDecision);
+            }, 60000);
+        }, 10000);
+    }
+
+    function applyLocalAutomaticRules(values) {
+        if (state.modes.fan === "AUTO") {
+            if (state.fan === "OFF" && values.temperature >= settings.fanOn) {
+                setActuator("fan", "ON", "AUTO: fan ON temperature reached", false);
+            } else if (state.fan === "ON" && values.temperature <= settings.fanOff) {
+                setActuator("fan", "OFF", "AUTO: fan OFF temperature reached", false);
+            }
+        }
+
+        if (state.modes.led === "AUTO") {
+            setActuator(
+                "led",
+                values.light < settings.ldrDark ? "ON" : "OFF",
+                values.light < settings.ldrDark ? "AUTO: dark environment" : "AUTO: sufficient light",
+                false
+            );
+        }
+    }
+
+    function publishModes() {
+        ["pump", "fan", "led"].forEach(function (name) {
+            client.publish(TOPICS[name + "ModeFeedback"], state.modes[name], { qos: 0, retain: true });
+        });
+    }
+
+    function publishAll() {
+        if (!state.active || !client.connected) return;
+        const values = currentValues();
+        state.pumpLocked = values.waterPercent < settings.lowWater;
+
+        client.publish(TOPICS.source, "pc-simulator");
+        client.publish(TOPICS.soil, String(values.soilRaw));
+        client.publish(TOPICS.soilPercent, values.soilPercent.toFixed(1));
+        client.publish(TOPICS.temperature, values.temperature.toFixed(1));
+        client.publish(TOPICS.humidity, values.humidity.toFixed(1));
+        client.publish(TOPICS.water, String(values.waterRaw));
+        client.publish(TOPICS.waterPercent, values.waterPercent.toFixed(1));
+        client.publish(TOPICS.light, String(values.light));
+        client.publish(TOPICS.lowWater, state.pumpLocked ? "TRUE" : "FALSE");
+        client.publish(TOPICS.pumpLock, state.pumpLocked ? "LOCKED" : "CLEAR");
+
+        if (state.pumpLocked) {
+            clearPumpTimers();
+            setActuator("pump", "OFF", "LOW WATER: safety lock forced the pump OFF", false);
+        } else {
+            applyAutoPumpDecision(state.autoPumpDecision);
+        }
+
+        applyLocalAutomaticRules(values);
+        client.publish(TOPICS.pumpFeedback, state.pump);
+        client.publish(TOPICS.fanFeedback, state.fan);
+        client.publish(TOPICS.ledFeedback, state.led);
+
+        setLastAction("Last sent: " + new Date().toLocaleTimeString("en-MY"));
+        log(
+            "Sensors sent: soil=" + values.soilPercent.toFixed(1) + "%, temp=" +
+            values.temperature.toFixed(1) + "°C, humidity=" + values.humidity.toFixed(1) +
+            "%, water=" + values.waterPercent.toFixed(1) + "%, light=" + values.light
+        );
+    }
+
+    function activateOnce() {
+        if (!client.connected) return;
+        state.active = true;
+        publishModes();
+        publishAll();
+        setStreamState("ONE READING SENT", "ready");
+    }
+
+    function startStream() {
+        if (!client.connected) return;
+        if (publishTimer) window.clearInterval(publishTimer);
+        state.active = true;
+        publishModes();
+        publishAll();
+        publishTimer = window.setInterval(publishAll, 5000);
+        setStreamState("LIVE — EVERY 5 SECONDS", "running");
+        setLastAction("Live sensor stream is running.");
+    }
+
+    function safeStop() {
+        if (publishTimer) window.clearInterval(publishTimer);
+        publishTimer = null;
+        clearPumpTimers();
+        setActuator("pump", "OFF", "Safe stop", true);
+        setActuator("fan", "OFF", "Safe stop", true);
+        setActuator("led", "OFF", "Safe stop", true);
+        state.active = false;
+        setStreamState("STOPPED", "");
+        setLastAction("Publishing stopped and all simulated outputs are OFF.");
+    }
+
+    const defaults = { soil: 30, temperature: 28, humidity: 65, water: 34, light: 1800 };
+    const scenarios = {
+        normal: { soil: 55, temperature: 27, humidity: 65, water: 70, light: 1800 },
+        dry: { soil: 15, temperature: 28, humidity: 60, water: 70, light: 1800 },
+        hot: { soil: 50, temperature: 35, humidity: 60, water: 70, light: 1800 },
+        lowWater: { soil: 15, temperature: 28, humidity: 60, water: 10, light: 1800 },
+        dark: { soil: 50, temperature: 28, humidity: 65, water: 70, light: 600 }
+    };
+
+    function setValues(values) {
+        Object.keys(values).forEach(function (name) { inputs[name].value = values[name]; });
+        renderInputs();
+    }
+
+    function resetValues() {
+        safeStop();
+        setValues(defaults);
+        document.getElementById("randomVariation").checked = false;
+        setLastAction("Default sensor values restored. Press Send or Start.");
+    }
+
+    Object.keys(inputs).forEach(function (name) {
+        inputs[name].addEventListener("input", markInputChange);
+    });
+
+    document.getElementById("sendOnceButton").addEventListener("click", activateOnce);
+    document.getElementById("startButton").addEventListener("click", startStream);
+    document.getElementById("stopButton").addEventListener("click", safeStop);
+    document.getElementById("resetButton").addEventListener("click", resetValues);
+
+    document.querySelectorAll("[data-scenario]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            setValues(scenarios[button.dataset.scenario]);
+            activateOnce();
+        });
+    });
+
+    client.on("connect", function () {
+        updateConnection(true);
+        client.subscribe([
+            TOPICS.pumpControl,
+            TOPICS.fanControl,
+            TOPICS.ledControl,
+            TOPICS.pumpModeControl,
+            TOPICS.fanModeControl,
+            TOPICS.ledModeControl,
+            TOPICS.pumpAuto,
+            TOPICS.rainProbability,
+            TOPICS.rainExpected,
+            TOPICS.weatherStatus,
+            TOPICS.irrigationRule,
+            ...Object.keys(CONFIG_BY_TOPIC)
+        ]);
+        log("Connected to HiveMQ. Simulator remains stopped until you press Send or Start.");
+    });
+
+    client.on("message", function (messageTopic, payload) {
+        const value = payload.toString().trim().toUpperCase();
+        const modeTopics = {};
+        modeTopics[TOPICS.pumpModeControl] = "pump";
+        modeTopics[TOPICS.fanModeControl] = "fan";
+        modeTopics[TOPICS.ledModeControl] = "led";
+
+        if (modeTopics[messageTopic] && ["AUTO", "MANUAL"].includes(value)) {
+            const actuator = modeTopics[messageTopic];
+            state.modes[actuator] = value;
+            renderMode(actuator);
+            if (state.active) {
+                client.publish(TOPICS[actuator + "ModeFeedback"], value, { qos: 0, retain: true });
+                if (actuator === "pump") {
+                    if (value === "AUTO") applyAutoPumpDecision(state.autoPumpDecision);
+                    else clearPumpTimers();
+                } else {
+                    applyLocalAutomaticRules(currentValues());
+                }
+            }
+            log(actuator.toUpperCase() + " mode changed to " + value + " from the main Dashboard.");
+            return;
+        }
+
+        if (messageTopic === TOPICS.pumpAuto && ["ON", "OFF", "DELAY"].includes(value)) {
+            applyAutoPumpDecision(value);
+            log("Node-RED AUTO pump decision received: " + value);
+            return;
+        }
+
+        if (messageTopic === TOPICS.rainProbability) {
+            document.getElementById("rainProbability").textContent = value;
+            return;
+        }
+        if (messageTopic === TOPICS.rainExpected) {
+            document.getElementById("rainExpected").textContent = value;
+            return;
+        }
+        if (messageTopic === TOPICS.weatherStatus) {
+            document.getElementById("weatherStatus").textContent = value;
+            return;
+        }
+        if (messageTopic === TOPICS.irrigationRule) {
+            document.getElementById("irrigationRule").textContent = value;
+            return;
+        }
+
+        if (CONFIG_BY_TOPIC[messageTopic]) {
+            const numericValue = Number(payload.toString().trim());
+            if (Number.isFinite(numericValue)) {
+                settings[CONFIG_BY_TOPIC[messageTopic]] = numericValue;
+                renderThresholds();
+                if (state.active) {
+                    const values = currentValues();
+                    state.pumpLocked = values.waterPercent < settings.lowWater;
+                    if (state.pumpLocked) setActuator("pump", "OFF", "LOW WATER: safety lock forced the pump OFF", false);
+                    applyLocalAutomaticRules(values);
+                }
+            }
+            return;
+        }
+
+        if (!state.active || !["ON", "OFF"].includes(value)) return;
+        if (messageTopic === TOPICS.pumpControl && state.modes.pump === "MANUAL") {
+            setActuator("pump", value, "Main Dashboard MANUAL command", false);
+        }
+        if (messageTopic === TOPICS.fanControl && state.modes.fan === "MANUAL") {
+            setActuator("fan", value, "Main Dashboard MANUAL command", false);
+        }
+        if (messageTopic === TOPICS.ledControl && state.modes.led === "MANUAL") {
+            setActuator("led", value, "Main Dashboard MANUAL command", false);
+        }
+    });
+
+    client.on("offline", function () { updateConnection(false); });
+    client.on("close", function () { updateConnection(false); });
+    client.on("reconnect", function () { updateConnection(false, "Reconnecting to HiveMQ..."); });
+    client.on("error", function (error) { log("MQTT error: " + error.message); });
+
+    renderInputs();
+    renderThresholds();
+    ["pump", "fan", "led"].forEach(renderMode);
+    updateConnection(false, "Connecting to HiveMQ...");
+</script>
+</body>
+</html>

@@ -160,6 +160,82 @@
             font-size: 13px;
         }
 
+        .sensor-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 18px;
+            margin: -12px 0 28px;
+            padding: 12px 16px;
+            border: 1px solid #dbeafe;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .sensor-meta strong { color: #1e293b; }
+
+        .settings-intro {
+            margin: -8px 0 18px;
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 14px;
+        }
+
+        .setting-card {
+            padding: 16px;
+            border: 1px solid #dbe3ee;
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+
+        .setting-card label {
+            display: block;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .setting-card input {
+            width: 100%;
+            min-height: 42px;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: white;
+            color: #111827;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .setting-card small {
+            display: block;
+            margin-top: 7px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        .settings-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .save-settings-button { color: white; background: #2563eb; }
+        .reset-settings-button { color: #334155; border: 1px solid #cbd5e1; background: #f8fafc; }
+        #automationSettingsStatus { color: #64748b; font-size: 13px; }
+        #automationSettingsStatus.success { color: #15803d; font-weight: bold; }
+        #automationSettingsStatus.error { color: #dc2626; font-weight: bold; }
+
 
         /* ==========================================
            MODULE
@@ -272,6 +348,30 @@
             color: white;
         }
 
+        .mode-button {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .mode-button.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+        }
+
+        .mode-button.pending {
+            opacity: 0.65;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.38;
+        }
+
+        button:disabled:hover {
+            opacity: 0.38;
+        }
+
 
         button:hover {
 
@@ -321,6 +421,126 @@
             font-weight: bold;
         }
 
+        .simulator-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 9px 14px;
+            border-radius: 7px;
+            background: #2563eb;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .simulator-link:hover { opacity: 0.85; }
+
+        .simulator-warning {
+            display: inline-block;
+            margin-left: 10px;
+            color: #b45309;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+
+        /* ==========================================
+           SUPABASE HISTORY + MODULE 4
+        ========================================== */
+
+        .cloud-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 14px;
+            margin-bottom: 25px;
+        }
+
+        .cloud-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .cloud-card h3 {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .cloud-state {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .cloud-state.healthy { color: #16a34a; }
+        .cloud-state.warning { color: #d97706; }
+        .cloud-state.fault { color: #dc2626; }
+        .cloud-state.offline { color: #6b7280; }
+
+        .history-wrap {
+            overflow-x: auto;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .history-table th,
+        .history-table td {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 10px 8px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .history-table th {
+            background: #f9fafb;
+            color: #4b5563;
+        }
+
+        .chart-box {
+            min-height: 260px;
+            margin: 15px 0 25px;
+        }
+
+        .module4-grid {
+            display: grid;
+            grid-template-columns: minmax(220px, 1fr) minmax(260px, 1.5fr);
+            gap: 20px;
+        }
+
+        .crop-image {
+            width: 100%;
+            max-height: 320px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: #f3f4f6;
+            display: none;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            color: #fff;
+            background: #6b7280;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .risk-badge.green { background: #16a34a; }
+        .risk-badge.amber { background: #d97706; }
+        .risk-badge.red { background: #dc2626; }
+
+        .cloud-note {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
 
         /* ==========================================
            FOOTER
@@ -359,6 +579,12 @@
 
                 font-size: 21px;
             }
+
+            .module4-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-actions button { width: 100%; margin: 0; }
         }
 
     </style>
@@ -432,6 +658,15 @@
             </span>
         </p>
 
+        <button type="button" onclick="forceMqttReconnect(true)">
+            Reconnect MQTT
+        </button>
+
+        <a class="simulator-link" href="simulator.html" target="_blank">
+            🧪 PC Simulator (Testing Only)
+        </a>
+        <span class="simulator-warning">Do not run together with the physical ESP32.</span>
+
     </div>
 
 
@@ -456,13 +691,15 @@
                 🌱 Soil Moisture
             </h3>
 
-            <span id="soil"
+            <span id="soilPercent"
                   class="sensor-value">
                 --
             </span>
 
+            <span class="sensor-unit">%</span>
+
             <div class="sensor-description">
-                Raw ADC Value (0–4095)
+                Raw ADC: <span id="soilRaw">--</span> (0–4095)
             </div>
 
         </div>
@@ -508,51 +745,118 @@
         </div>
 
 
-        <!-- WATER -->
+        <!-- WATER LEVEL -->
 
         <div class="sensor-card">
 
             <h3>
-                💦 Water Sensor
+                💦 Water Level
             </h3>
 
-            <span id="water"
+            <span id="waterPercent"
                   class="sensor-value">
                 --
             </span>
 
+            <span class="sensor-unit">%</span>
+
             <div id="waterStatus"
                  class="sensor-description">
 
-                Waiting for data...
+                Raw: <span id="waterRaw">--</span> · Waiting for data...
 
             </div>
 
         </div>
 
 
-        <!-- WEIGHT -->
+        <!-- LIGHT -->
 
         <div class="sensor-card">
 
             <h3>
-                ⚖️ Weight Sensor
+                ☀️ Light Level
             </h3>
 
-            <span id="weight"
+            <span id="light"
                   class="sensor-value">
                 --
             </span>
 
             <div class="sensor-description">
 
-                Raw Sensor Value
+                LDR raw ADC (prototype grow-light input)
 
             </div>
 
         </div>
 
 
+    </div>
+
+
+    <div class="sensor-meta">
+        <span>Data source: <strong id="sensorSource">Waiting for MQTT data...</strong></span>
+        <span>Last sensor update: <strong id="sensorUpdated">--</strong></span>
+    </div>
+
+    <div class="module">
+        <h2>Automation Settings</h2>
+        <p class="settings-intro">
+            These thresholds control AUTO mode on the ESP32 and Node-RED. Save the settings,
+            then vary the real sensors to test the pump, fan and grow-light indicator.
+            In AUTO mode, the low-water safety lock always has priority. The optional firmware
+            manual-test bypass remains limited to 10 seconds.
+        </p>
+
+        <div class="settings-grid">
+            <div class="setting-card">
+                <label for="soilStartSetting">Pump starts below (%)</label>
+                <input id="soilStartSetting" type="number" min="5" max="60" step="1" value="30">
+                <small>Dry-soil irrigation demand starts below this value.</small>
+            </div>
+            <div class="setting-card">
+                <label for="soilStopSetting">Pump demand clears at (%)</label>
+                <input id="soilStopSetting" type="number" min="10" max="90" step="1" value="45">
+                <small>Must be higher than the start threshold to prevent rapid switching.</small>
+            </div>
+            <div class="setting-card">
+                <label for="fanOnSetting">Fan turns ON at (°C)</label>
+                <input id="fanOnSetting" type="number" min="15" max="50" step="0.5" value="30">
+                <small>The fan turns on when temperature reaches this value.</small>
+            </div>
+            <div class="setting-card">
+                <label for="fanOffSetting">Fan turns OFF at (°C)</label>
+                <input id="fanOffSetting" type="number" min="10" max="45" step="0.5" value="28">
+                <small>Must be lower than the fan ON temperature.</small>
+            </div>
+            <div class="setting-card">
+                <label for="ldrDarkSetting">Grow light turns ON below (raw ADC)</label>
+                <input id="ldrDarkSetting" type="number" min="0" max="4095" step="1" value="1200">
+                <small>Increase this value if you want the indicator to turn on more easily.</small>
+            </div>
+            <div class="setting-card">
+                <label for="lowWaterSetting">Pump locks below water level (%)</label>
+                <input id="lowWaterSetting" type="number" min="5" max="50" step="1" value="20">
+                <small>Safety threshold; the pump cannot run below this level.</small>
+            </div>
+            <div class="setting-card">
+                <label for="rainDelaySetting">Rain delay probability (%)</label>
+                <input id="rainDelaySetting" type="number" min="0" max="100" step="1" value="65">
+                <small>Node-RED delays AUTO irrigation at or above this forecast probability.</small>
+            </div>
+            <div class="setting-card">
+                <label for="humidityDelaySetting">Humidity irrigation delay (%)</label>
+                <input id="humidityDelaySetting" type="number" min="50" max="100" step="1" value="85">
+                <small>Node-RED delays AUTO irrigation at or above this humidity.</small>
+            </div>
+        </div>
+
+        <div class="settings-actions">
+            <button type="button" class="save-settings-button" onclick="saveAutomationSettings()">Save &amp; Apply Settings</button>
+            <button type="button" class="reset-settings-button" onclick="restoreAutomationDefaults()">Restore Defaults</button>
+            <span id="automationSettingsStatus">Waiting for retained MQTT settings...</span>
+        </div>
     </div>
 
 
@@ -585,9 +889,21 @@
 
                 </div>
 
+                <p>Mode: <strong id="pumpMode">AUTO</strong></p>
+
+                <p>Rule: <strong id="irrigationRule">Waiting...</strong></p>
+                <p>Rain expected: <strong id="rainExpected">--</strong>
+                    (<span id="rainProbability">--</span>%)</p>
+                <p id="systemAlert" class="sensor-description"></p>
+
+                <button class="mode-button active" data-actuator="pump" data-mode="AUTO"
+                    onclick="setActuatorMode('pump', 'AUTO')">AUTO</button>
+                <button class="mode-button" data-actuator="pump" data-mode="MANUAL"
+                    onclick="setActuatorMode('pump', 'MANUAL')">MANUAL</button>
+
 
                 <button
-                    class="on-button"
+                    class="on-button manual-control-button" data-actuator="pump" disabled
                     onclick="controlPump('ON')">
 
                     ON
@@ -596,7 +912,7 @@
 
 
                 <button
-                    class="off-button"
+                    class="off-button manual-control-button" data-actuator="pump" disabled
                     onclick="controlPump('OFF')">
 
                     OFF
@@ -609,6 +925,135 @@
         </div>
 
     </div>
+
+    <section id="cloudSections">
+
+    <!-- ======================================
+         SUPABASE CLOUD HISTORY
+    ======================================= -->
+
+    <div class="module">
+
+        <h2>Cloud History — Supabase</h2>
+
+        <p class="cloud-note">
+            Node-RED saves one combined sensor snapshot every 15 seconds.
+            This section refreshes automatically.
+        </p>
+
+        <div class="cloud-grid" style="margin-top: 18px;">
+            <div class="cloud-card">
+                <h3>Supabase Connection</h3>
+                <div id="cloudConnection" class="cloud-state offline">Checking...</div>
+                <div id="cloudUpdated" class="cloud-note">--</div>
+                <div class="cloud-note">Pending sync: <strong id="cloudQueueCount">0</strong></div>
+                <div id="cloudLastSync" class="cloud-note">Last Node-RED sync: --</div>
+            </div>
+
+            <div class="cloud-card">
+                <h3>Module 1 — Irrigation</h3>
+                <div id="moduleStatus1" class="cloud-state offline">OFFLINE</div>
+                <div id="moduleTime1" class="cloud-note">No recent data</div>
+            </div>
+
+            <div class="cloud-card">
+                <h3>Module 2 — Environment</h3>
+                <div id="moduleStatus2" class="cloud-state offline">OFFLINE</div>
+                <div id="moduleTime2" class="cloud-note">No recent data</div>
+            </div>
+
+            <div class="cloud-card">
+                <h3>Module 3 — Water Resource</h3>
+                <div id="moduleStatus3" class="cloud-state offline">OFFLINE</div>
+                <div id="moduleTime3" class="cloud-note">No recent data</div>
+            </div>
+
+            <div class="cloud-card">
+                <h3>Module 4 — Crop Health</h3>
+                <div id="moduleStatus4" class="cloud-state offline">OFFLINE</div>
+                <div id="moduleTime4" class="cloud-note">No recent data</div>
+            </div>
+        </div>
+
+        <h3>Temperature and Humidity Trend</h3>
+        <div class="chart-box">
+            <canvas id="sensorHistoryChart"></canvas>
+        </div>
+
+        <h3>Recent Sensor Snapshots</h3>
+        <div class="history-wrap">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Soil % (Raw)</th>
+                        <th>Temp °C</th>
+                        <th>Humidity %</th>
+                        <th>Water Raw</th>
+                        <th>Water %</th>
+                        <th>Light Raw</th>
+                        <th>Pump</th>
+                        <th>Fan</th>
+                        <th>LED</th>
+                        <th>Quality</th>
+                    </tr>
+                </thead>
+                <tbody id="sensorHistoryBody">
+                    <tr><td colspan="11">Loading cloud history...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+    <!-- ======================================
+         MODULE 4
+    ======================================= -->
+
+    <div class="module">
+
+        <h2>Module 4 — Crop Health & Visual Monitoring</h2>
+
+        <div class="module4-grid">
+            <div class="cloud-card">
+                <div id="cropRiskLevel" class="risk-badge">NO DATA</div>
+                <p>Risk score: <strong id="cropRiskScore">--</strong></p>
+                <p>Green area: <strong id="cropGreen">--</strong></p>
+                <p>Yellowing: <strong id="cropYellowing">--</strong></p>
+                <p>Stress: <strong id="cropStress">--</strong></p>
+                <p>Camera: <strong id="cropCamera">--</strong></p>
+                <p id="cropAlert" class="cloud-note">Waiting for image analysis...</p>
+                <p id="cropCaptured" class="cloud-note">--</p>
+            </div>
+
+            <div class="cloud-card">
+                <h3>Latest Growth Diary Image</h3>
+                <img id="cropImage" class="crop-image" alt="Latest crop capture">
+                <p id="cropImageMessage" class="cloud-note">No image available.</p>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 20px;">Open Alerts</h3>
+        <div class="history-wrap">
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Module</th>
+                        <th>Severity</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody id="alertHistoryBody">
+                    <tr><td colspan="4">No open alerts.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    </section>
 
 
 
@@ -642,9 +1087,16 @@
 
                 </div>
 
+                <p>Mode: <strong id="fanMode">AUTO</strong></p>
+
+                <button class="mode-button active" data-actuator="fan" data-mode="AUTO"
+                    onclick="setActuatorMode('fan', 'AUTO')">AUTO</button>
+                <button class="mode-button" data-actuator="fan" data-mode="MANUAL"
+                    onclick="setActuatorMode('fan', 'MANUAL')">MANUAL</button>
+
 
                 <button
-                    class="on-button"
+                    class="on-button manual-control-button" data-actuator="fan" disabled
                     onclick="controlFan('ON')">
 
                     ON
@@ -653,7 +1105,7 @@
 
 
                 <button
-                    class="off-button"
+                    class="off-button manual-control-button" data-actuator="fan" disabled
                     onclick="controlFan('OFF')">
 
                     OFF
@@ -669,7 +1121,7 @@
             <div class="actuator">
 
                 <h3>
-                    💡 LED
+                    💡 Prototype Grow-Light Indicator
                 </h3>
 
 
@@ -680,9 +1132,16 @@
 
                 </div>
 
+                <p>Mode: <strong id="ledMode">AUTO</strong></p>
+
+                <button class="mode-button active" data-actuator="led" data-mode="AUTO"
+                    onclick="setActuatorMode('led', 'AUTO')">AUTO</button>
+                <button class="mode-button" data-actuator="led" data-mode="MANUAL"
+                    onclick="setActuatorMode('led', 'MANUAL')">MANUAL</button>
+
 
                 <button
-                    class="on-button"
+                    class="on-button manual-control-button" data-actuator="led" disabled
                     onclick="controlLED('ON')">
 
                     ON
@@ -691,7 +1150,7 @@
 
 
                 <button
-                    class="off-button"
+                    class="off-button manual-control-button" data-actuator="led" disabled
                     onclick="controlLED('OFF')">
 
                     OFF
@@ -714,12 +1173,12 @@
     <div class="module">
 
         <h2>
-            Module 3 — Water & Weight
+            Module 3 — Water Tank & Resource Management
         </h2>
 
 
         <p>
-            Water Sensor:
+            Water Level:
             <strong id="waterFeedback">
                 Waiting...
             </strong>
@@ -730,8 +1189,8 @@
 
 
         <p>
-            Weight Sensor:
-            <strong id="weightFeedback">
+            Pump Safety Lock:
+            <strong id="pumpLockFeedback">
                 Waiting...
             </strong>
         </p>
@@ -773,6 +1232,83 @@
 const MQTT_URL =
     "wss://broker.hivemq.com:8884/mqtt";
 
+const MQTT_BASE = "smartfarm/rsd2s3g3";
+
+const TOPICS = {
+    soil: `${MQTT_BASE}/module1/soil`,
+    soilPercent: `${MQTT_BASE}/module1/soil_percent`,
+    pump: `${MQTT_BASE}/module1/pump`,
+    pumpMode: `${MQTT_BASE}/module1/pump/mode`,
+    temperature: `${MQTT_BASE}/module2/temperature`,
+    humidity: `${MQTT_BASE}/module2/humidity`,
+    light: `${MQTT_BASE}/module2/light`,
+    fan: `${MQTT_BASE}/module2/fan`,
+    fanMode: `${MQTT_BASE}/module2/fan/mode`,
+    led: `${MQTT_BASE}/module2/led`,
+    ledMode: `${MQTT_BASE}/module2/led/mode`,
+    water: `${MQTT_BASE}/module3/water`,
+    waterPercent: `${MQTT_BASE}/module3/water_percent`,
+    lowWater: `${MQTT_BASE}/module3/low_water`,
+    pumpLock: `${MQTT_BASE}/module3/pump_lock`,
+    irrigationRule: `${MQTT_BASE}/module1/irrigation_rule`,
+    rainProbability: `${MQTT_BASE}/weather/rain_probability`,
+    rainExpected: `${MQTT_BASE}/weather/rain_expected`,
+    weatherStatus: `${MQTT_BASE}/weather/status`,
+    systemAlert: `${MQTT_BASE}/system/alert`,
+    source: `${MQTT_BASE}/system/source`,
+    pumpControl: `${MQTT_BASE}/control/pump`,
+    pumpModeControl: `${MQTT_BASE}/control/pump/mode`,
+    fanControl: `${MQTT_BASE}/control/fan`,
+    fanModeControl: `${MQTT_BASE}/control/fan/mode`,
+    ledControl: `${MQTT_BASE}/control/led`,
+    ledModeControl: `${MQTT_BASE}/control/led/mode`,
+    configSoilStart: `${MQTT_BASE}/config/soil/pump_on_percent`,
+    configSoilStop: `${MQTT_BASE}/config/soil/pump_off_percent`,
+    configFanOn: `${MQTT_BASE}/config/fan/on_temperature_c`,
+    configFanOff: `${MQTT_BASE}/config/fan/off_temperature_c`,
+    configLdrDark: `${MQTT_BASE}/config/light/dark_raw`,
+    configLowWater: `${MQTT_BASE}/config/water/low_percent`,
+    configRainDelay: `${MQTT_BASE}/config/irrigation/rain_probability`,
+    configHumidityDelay: `${MQTT_BASE}/config/irrigation/humidity_percent`
+};
+
+const AUTOMATION_DEFAULTS = {
+    soilStartSetting: 30,
+    soilStopSetting: 45,
+    fanOnSetting: 30,
+    fanOffSetting: 28,
+    ldrDarkSetting: 1200,
+    lowWaterSetting: 20,
+    rainDelaySetting: 65,
+    humidityDelaySetting: 85
+};
+
+const AUTOMATION_CONFIG = [
+    { id: "soilStartSetting", topic: TOPICS.configSoilStart },
+    { id: "soilStopSetting", topic: TOPICS.configSoilStop },
+    { id: "fanOnSetting", topic: TOPICS.configFanOn },
+    { id: "fanOffSetting", topic: TOPICS.configFanOff },
+    { id: "ldrDarkSetting", topic: TOPICS.configLdrDark },
+    { id: "lowWaterSetting", topic: TOPICS.configLowWater },
+    { id: "rainDelaySetting", topic: TOPICS.configRainDelay },
+    { id: "humidityDelaySetting", topic: TOPICS.configHumidityDelay }
+];
+
+const AUTOMATION_CONFIG_BY_TOPIC = Object.fromEntries(
+    AUTOMATION_CONFIG.map(setting => [setting.topic, setting])
+);
+
+const actuatorModes = { pump: "AUTO", fan: "AUTO", led: "AUTO" };
+let lastSimulatorMarkerAt = 0;
+
+function markSensorUpdate() {
+    const fromSimulator = Date.now() - lastSimulatorMarkerAt < 7000;
+    document.getElementById("sensorSource").textContent =
+        fromSimulator ? "PC Simulator" : "Physical ESP32 / MQTT";
+    document.getElementById("sensorUpdated").textContent =
+        new Date().toLocaleTimeString("en-MY");
+}
+
 
 const MQTT_OPTIONS = {
 
@@ -784,12 +1320,18 @@ const MQTT_OPTIONS = {
 
     clean: true,
 
-    connectTimeout: 10000,
+    keepalive: 30,
 
-    reconnectPeriod: 3000
+    connectTimeout: 20000,
+
+    reconnectPeriod: 3000,
+
+    resubscribe: true,
+
+
+    protocolVersion: 4
 
 };
-
 
 // =================================================
 // CONNECT TO HIVEMQ
@@ -852,48 +1394,30 @@ client.on("connect", function () {
     // SUBSCRIBE TO SENSOR TOPICS
     // =============================================
 
-    client.subscribe(
-        "smartfarm/module1/soil"
-    );
-
-
-    client.subscribe(
-        "smartfarm/module2/temperature"
-    );
-
-
-    client.subscribe(
-        "smartfarm/module2/humidity"
-    );
-
-
-    client.subscribe(
-        "smartfarm/module3/water"
-    );
-
-
-    client.subscribe(
-        "smartfarm/module3/weight"
-    );
-
-
-    // =============================================
-    // SUBSCRIBE TO ACTUATOR FEEDBACK
-    // =============================================
-
-    client.subscribe(
-        "smartfarm/module1/pump"
-    );
-
-
-    client.subscribe(
-        "smartfarm/module2/fan"
-    );
-
-
-    client.subscribe(
-        "smartfarm/module2/led"
-    );
+    client.subscribe([
+        TOPICS.soil,
+        TOPICS.soilPercent,
+        TOPICS.temperature,
+        TOPICS.humidity,
+        TOPICS.light,
+        TOPICS.water,
+        TOPICS.waterPercent,
+        TOPICS.lowWater,
+        TOPICS.pumpLock,
+        TOPICS.irrigationRule,
+        TOPICS.rainProbability,
+        TOPICS.rainExpected,
+        TOPICS.weatherStatus,
+        TOPICS.source,
+        TOPICS.pump,
+        TOPICS.pumpMode,
+        TOPICS.fan,
+        TOPICS.fanMode,
+        TOPICS.led,
+        TOPICS.ledMode,
+        TOPICS.systemAlert,
+        ...AUTOMATION_CONFIG.map(setting => setting.topic)
+    ]);
 
 
     console.log(
@@ -913,6 +1437,19 @@ client.on("error", function (error) {
         "MQTT Error:",
         error
     );
+
+    setDisconnected("Connection error — retrying...");
+
+});
+
+
+// =================================================
+// MQTT RECONNECTING
+// =================================================
+
+client.on("reconnect", function () {
+
+    setConnecting("Reconnecting...");
 
 });
 
@@ -943,7 +1480,7 @@ client.on("close", function () {
 // SET DISCONNECTED
 // =================================================
 
-function setDisconnected() {
+function setDisconnected(message = "Disconnected — retrying...") {
 
     document
         .getElementById(
@@ -959,7 +1496,7 @@ function setDisconnected() {
             "connectionText"
         )
         .textContent =
-            "Disconnected";
+            message;
 
 
     const mqttStatus =
@@ -969,7 +1506,7 @@ function setDisconnected() {
 
 
     mqttStatus.textContent =
-        "Disconnected";
+        message;
 
 
     mqttStatus.className =
@@ -989,6 +1526,14 @@ client.on(
         const value =
             message.toString();
 
+        if (topic === TOPICS.source) {
+            if (value.trim().toLowerCase() === "pc-simulator") {
+                lastSimulatorMarkerAt = Date.now();
+                document.getElementById("sensorSource").textContent = "PC Simulator";
+            }
+            return;
+        }
+
 
         console.log(
             "MQTT:",
@@ -1004,16 +1549,25 @@ client.on(
 
         if (
             topic ===
-            "smartfarm/module1/soil"
+            TOPICS.soil
         ) {
 
             document
                 .getElementById(
-                    "soil"
+                    "soilRaw"
                 )
                 .textContent =
                     value;
 
+            markSensorUpdate();
+
+        }
+
+        else if (topic === TOPICS.soilPercent) {
+            const soilPercent = Number(value);
+            document.getElementById("soilPercent").textContent =
+                Number.isFinite(soilPercent) ? soilPercent.toFixed(1) : "--";
+            markSensorUpdate();
         }
 
 
@@ -1023,7 +1577,7 @@ client.on(
 
         else if (
             topic ===
-            "smartfarm/module2/temperature"
+            TOPICS.temperature
         ) {
 
             const temp =
@@ -1037,6 +1591,8 @@ client.on(
                 .textContent =
                     temp.toFixed(1);
 
+            markSensorUpdate();
+
         }
 
 
@@ -1046,7 +1602,7 @@ client.on(
 
         else if (
             topic ===
-            "smartfarm/module2/humidity"
+            TOPICS.humidity
         ) {
 
             const humidity =
@@ -1060,6 +1616,8 @@ client.on(
                 .textContent =
                     humidity.toFixed(1);
 
+            markSensorUpdate();
+
         }
 
 
@@ -1069,7 +1627,7 @@ client.on(
 
         else if (
             topic ===
-            "smartfarm/module3/water"
+            TOPICS.water
         ) {
 
             const water =
@@ -1078,10 +1636,12 @@ client.on(
 
             document
                 .getElementById(
-                    "water"
+                    "waterRaw"
                 )
                 .textContent =
                     value;
+
+            markSensorUpdate();
 
 
             document
@@ -1092,55 +1652,43 @@ client.on(
                     value;
 
 
-            if (water > 500) {
-
-                document
-                    .getElementById(
-                        "waterStatus"
-                    )
-                    .textContent =
-                        "Water Detected";
-
-            }
-
-            else {
-
-                document
-                    .getElementById(
-                        "waterStatus"
-                    )
-                    .textContent =
-                        "No Water Detected";
-
-            }
-
         }
 
+        else if (topic === TOPICS.waterPercent) {
+            const waterPercent = Number(value);
+            document.getElementById("waterPercent").textContent = waterPercent.toFixed(1);
+            document.getElementById("waterFeedback").textContent = `${waterPercent.toFixed(1)}%`;
+            markSensorUpdate();
+        }
 
-        // =========================================
-        // MODULE 3 - WEIGHT
-        // =========================================
+        else if (topic === TOPICS.light) {
+            document.getElementById("light").textContent = value;
+            markSensorUpdate();
+        }
 
-        else if (
-            topic ===
-            "smartfarm/module3/weight"
-        ) {
+        else if (topic === TOPICS.lowWater) {
+            document.getElementById("waterStatus").textContent =
+                value.toUpperCase() === "TRUE" ? "LOW WATER — safety lock active" : "Water level OK";
+        }
 
-            document
-                .getElementById(
-                    "weight"
-                )
-                .textContent =
-                    value;
+        else if (topic === TOPICS.pumpLock) {
+            document.getElementById("pumpLockFeedback").textContent = value;
+        }
 
+        else if (topic === TOPICS.irrigationRule) {
+            document.getElementById("irrigationRule").textContent = value;
+        }
 
-            document
-                .getElementById(
-                    "weightFeedback"
-                )
-                .textContent =
-                    value;
+        else if (topic === TOPICS.rainProbability) {
+            document.getElementById("rainProbability").textContent = value;
+        }
 
+        else if (topic === TOPICS.rainExpected) {
+            document.getElementById("rainExpected").textContent = value;
+        }
+
+        else if (topic === TOPICS.weatherStatus && value !== "OK") {
+            document.getElementById("systemAlert").textContent = `Weather status: ${value}`;
         }
 
 
@@ -1150,7 +1698,7 @@ client.on(
 
         else if (
             topic ===
-            "smartfarm/module1/pump"
+            TOPICS.pump
         ) {
 
             updateActuator(
@@ -1167,7 +1715,7 @@ client.on(
 
         else if (
             topic ===
-            "smartfarm/module2/fan"
+            TOPICS.fan
         ) {
 
             updateActuator(
@@ -1184,7 +1732,7 @@ client.on(
 
         else if (
             topic ===
-            "smartfarm/module2/led"
+            TOPICS.led
         ) {
 
             updateActuator(
@@ -1192,6 +1740,23 @@ client.on(
                 value
             );
 
+        }
+
+        else if (topic === TOPICS.pumpMode) updateActuatorMode("pump", value);
+        else if (topic === TOPICS.fanMode) updateActuatorMode("fan", value);
+        else if (topic === TOPICS.ledMode) updateActuatorMode("led", value);
+        else if (topic === TOPICS.systemAlert) {
+            document.getElementById("systemAlert").textContent = value;
+            if (value) console.warn("System alert:", value);
+        }
+
+        else if (AUTOMATION_CONFIG_BY_TOPIC[topic]) {
+            const setting = AUTOMATION_CONFIG_BY_TOPIC[topic];
+            const numericValue = Number(value);
+            if (Number.isFinite(numericValue)) {
+                document.getElementById(setting.id).value = numericValue;
+                setAutomationSettingsStatus("Settings synchronized from MQTT.", "success");
+            }
         }
 
     }
@@ -1263,10 +1828,7 @@ function controlPump(
     );
 
 
-    client.publish(
-        "smartfarm/control/pump",
-        state
-    );
+    publishManualCommand("pump", TOPICS.pumpControl, state);
 
 }
 
@@ -1298,10 +1860,7 @@ function controlFan(
     );
 
 
-    client.publish(
-        "smartfarm/control/fan",
-        state
-    );
+    publishManualCommand("fan", TOPICS.fanControl, state);
 
 }
 
@@ -1333,14 +1892,170 @@ function controlLED(
     );
 
 
-    client.publish(
-        "smartfarm/control/led",
-        state
-    );
+    publishManualCommand("led", TOPICS.ledControl, state);
 
 }
 
+
+function setConnecting(message = "Connecting...") {
+
+    document.getElementById("connectionDot").classList.remove("connected");
+    document.getElementById("connectionText").textContent = message;
+
+    const mqttStatus = document.getElementById("mqttStatus");
+    mqttStatus.textContent = message;
+    mqttStatus.className = "mqtt-disconnected";
+
+}
+
+
+function forceMqttReconnect(userRequested = false) {
+
+    if (client.connected) {
+        if (userRequested) document.getElementById("mqttStatus").textContent = "Connected";
+        return;
+    }
+
+    // MQTT.js already retries automatically. Do not interrupt an active
+    // connection attempt, because that can leave the client disconnecting.
+    if (client.reconnecting) {
+        setConnecting("Reconnecting...");
+        return;
+    }
+
+    setConnecting(userRequested ? "Reconnecting now..." : "Reconnecting...");
+
+    try {
+        client.reconnect();
+    } catch (error) {
+        console.warn("MQTT reconnect request failed; automatic retry continues.", error);
+    }
+
+}
+
+function updateActuatorMode(actuator, mode) {
+    const normalized = String(mode).toUpperCase();
+    if (!['AUTO', 'MANUAL'].includes(normalized)) return;
+    actuatorModes[actuator] = normalized;
+    document.getElementById(`${actuator}Mode`).textContent = normalized;
+    document.querySelectorAll(`.mode-button[data-actuator="${actuator}"]`).forEach(button => {
+        button.classList.toggle('active', button.dataset.mode === normalized);
+        button.classList.remove('pending');
+    });
+    document.querySelectorAll(`.manual-control-button[data-actuator="${actuator}"]`).forEach(button => {
+        button.disabled = normalized !== "MANUAL";
+        button.title = normalized === "MANUAL"
+            ? "Send a manual command"
+            : "Switch this actuator to MANUAL before using ON/OFF";
+    });
+}
+
+function setActuatorMode(actuator, mode) {
+    if (!client.connected) {
+        alert("MQTT is not connected.");
+        return;
+    }
+    const normalized = String(mode).toUpperCase();
+    if (!['AUTO', 'MANUAL'].includes(normalized)) return;
+
+    const topic = TOPICS[`${actuator}ModeControl`];
+    const previousMode = actuatorModes[actuator];
+
+    // Update immediately so the control panel never waits for the public MQTT
+    // broker round-trip. The ESP32 feedback topic remains the final authority.
+    updateActuatorMode(actuator, normalized);
+    document.querySelectorAll(`.mode-button[data-actuator="${actuator}"]`).forEach(button => {
+        button.classList.add('pending');
+    });
+
+    client.publish(topic, normalized, { qos: 1, retain: true }, error => {
+        document.querySelectorAll(`.mode-button[data-actuator="${actuator}"]`).forEach(button => {
+            button.classList.remove('pending');
+        });
+        if (error) {
+            updateActuatorMode(actuator, previousMode);
+            alert(`Unable to switch ${actuator.toUpperCase()} mode. Please try again.`);
+        }
+    });
+}
+
+function publishManualCommand(actuator, topic, state) {
+    if (actuatorModes[actuator] !== "MANUAL") {
+        alert(`Switch ${actuator.toUpperCase()} to MANUAL before sending ON/OFF commands.`);
+        return;
+    }
+    client.publish(topic, state, { qos: 0, retain: false });
+}
+
+function setAutomationSettingsStatus(message, style = "") {
+    const element = document.getElementById("automationSettingsStatus");
+    element.textContent = message;
+    element.className = style;
+}
+
+function readAutomationSettings() {
+    const values = {};
+    for (const setting of AUTOMATION_CONFIG) {
+        const input = document.getElementById(setting.id);
+        const value = Number(input.value);
+        const minimum = Number(input.min);
+        const maximum = Number(input.max);
+        if (!Number.isFinite(value) || value < minimum || value > maximum) {
+            throw new Error(`${input.previousElementSibling.textContent} must be between ${minimum} and ${maximum}.`);
+        }
+        values[setting.id] = value;
+    }
+    if (values.soilStopSetting <= values.soilStartSetting) {
+        throw new Error("Pump demand clear threshold must be higher than the pump start threshold.");
+    }
+    if (values.fanOnSetting <= values.fanOffSetting) {
+        throw new Error("Fan ON temperature must be higher than the fan OFF temperature.");
+    }
+    return values;
+}
+
+function saveAutomationSettings() {
+    if (!client.connected) {
+        setAutomationSettingsStatus("MQTT is not connected. Settings were not sent.", "error");
+        return;
+    }
+
+    let values;
+    try {
+        values = readAutomationSettings();
+    } catch (error) {
+        setAutomationSettingsStatus(error.message, "error");
+        return;
+    }
+
+    setAutomationSettingsStatus("Applying settings...", "");
+    let pending = AUTOMATION_CONFIG.length;
+    let failed = false;
+    for (const setting of AUTOMATION_CONFIG) {
+        client.publish(setting.topic, String(values[setting.id]), { qos: 1, retain: true }, error => {
+            failed = failed || Boolean(error);
+            pending -= 1;
+            if (pending === 0) {
+                setAutomationSettingsStatus(
+                    failed ? "Some settings could not be sent. Please try again." : "Settings saved to MQTT; ESP32 and Node-RED will apply them.",
+                    failed ? "error" : "success"
+                );
+            }
+        });
+    }
+}
+
+function restoreAutomationDefaults() {
+    for (const [id, value] of Object.entries(AUTOMATION_DEFAULTS)) {
+        document.getElementById(id).value = value;
+    }
+    saveAutomationSettings();
+}
+
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="supabase-dashboard.js"></script>
 
 
 </body>

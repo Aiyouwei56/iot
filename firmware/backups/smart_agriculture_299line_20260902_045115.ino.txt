@@ -1,0 +1,300 @@
+#include <WiFi.h>
+#include <WiFiManager.h>
+#include <PubSubClient.h>
+#include <DHT.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+// AgriSense canonical firmware for Modules 1-3.
+// Control priority: LOW-WATER SAFETY LOCK > MANUAL > AUTO.
+
+const char* MQTT_HOST = "broker.hivemq.com";
+const uint16_t MQTT_PORT = 1883;
+#define MQTT_BASE "smartfarm/rsd2s3g3"
+
+// ── MQTT Topics ──────────────────────────────────────────────────────────────
+#define TOPIC_SOIL           MQTT_BASE "/module1/soil"
+#define TOPIC_SOIL_PERCENT   MQTT_BASE "/module1/soil_percent"
+#define TOPIC_PUMP           MQTT_BASE "/module1/pump"
+#define TOPIC_PUMP_MODE      MQTT_BASE "/module1/pump/mode"
+
+#define TOPIC_TEMPERATURE    MQTT_BASE "/module2/temperature"
+#define TOPIC_HUMIDITY       MQTT_BASE "/module2/humidity"
+#define TOPIC_LIGHT          MQTT_BASE "/module2/light"
+#define TOPIC_FAN            MQTT_BASE "/module2/fan"
+#define TOPIC_FAN_MODE       MQTT_BASE "/module2/fan/mode"
+#define TOPIC_LED            MQTT_BASE "/module2/led"
+#define TOPIC_LED_MODE       MQTT_BASE "/module2/led/mode"
+
+#define TOPIC_WATER          MQTT_BASE "/module3/water"
+#define TOPIC_WATER_PERCENT  MQTT_BASE "/module3/water_percent"
+#define TOPIC_LOW_WATER      MQTT_BASE "/module3/low_water"
+#define TOPIC_PUMP_LOCK      MQTT_BASE "/module3/pump_lock"
+
+#define TOPIC_MODULE4_STATUS MQTT_BASE "/module4/status"
+#define TOPIC_MODULE4_ALERT  MQTT_BASE "/module4/alert"
+
+#define TOPIC_SYSTEM_ALERT   MQTT_BASE "/system/alert"
+
+#define TOPIC_CONTROL_PUMP      MQTT_BASE "/control/pump"
+#define TOPIC_CONTROL_PUMP_MODE MQTT_BASE "/control/pump/mode"
+#define TOPIC_CONTROL_FAN       MQTT_BASE "/control/fan"
+#define TOPIC_CONTROL_FAN_MODE  MQTT_BASE "/control/fan/mode"
+#define TOPIC_CONTROL_LED       MQTT_BASE "/control/led"
+#define TOPIC_CONTROL_LED_MODE  MQTT_BASE "/control/led/mode"
+
+// ── Confirmed Pin Assignment ─────────────────────────────────────────────────
+const uint8_t SOIL_PIN        = 34;  // ADC1_CH6
+const uint8_t WATER_LEVEL_PIN = 35;  // ADC1_CH7
+const uint8_t LDR_PIN         = 32;  // ADC1_CH4
+const uint8_t DHT_PIN         = 4;   // DHT11
+
+const uint8_t PUMP_RELAY_PIN  = 26;  
+const uint8_t FAN_RELAY_PIN   = 27;  
+const uint8_t GROW_LED_PIN    = 18;  
+const uint8_t RGB_RED_PIN     = 16;  
+const uint8_t RGB_GREEN_PIN   = 17;  
+const uint8_t RGB_BLUE_PIN    = 19;  
+const uint8_t BUZZER_PIN      = 25;  
+
+const uint8_t LCD_SDA_PIN     = 21;  
+const uint8_t LCD_SCL_PIN     = 22;  
+const uint8_t PREV_BUTTON_PIN = 13;  
+const uint8_t NEXT_BUTTON_PIN = 14;  
+
+const bool RELAYS_ACTIVE_LOW = false; // 高电平触发；若继电器为低电平触发请改为 true
+
+// ── Hardware & Global Objects ────────────────────────────────────────────────
+DHT dht(DHT_PIN, DHT11);
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+WiFiClient espClient;
+PubSubClient client(espClient);
+
+// ── State Variables ──────────────────────────────────────────────────────────
+bool pumpModeAuto = true;
+bool fanModeAuto  = true;
+bool ledModeAuto  = true;
+
+bool pumpState = false;
+bool fanState  = false;
+bool ledState  = false;
+
+bool lowWaterLock = false;
+
+float tempVal = 0.0, humVal = 0.0;
+int soilRaw = 0, soilPct = 0;
+int waterRaw = 0, waterPct = 0;
+int lightRaw = 0;
+
+uint8_t lcdPage = 0;
+const uint8_t TOTAL_PAGES = 3;
+
+unsigned long lastSensorRead = 0;
+String mod4Alert = "OK";
+
+// ── Helper Functions ─────────────────────────────────────────────────────────
+
+void setDeviceState(uint8_t pin, bool state) {
+  digitalWrite(pin, RELAYS_ACTIVE_LOW ? !state : state);
+}
+
+void setRGB(bool r, bool g, bool b) {
+  digitalWrite(RGB_RED_PIN, r ? HIGH : LOW);
+  digitalWrite(RGB_GREEN_PIN, g ? HIGH : LOW);
+  digitalWrite(RGB_BLUE_PIN, b ? HIGH : LOW);
+}
+
+void mqttCallback(char* topic, byte* payload, unsigned int length) {
+  String message;
+  for (unsigned int i = 0; i < length; i++) message += (char)payload[i];
+  String top = String(topic);
+
+  // Pump Controls
+  if (top == TOPIC_CONTROL_PUMP_MODE) {
+    pumpModeAuto = (message == "AUTO");
+  } else if (top == TOPIC_CONTROL_PUMP && !pumpModeAuto) {
+    pumpState = (message == "ON");
+  }
+
+  // Fan Controls
+  if (top == TOPIC_CONTROL_FAN_MODE) {
+    fanModeAuto = (message == "AUTO");
+  } else if (top == TOPIC_CONTROL_FAN && !fanModeAuto) {
+    fanState = (message == "ON");
+  }
+
+  // LED Controls
+  if (top == TOPIC_CONTROL_LED_MODE) {
+    ledModeAuto = (message == "AUTO");
+  } else if (top == TOPIC_CONTROL_LED && !ledModeAuto) {
+    ledState = (message == "ON");
+  }
+
+  // Module 4 Alerts
+  if (top == TOPIC_MODULE4_ALERT) {
+    mod4Alert = message;
+    if (message == "WARNING" || message == "DANGER") {
+      setRGB(true, false, false); // Red
+      digitalWrite(BUZZER_PIN, HIGH);
+    } else {
+      setRGB(false, true, false); // Green
+      digitalWrite(BUZZER_PIN, LOW);
+    }
+  }
+}
+
+void reconnectMQTT() {
+  while (!client.connected()) {
+    String clientId = "AgriSense-ESP32-" + String(random(0xffff), HEX);
+    if (client.connect(clientId.c_str())) {
+      client.subscribe(TOPIC_CONTROL_PUMP);
+      client.subscribe(TOPIC_CONTROL_PUMP_MODE);
+      client.subscribe(TOPIC_CONTROL_FAN);
+      client.subscribe(TOPIC_CONTROL_FAN_MODE);
+      client.subscribe(TOPIC_CONTROL_LED);
+      client.subscribe(TOPIC_CONTROL_LED_MODE);
+      client.subscribe(TOPIC_MODULE4_ALERT);
+    } else {
+      delay(3000);
+    }
+  }
+}
+
+void readSensors() {
+  tempVal  = dht.readTemperature();
+  humVal   = dht.readHumidity();
+  soilRaw  = analogRead(SOIL_PIN);
+  waterRaw = analogRead(WATER_LEVEL_PIN);
+  lightRaw = analogRead(LDR_PIN);
+
+  soilPct  = map(constrain(soilRaw, 1000, 3500), 3500, 1000, 0, 100);
+  waterPct = map(constrain(waterRaw, 0, 3000), 0, 3000, 0, 100);
+
+  // Module 3 Logic: Low Water Safety Lock
+  lowWaterLock = (waterPct < 15);
+
+  // Control Priority Logic: LOW-WATER SAFETY LOCK > MANUAL > AUTO
+  if (lowWaterLock) {
+    pumpState = false; // 强制锁死关泵
+  } else if (pumpModeAuto) {
+    pumpState = (soilPct < 30); // 自动模式：土壤湿度低于30%开泵
+  }
+
+  if (fanModeAuto && !isnan(tempVal)) {
+    fanState = (tempVal > 30.0); // 自动模式：温度高于30℃开风扇
+  }
+
+  if (ledModeAuto) {
+    ledState = (lightRaw < 1500); // 自动模式：光照低时开启补光灯
+  }
+
+  // 执行硬件控制
+  setDeviceState(PUMP_RELAY_PIN, pumpState);
+  setDeviceState(FAN_RELAY_PIN, fanState);
+  digitalWrite(GROW_LED_PIN, ledState ? HIGH : LOW);
+
+  // 发布 MQTT 数据
+  client.publish(TOPIC_SOIL_PERCENT, String(soilPct).c_str());
+  client.publish(TOPIC_PUMP, pumpState ? "ON" : "OFF");
+  client.publish(TOPIC_TEMPERATURE, String(tempVal, 1).c_str());
+  client.publish(TOPIC_HUMIDITY, String(humVal, 1).c_str());
+  client.publish(TOPIC_FAN, fanState ? "ON" : "OFF");
+  client.publish(TOPIC_WATER_PERCENT, String(waterPct).c_str());
+  client.publish(TOPIC_PUMP_LOCK, lowWaterLock ? "LOCKED" : "UNLOCKED");
+}
+
+void updateLCD() {
+  lcd.clear();
+  switch (lcdPage) {
+    case 0:
+      lcd.setCursor(0, 0);
+      lcd.print("M1 Soil:" + String(soilPct) + "%");
+      lcd.setCursor(0, 1);
+      lcd.print("Pump:" + String(pumpState ? "ON " : "OFF") + (lowWaterLock ? " [LOCK]" : ""));
+      break;
+    case 1:
+      lcd.setCursor(0, 0);
+      lcd.print("T:" + String((int)tempVal) + "C H:" + String((int)humVal) + "%");
+      lcd.setCursor(0, 1);
+      lcd.print("Fan:" + String(fanState ? "ON " : "OFF") + " LED:" + String(ledState ? "ON" : "OFF"));
+      break;
+    case 2:
+      lcd.setCursor(0, 0);
+      lcd.print("M3 Water:" + String(waterPct) + "%");
+      lcd.setCursor(0, 1);
+      lcd.print("M4 Stat:" + mod4Alert);
+      break;
+  }
+}
+
+void handleButtons() {
+  if (digitalRead(NEXT_BUTTON_PIN) == LOW) {
+    lcdPage = (lcdPage + 1) % TOTAL_PAGES;
+    updateLCD();
+    delay(200);
+  }
+  if (digitalRead(PREV_BUTTON_PIN) == LOW) {
+    lcdPage = (lcdPage == 0) ? TOTAL_PAGES - 1 : lcdPage - 1;
+    updateLCD();
+    delay(200);
+  }
+}
+
+// ── Setup & Main Loop ────────────────────────────────────────────────────────
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(PUMP_RELAY_PIN, OUTPUT);
+  pinMode(FAN_RELAY_PIN, OUTPUT);
+  pinMode(GROW_LED_PIN, OUTPUT);
+  pinMode(RGB_RED_PIN, OUTPUT);
+  pinMode(RGB_GREEN_PIN, OUTPUT);
+  pinMode(RGB_BLUE_PIN, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+
+  pinMode(PREV_BUTTON_PIN, INPUT_PULLUP);
+  pinMode(NEXT_BUTTON_PIN, INPUT_PULLUP);
+
+  // 初始输出默认值
+  setDeviceState(PUMP_RELAY_PIN, false);
+  setDeviceState(FAN_RELAY_PIN, false);
+  digitalWrite(GROW_LED_PIN, LOW);
+  setRGB(false, true, false); // 默认绿色正常
+
+  Wire.begin(LCD_SDA_PIN, LCD_SCL_PIN);
+  lcd.init();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("AgriSense Init...");
+
+  dht.begin();
+
+  // WiFiManager 自动配网
+  WiFiManager wm;
+  wm.autoConnect("AgriSense_Setup");
+
+  lcd.clear();
+  lcd.print("WiFi Connected!");
+  delay(1000);
+
+  client.setServer(MQTT_HOST, MQTT_PORT);
+  client.setCallback(mqttCallback);
+}
+
+void loop() {
+  if (!client.connected()) {
+    reconnectMQTT();
+  }
+  client.loop();
+
+  handleButtons();
+
+  // 每 2 秒读取一次传感器并更新屏与数据
+  if (millis() - lastSensorRead > 2000) {
+    lastSensorRead = millis();
+    readSensors();
+    updateLCD();
+  }
+}
+

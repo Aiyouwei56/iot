@@ -1,0 +1,885 @@
+[
+  {
+    "id": "tab-smartfarm-cloud",
+    "type": "tab",
+    "label": "Smart Farm - MQTT to Supabase",
+    "disabled": false,
+    "info": "Caches individual MQTT topics, writes one combined sensor snapshot every 15 seconds, updates module health, and records confirmed dashboard commands.",
+    "env": []
+  },
+  {
+    "id": "broker-hivemq-public",
+    "type": "mqtt-broker",
+    "name": "HiveMQ Public Broker",
+    "broker": "broker.hivemq.com",
+    "port": "1883",
+    "clientid": "SmartFarm_NodeRED_vysijpet_bridge",
+    "autoConnect": true,
+    "usetls": false,
+    "protocolVersion": "4",
+    "keepalive": "60",
+    "cleansession": true,
+    "autoUnsubscribe": true,
+    "birthTopic": "",
+    "birthQos": "0",
+    "birthPayload": "",
+    "birthMsg": {},
+    "closeTopic": "",
+    "closeQos": "0",
+    "closePayload": "",
+    "closeMsg": {},
+    "willTopic": "",
+    "willQos": "0",
+    "willPayload": "",
+    "willMsg": {}
+  },
+  {
+    "id": "mqtt-all-smartfarm",
+    "type": "mqtt in",
+    "z": "tab-smartfarm-cloud",
+    "name": "AgriSense Team Topics",
+    "topic": "smartfarm/rsd2s3g3/#",
+    "qos": "0",
+    "datatype": "auto-detect",
+    "broker": "broker-hivemq-public",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "fn-cache-mqtt"
+      ]
+    ]
+  },
+  {
+    "id": "fn-cache-mqtt",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Cache Scope-Aligned MQTT State",
+    "func": "const state = flow.get('smartFarmState') || {\n    pump_state: 'UNKNOWN', fan_state: 'UNKNOWN', led_state: 'UNKNOWN',\n    pump_mode: 'AUTO', fan_mode: 'AUTO', led_mode: 'AUTO',\n    pump_lock: true, lastSeen: {}, pending: {}\n};\nconst topic = String(msg.topic || '');\nconst raw = String(msg.payload ?? '').trim();\nconst upper = raw.toUpperCase();\nconst now = Date.now();\nlet actuatorEvent = null;\nlet alertEvent = null;\n\nconst numericTopics = {\n    'smartfarm/rsd2s3g3/module1/soil': 'soil_raw',\n    'smartfarm/rsd2s3g3/module1/soil_percent': 'soil_percent',\n    'smartfarm/rsd2s3g3/module2/temperature': 'temperature_c',\n    'smartfarm/rsd2s3g3/module2/humidity': 'humidity_percent',\n    'smartfarm/rsd2s3g3/module2/light': 'light_raw',\n    'smartfarm/rsd2s3g3/module3/water': 'water_raw',\n    'smartfarm/rsd2s3g3/module3/water_percent': 'water_level_percent',\n    'smartfarm/rsd2s3g3/module4/yellowing': 'module4_yellowing',\n    'smartfarm/rsd2s3g3/module4/wilting': 'module4_stress',\n    'smartfarm/rsd2s3g3/module4/risk': 'module4_risk'\n};\nif (numericTopics[topic]) {\n    const value = Number(raw);\n    if (Number.isFinite(value)) state[numericTopics[topic]] = value;\n}\n\nconst modeTopics = {\n    'smartfarm/rsd2s3g3/module1/pump/mode': 'pump_mode',\n    'smartfarm/rsd2s3g3/control/pump/mode': 'pump_mode',\n    'smartfarm/rsd2s3g3/module2/fan/mode': 'fan_mode',\n    'smartfarm/rsd2s3g3/control/fan/mode': 'fan_mode',\n    'smartfarm/rsd2s3g3/module2/led/mode': 'led_mode',\n    'smartfarm/rsd2s3g3/control/led/mode': 'led_mode'\n};\nif (modeTopics[topic] && ['AUTO', 'MANUAL'].includes(upper)) state[modeTopics[topic]] = upper;\nif (topic === 'smartfarm/rsd2s3g3/module3/pump_lock') state.pump_lock = upper === 'LOCKED';\nif (topic === 'smartfarm/rsd2s3g3/module4/status') state.module4_status = upper;\n\nconst moduleMatch = topic.match(/^smartfarm\\/rsd2s3g3\\/module([1-4])\\//);\nif (moduleMatch) state.lastSeen[moduleMatch[1]] = now;\n\nconst controls = {\n    'smartfarm/rsd2s3g3/control/pump': { actuator: 'PUMP', module_id: 1, stateKey: 'pump_state', modeKey: 'pump_mode' },\n    'smartfarm/rsd2s3g3/control/fan': { actuator: 'FAN', module_id: 2, stateKey: 'fan_state', modeKey: 'fan_mode' },\n    'smartfarm/rsd2s3g3/control/led': { actuator: 'GROW_LED', module_id: 2, stateKey: 'led_state', modeKey: 'led_mode' }\n};\nconst feedback = {\n    'smartfarm/rsd2s3g3/module1/pump': { actuator: 'PUMP', module_id: 1, stateKey: 'pump_state', modeKey: 'pump_mode' },\n    'smartfarm/rsd2s3g3/module2/fan': { actuator: 'FAN', module_id: 2, stateKey: 'fan_state', modeKey: 'fan_mode' },\n    'smartfarm/rsd2s3g3/module2/led': { actuator: 'GROW_LED', module_id: 2, stateKey: 'led_state', modeKey: 'led_mode' }\n};\n\nif (controls[topic] && ['ON', 'OFF'].includes(upper)) {\n    const command = controls[topic];\n    state.pending[command.actuator] = {\n        requested_action: upper, module_id: command.module_id,\n        control_mode: state[command.modeKey] || 'MANUAL', sent_at: now\n    };\n}\nif (feedback[topic] && ['ON', 'OFF'].includes(upper)) {\n    const result = feedback[topic];\n    state[result.stateKey] = upper;\n    const pending = state.pending[result.actuator];\n    if (pending && now - pending.sent_at <= 20000) {\n        const safetyRejected = result.actuator === 'PUMP' && pending.requested_action === 'ON' && state.pump_lock;\n        actuatorEvent = { payload: {\n            module_id: pending.module_id, actuator: result.actuator,\n            requested_action: pending.requested_action, actual_state: upper,\n            control_mode: pending.control_mode, command_source: 'DASHBOARD',\n            result: safetyRejected ? 'REJECTED' : (pending.requested_action === upper ? 'ACCEPTED' : 'FAILED'),\n            reason: safetyRejected ? 'Low-water safety lock' : 'MQTT feedback received by Node-RED'\n        }};\n        delete state.pending[result.actuator];\n    }\n}\n\nif (topic === 'smartfarm/rsd2s3g3/module4/alert' && raw) {\n    alertEvent = { payload: { module_id: 4, alert_type: 'CROP_HEALTH',\n        severity: state.module4_status === 'RED' ? 'CRITICAL' : 'WARNING',\n        message: raw, acknowledged: false } };\n} else if (topic === 'smartfarm/rsd2s3g3/system/alert' && raw) {\n    alertEvent = { payload: { module_id: null, alert_type: 'SYSTEM',\n        severity: upper.includes('LOCK') ? 'CRITICAL' : 'WARNING',\n        message: raw, acknowledged: false } };\n}\n\nflow.set('smartFarmState', state);\nconst decisionTopics = new Set([\n    'smartfarm/rsd2s3g3/module1/soil', 'smartfarm/rsd2s3g3/module1/soil_percent',\n    'smartfarm/rsd2s3g3/module2/humidity', 'smartfarm/rsd2s3g3/module3/pump_lock'\n]);\nconst decisionTrigger = decisionTopics.has(topic) ? { topic, payload: state } : null;\nreturn [actuatorEvent, alertEvent, decisionTrigger];",
+    "outputs": 3,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 430,
+    "y": 120,
+    "wires": [
+      [
+        "change-kind-actuator"
+      ],
+      [
+        "change-kind-alert"
+      ],
+      [
+        "fn-irrigation-decision"
+      ]
+    ]
+  },
+  {
+    "id": "inject-snapshot",
+    "type": "inject",
+    "z": "tab-smartfarm-cloud",
+    "name": "Every 15 seconds",
+    "props": [
+      {
+        "p": "payload"
+      },
+      {
+        "p": "topic",
+        "vt": "str"
+      }
+    ],
+    "repeat": "15",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "5",
+    "topic": "snapshot",
+    "payload": "",
+    "payloadType": "date",
+    "x": 150,
+    "y": 260,
+    "wires": [
+      [
+        "fn-build-snapshot"
+      ]
+    ]
+  },
+  {
+    "id": "fn-build-snapshot",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Build Scope-Aligned Sensor Snapshot",
+    "func": "const state = flow.get('smartFarmState') || {};\nconst sensorKeys = ['soil_raw', 'soil_percent', 'temperature_c', 'humidity_percent', 'light_raw', 'water_raw', 'water_level_percent'];\nconst hasAnySensor = sensorKeys.some(key => Number.isFinite(state[key]));\nif (!hasAnySensor) return null;\nfunction ranged(value, minimum, maximum) {\n    return Number.isFinite(value) && value >= minimum && value <= maximum ? value : null;\n}\nconst complete = sensorKeys.every(key => Number.isFinite(state[key]));\nmsg.payload = {\n    device_id: 'agrisense-rsd2s3g3-esp32',\n    soil_raw: ranged(state.soil_raw, 0, 4095),\n    soil_percent: ranged(state.soil_percent, 0, 100),\n    temperature_c: ranged(state.temperature_c, -40, 85),\n    humidity_percent: ranged(state.humidity_percent, 0, 100),\n    light_raw: ranged(state.light_raw, 0, 4095),\n    water_raw: ranged(state.water_raw, 0, 4095),\n    water_level_percent: ranged(state.water_level_percent, 0, 100),\n    pump_state: state.pump_state || 'UNKNOWN', fan_state: state.fan_state || 'UNKNOWN',\n    led_state: state.led_state || 'UNKNOWN', pump_mode: state.pump_mode || 'AUTO',\n    fan_mode: state.fan_mode || 'AUTO', led_mode: state.led_mode || 'AUTO',\n    pump_lock: Boolean(state.pump_lock),\n    data_quality: complete ? 'VALID' : 'SUSPECT',\n    metadata: { source: 'node-red', mqtt_broker: 'broker.hivemq.com', snapshot_complete: complete }\n};\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 410,
+    "y": 260,
+    "wires": [
+      [
+        "fn-attach-source"
+      ]
+    ]
+  },
+  {
+    "id": "fn-sensor-request",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "POST sensor_data",
+    "func": "const base = env.get('SUPABASE_URL');\nconst key = env.get('SUPABASE_PUBLISHABLE_KEY');\nif (!base || !key) { node.error('Missing Supabase environment variables', msg); return null; }\nmsg.method = 'POST';\nmsg.url = base.replace(/\\/$/, '') + '/rest/v1/sensor_data';\nmsg.headers = {\n    apikey: key,\n    Authorization: 'Bearer ' + key,\n    'Content-Type': 'application/json',\n    Prefer: 'return=minimal'\n};\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 650,
+    "y": 260,
+    "wires": [
+      [
+        "http-sensor-data"
+      ]
+    ]
+  },
+  {
+    "id": "http-sensor-data",
+    "type": "http request",
+    "z": "tab-smartfarm-cloud",
+    "name": "Supabase: Sensor Snapshot",
+    "method": "use",
+    "ret": "txt",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": [],
+    "x": 900,
+    "y": 260,
+    "wires": [
+      [
+        "fn-handle-write-result"
+      ]
+    ]
+  },
+  {
+    "id": "inject-module-status",
+    "type": "inject",
+    "z": "tab-smartfarm-cloud",
+    "name": "Update status every 30 seconds",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "30",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "8",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 170,
+    "y": 360,
+    "wires": [
+      [
+        "fn-build-module-status"
+      ]
+    ]
+  },
+  {
+    "id": "fn-build-module-status",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Build Module Health Updates",
+    "func": "const state = flow.get('smartFarmState') || { lastSeen: {} };\nconst now = Date.now();\nconst names = {\n    1: 'Irrigation',\n    2: 'Environment Monitoring',\n    3: 'Water Tank and Resource Management',\n    4: 'Crop Health and Visual Monitoring'\n};\nconst updates = Object.keys(names).map(id => {\n    const lastSeen = state.lastSeen?.[id];\n    const healthy = lastSeen && now - lastSeen <= 45000;\n    return {\n        moduleId: Number(id),\n        payload: {\n            module_name: names[id],\n            health_status: healthy ? 'HEALTHY' : 'OFFLINE',\n            error_code: healthy ? null : 'NO_RECENT_MQTT',\n            message: healthy ? 'Recent MQTT data received' : 'No MQTT data in the last 45 seconds',\n            last_seen: lastSeen ? new Date(lastSeen).toISOString() : null\n        }\n    };\n});\nreturn [updates];",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 450,
+    "y": 360,
+    "wires": [
+      [
+        "fn-module-request"
+      ]
+    ]
+  },
+  {
+    "id": "fn-module-request",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "PATCH module_status",
+    "func": "const base = env.get('SUPABASE_URL');\nconst key = env.get('SUPABASE_PUBLISHABLE_KEY');\nif (!base || !key) { node.error('Missing Supabase environment variables', msg); return null; }\nmsg.method = 'PATCH';\nmsg.url = base.replace(/\\/$/, '') + '/rest/v1/module_status?module_id=eq.' + msg.moduleId;\nmsg.headers = {\n    apikey: key,\n    Authorization: 'Bearer ' + key,\n    'Content-Type': 'application/json',\n    Prefer: 'return=minimal'\n};\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 690,
+    "y": 360,
+    "wires": [
+      [
+        "http-module-status"
+      ]
+    ]
+  },
+  {
+    "id": "http-module-status",
+    "type": "http request",
+    "z": "tab-smartfarm-cloud",
+    "name": "Supabase: Module Status",
+    "method": "use",
+    "ret": "txt",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": [],
+    "x": 920,
+    "y": 360,
+    "wires": [
+      [
+        "fn-handle-write-result"
+      ]
+    ]
+  },
+  {
+    "id": "fn-actuator-request",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "POST actuator_events",
+    "func": "const base = env.get('SUPABASE_URL');\nconst key = env.get('SUPABASE_PUBLISHABLE_KEY');\nif (!base || !key) { node.error('Missing Supabase environment variables', msg); return null; }\nmsg.method = 'POST';\nmsg.url = base.replace(/\\/$/, '') + '/rest/v1/actuator_events';\nmsg.headers = { apikey: key, Authorization: 'Bearer ' + key, 'Content-Type': 'application/json', Prefer: 'return=minimal' };\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 700,
+    "y": 100,
+    "wires": [
+      [
+        "http-actuator-events"
+      ]
+    ]
+  },
+  {
+    "id": "http-actuator-events",
+    "type": "http request",
+    "z": "tab-smartfarm-cloud",
+    "name": "Supabase: Actuator Event",
+    "method": "use",
+    "ret": "txt",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 930,
+    "y": 100,
+    "wires": [
+      [
+        "debug-supabase"
+      ]
+    ]
+  },
+  {
+    "id": "fn-alert-request",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "POST alerts",
+    "func": "const base = env.get('SUPABASE_URL');\nconst key = env.get('SUPABASE_PUBLISHABLE_KEY');\nif (!base || !key) { node.error('Missing Supabase environment variables', msg); return null; }\nmsg.method = 'POST';\nmsg.url = base.replace(/\\/$/, '') + '/rest/v1/alerts';\nmsg.headers = { apikey: key, Authorization: 'Bearer ' + key, 'Content-Type': 'application/json', Prefer: 'return=minimal' };\nmsg.payload = JSON.stringify(msg.payload);\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 680,
+    "y": 160,
+    "wires": [
+      [
+        "http-alerts"
+      ]
+    ]
+  },
+  {
+    "id": "http-alerts",
+    "type": "http request",
+    "z": "tab-smartfarm-cloud",
+    "name": "Supabase: Alert",
+    "method": "use",
+    "ret": "txt",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": false,
+    "headers": [],
+    "x": 900,
+    "y": 160,
+    "wires": [
+      [
+        "debug-supabase"
+      ]
+    ]
+  },
+  {
+    "id": "catch-flow-errors",
+    "type": "catch",
+    "z": "tab-smartfarm-cloud",
+    "name": "Catch Flow Errors",
+    "scope": null,
+    "uncaught": false,
+    "x": 170,
+    "y": 460,
+    "wires": [
+      [
+        "debug-errors"
+      ]
+    ]
+  },
+  {
+    "id": "debug-errors",
+    "type": "debug",
+    "z": "tab-smartfarm-cloud",
+    "name": "Errors",
+    "active": true,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": true,
+    "complete": "true",
+    "targetType": "full",
+    "statusVal": "error.message",
+    "statusType": "msg",
+    "x": 390,
+    "y": 460,
+    "wires": []
+  },
+  {
+    "id": "debug-supabase",
+    "type": "debug",
+    "z": "tab-smartfarm-cloud",
+    "name": "Supabase HTTP Status",
+    "active": false,
+    "tosidebar": true,
+    "console": false,
+    "tostatus": false,
+    "complete": "statusCode",
+    "targetType": "msg",
+    "statusVal": "",
+    "statusType": "auto",
+    "x": 1160,
+    "y": 260,
+    "wires": []
+  },
+  {
+    "id": "mqtt-simulator-source",
+    "type": "mqtt in",
+    "z": "tab-smartfarm-cloud",
+    "name": "Simulator Source Marker",
+    "topic": "smartfarm/rsd2s3g3/system/source",
+    "qos": "0",
+    "datatype": "auto-detect",
+    "broker": "broker-hivemq-public",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 150,
+    "y": 200,
+    "wires": [
+      [
+        "fn-set-source"
+      ]
+    ]
+  },
+  {
+    "id": "fn-set-source",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Remember Recent Data Source",
+    "func": "const state = flow.get('smartFarmState') || {};\nstate.source = String(msg.payload || '');\nstate.sourceSeen = Date.now();\nflow.set('smartFarmState', state);\nreturn null;",
+    "outputs": 0,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 420,
+    "y": 200,
+    "wires": []
+  },
+  {
+    "id": "fn-attach-source",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Label PC Simulator Data",
+    "func": "const state = flow.get('smartFarmState') || {};\nconst simulated = state.source === 'pc-simulator' && Date.now() - Number(state.sourceSeen || 0) < 10000;\nif (simulated) {\n    msg.payload.device_id = 'pc-simulator';\n    msg.payload.metadata.source = 'pc-simulator-via-node-red';\n    msg.payload.metadata.simulated = true;\n}\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 650,
+    "y": 220,
+    "wires": [
+      [
+        "change-kind-sensor"
+      ]
+    ]
+  },
+  {
+    "id": "change-kind-sensor",
+    "type": "change",
+    "z": "tab-smartfarm-cloud",
+    "name": "Queue sensor_data",
+    "rules": [
+      {
+        "t": "set",
+        "p": "writeKind",
+        "pt": "msg",
+        "to": "sensor_data",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 880,
+    "y": 220,
+    "wires": [
+      [
+        "fn-enqueue-write"
+      ]
+    ]
+  },
+  {
+    "id": "change-kind-actuator",
+    "type": "change",
+    "z": "tab-smartfarm-cloud",
+    "name": "Queue actuator_events",
+    "rules": [
+      {
+        "t": "set",
+        "p": "writeKind",
+        "pt": "msg",
+        "to": "actuator_events",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 680,
+    "y": 80,
+    "wires": [
+      [
+        "fn-enqueue-write"
+      ]
+    ]
+  },
+  {
+    "id": "change-kind-alert",
+    "type": "change",
+    "z": "tab-smartfarm-cloud",
+    "name": "Queue alerts",
+    "rules": [
+      {
+        "t": "set",
+        "p": "writeKind",
+        "pt": "msg",
+        "to": "alerts",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 650,
+    "y": 140,
+    "wires": [
+      [
+        "fn-enqueue-write"
+      ]
+    ]
+  },
+  {
+    "id": "fn-enqueue-write",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Persist Before Upload",
+    "func": "const allowedKinds = ['sensor_data', 'actuator_events', 'alerts'];\nif (!allowedKinds.includes(msg.writeKind) || !msg.payload) return null;\n\nlet counter = Number(flow.get('supabaseEventCounter') || 0);\ncounter = (counter + 1) % 1000;\nflow.set('supabaseEventCounter', counter);\n\nconst databaseId = Date.now() * 1000 + counter;\nconst body = { ...msg.payload, id: databaseId };\nif (msg.writeKind === 'sensor_data') {\n    body.metadata = { ...(body.metadata || {}), queue_event_id: String(databaseId) };\n}\n\nconst record = {\n    queueId: String(databaseId),\n    kind: msg.writeKind,\n    body,\n    queuedAt: new Date().toISOString(),\n    attempts: 0,\n    lastAttempt: Date.now(),\n    nextAttempt: Date.now()\n};\n\nconst queue = flow.get('supabaseQueue') || [];\nqueue.push(record);\nflow.set('supabaseQueue', queue);\n\nmsg.queueId = record.queueId;\nmsg.writeRecord = record;\nconst queueStatus = { topic: 'smartfarm/rsd2s3g3/system/queue', payload: String(queue.length), retain: false };\nreturn [msg, queueStatus];",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1080,
+    "y": 140,
+    "wires": [
+      [
+        "fn-prepare-queued-write"
+      ],
+      [
+        "mqtt-system-status"
+      ]
+    ]
+  },
+  {
+    "id": "fn-prepare-queued-write",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Prepare Idempotent Supabase Write",
+    "func": "const base = env.get('SUPABASE_URL');\nconst key = env.get('SUPABASE_PUBLISHABLE_KEY');\nconst record = msg.writeRecord;\nif (!record) return [null, null];\n\nif (!base || !key) {\n    msg.statusCode = 0;\n    msg.error = { message: 'Missing Supabase environment variables' };\n    return [null, msg];\n}\n\nmsg.method = 'POST';\nmsg.url = base.replace(/\\/$/, '') + '/rest/v1/' + record.kind + '?on_conflict=id';\nmsg.headers = {\n    apikey: key,\n    Authorization: 'Bearer ' + key,\n    'Content-Type': 'application/json',\n    Prefer: 'resolution=ignore-duplicates,return=minimal'\n};\nmsg.payload = JSON.stringify(record.body);\nmsg.queueId = record.queueId;\nreturn [msg, null];",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1340,
+    "y": 140,
+    "wires": [
+      [
+        "http-queued-write"
+      ],
+      [
+        "fn-handle-write-result"
+      ]
+    ]
+  },
+  {
+    "id": "http-queued-write",
+    "type": "http request",
+    "z": "tab-smartfarm-cloud",
+    "name": "Supabase: Queued Write",
+    "method": "use",
+    "ret": "txt",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": [],
+    "x": 1590,
+    "y": 120,
+    "wires": [
+      [
+        "fn-handle-write-result"
+      ]
+    ]
+  },
+  {
+    "id": "fn-handle-write-result",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Confirm or Keep in Queue",
+    "func": "const statusCode = Number(msg.statusCode || 0);\nconst success = statusCode >= 200 && statusCode < 300;\nconst now = Date.now();\nlet queue = flow.get('supabaseQueue') || [];\n\nif (msg.queueId) {\n    const index = queue.findIndex(item => item.queueId === String(msg.queueId));\n    if (index >= 0 && success) {\n        queue.splice(index, 1);\n    } else if (index >= 0) {\n        const item = queue[index];\n        item.attempts = Number(item.attempts || 0) + 1;\n        item.lastAttempt = now;\n        item.nextAttempt = now + Math.min(300000, 15000 * Math.pow(2, Math.min(item.attempts - 1, 5)));\n        item.lastError = msg.error?.message || msg.payload || ('HTTP ' + statusCode);\n    }\n    flow.set('supabaseQueue', queue);\n}\n\nif (success) flow.set('supabaseLastSuccess', new Date().toISOString());\nconst lastSuccess = flow.get('supabaseLastSuccess') || null;\nconst cloudPayload = {\n    status: success ? 'ONLINE' : 'OFFLINE',\n    queue: queue.length,\n    lastSuccess,\n    lastError: success ? null : (msg.error?.message || String(msg.payload || 'Connection failed'))\n};\n\nconst cloudStatus = { topic: 'smartfarm/rsd2s3g3/system/cloud', payload: JSON.stringify(cloudPayload), retain: false };\nconst queueStatus = { topic: 'smartfarm/rsd2s3g3/system/queue', payload: String(queue.length), retain: false };\nreturn [[cloudStatus, queueStatus]];",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1830,
+    "y": 180,
+    "wires": [
+      [
+        "mqtt-system-status"
+      ]
+    ]
+  },
+  {
+    "id": "inject-retry-queue",
+    "type": "inject",
+    "z": "tab-smartfarm-cloud",
+    "name": "Retry queue every 15 seconds",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "15",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "12",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 190,
+    "y": 520,
+    "wires": [
+      [
+        "fn-retry-queue"
+      ]
+    ]
+  },
+  {
+    "id": "fn-retry-queue",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Load Due Persistent Records",
+    "func": "const now = Date.now();\nconst queue = flow.get('supabaseQueue') || [];\nconst due = [];\nfor (const item of queue) {\n    if (due.length >= 10) break;\n    if (Number(item.nextAttempt || 0) <= now) {\n        item.lastAttempt = now;\n        due.push({ queueId: item.queueId, writeRecord: item });\n    }\n}\nflow.set('supabaseQueue', queue);\nconst queueStatus = { topic: 'smartfarm/rsd2s3g3/system/queue', payload: String(queue.length), retain: false };\nreturn [due, queueStatus];",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 460,
+    "y": 520,
+    "wires": [
+      [
+        "fn-prepare-queued-write"
+      ],
+      [
+        "mqtt-system-status"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-system-status",
+    "type": "mqtt out",
+    "z": "tab-smartfarm-cloud",
+    "name": "Cloud and Queue Status",
+    "topic": "",
+    "qos": "",
+    "retain": "",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-hivemq-public",
+    "x": 2060,
+    "y": 180,
+    "wires": []
+  },
+  {
+    "id": "inject-weather",
+    "type": "inject",
+    "z": "tab-smartfarm-cloud",
+    "name": "Weather forecast every 15 minutes",
+    "props": [
+      {
+        "p": "payload"
+      }
+    ],
+    "repeat": "900",
+    "crontab": "",
+    "once": true,
+    "onceDelay": "3",
+    "topic": "",
+    "payload": "",
+    "payloadType": "date",
+    "x": 210,
+    "y": 600,
+    "wires": [
+      [
+        "fn-weather-url"
+      ]
+    ]
+  },
+  {
+    "id": "fn-weather-url",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Build Open-Meteo Request",
+    "func": "const latitude = env.get('WEATHER_LATITUDE') || '3.1390';\nconst longitude = env.get('WEATHER_LONGITUDE') || '101.6869';\nmsg.method = 'GET';\nmsg.url = 'https://api.open-meteo.com/v1/forecast?latitude=' + encodeURIComponent(latitude)\n    + '&longitude=' + encodeURIComponent(longitude)\n    + '&hourly=precipitation_probability,rain&forecast_days=2&timezone=GMT';\nreturn msg;",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 480,
+    "y": 600,
+    "wires": [
+      [
+        "http-weather"
+      ]
+    ]
+  },
+  {
+    "id": "http-weather",
+    "type": "http request",
+    "z": "tab-smartfarm-cloud",
+    "name": "Open-Meteo Forecast",
+    "method": "use",
+    "ret": "obj",
+    "paytoqs": "ignore",
+    "url": "",
+    "tls": "",
+    "persist": false,
+    "proxy": "",
+    "insecureHTTPParser": false,
+    "authType": "",
+    "senderr": true,
+    "headers": [],
+    "x": 730,
+    "y": 600,
+    "wires": [
+      [
+        "fn-weather-result"
+      ]
+    ]
+  },
+  {
+    "id": "fn-weather-result",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Validate Next 6 Hours Rain",
+    "func": "const body = msg.payload || {};\nconst times = body.hourly?.time;\nconst probabilities = body.hourly?.precipitation_probability;\nconst rain = body.hourly?.rain;\nif (!Array.isArray(times) || !Array.isArray(probabilities) || !Array.isArray(rain)) {\n    flow.set('weatherState', { status: 'ERROR', updatedAt: Date.now() });\n    return [[{ topic: 'smartfarm/rsd2s3g3/weather/status', payload: 'ERROR', retain: true }], { payload: 'weather-error' }];\n}\nconst now = Date.now();\nconst indices = times.map((time, index) => ({ index, time: Date.parse(time + 'Z') }))\n    .filter(item => item.time >= now).slice(0, 6).map(item => item.index);\nif (!indices.length) return null;\nconst maxProbability = Math.max(...indices.map(index => Number(probabilities[index]) || 0));\nconst rainMm = indices.reduce((sum, index) => sum + (Number(rain[index]) || 0), 0);\nconst settings = Object.assign({ rainProbability: 65 }, flow.get('automationSettings') || {});\nconst rainExpected = maxProbability >= Number(settings.rainProbability) || rainMm >= 1;\nconst weather = { status: 'OK', maxProbability, rainMm, rainExpected, updatedAt: now };\nflow.set('weatherState', weather);\nconst messages = [\n    { topic: 'smartfarm/rsd2s3g3/weather/rain_probability', payload: String(maxProbability), retain: true },\n    { topic: 'smartfarm/rsd2s3g3/weather/rain_expected', payload: rainExpected ? 'TRUE' : 'FALSE', retain: true },\n    { topic: 'smartfarm/rsd2s3g3/weather/status', payload: 'OK', retain: true }\n];\nreturn [messages, { payload: 'weather-updated' }];",
+    "outputs": 2,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 990,
+    "y": 600,
+    "wires": [
+      [
+        "mqtt-weather"
+      ],
+      [
+        "fn-irrigation-decision"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-weather",
+    "type": "mqtt out",
+    "z": "tab-smartfarm-cloud",
+    "name": "Weather Status",
+    "topic": "",
+    "qos": "",
+    "retain": "",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-hivemq-public",
+    "x": 1270,
+    "y": 580,
+    "wires": []
+  },
+  {
+    "id": "fn-irrigation-decision",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Weather-Aware Irrigation Decision",
+    "func": "const state = flow.get('smartFarmState') || {};\nconst weather = flow.get('weatherState') || {};\nconst settings = Object.assign({ soilStart: 30, soilStop: 45, rainProbability: 65, humidityDelay: 85 }, flow.get('automationSettings') || {});\nconst soilStart = Number(settings.soilStart);\nconst soilStop = Number(settings.soilStop) > soilStart ? Number(settings.soilStop) : 45;\nconst humidityDelay = Number(settings.humidityDelay);\nconst rainExpected = Number(weather.maxProbability || 0) >= Number(settings.rainProbability) || Number(weather.rainMm || 0) >= 1;\nconst now = Date.now();\nlet decision = 'OFF';\nlet rule = 'SAFE-OFF';\nlet soilDemand = String(flow.get('irrigationSoilDemand') || 'OFF');\nconst soilFresh = state.lastSeen?.['1'] && now - state.lastSeen['1'] <= 45000;\nconst weatherFresh = weather.status === 'OK' && now - Number(weather.updatedAt || 0) <= 20 * 60 * 1000;\nif (Number.isFinite(state.soil_percent)) {\n    if (state.soil_percent < soilStart) soilDemand = 'ON';\n    else if (state.soil_percent >= soilStop) soilDemand = 'OFF';\n    flow.set('irrigationSoilDemand', soilDemand);\n}\nif (state.pump_lock) {\n    decision = 'OFF'; rule = 'LOW-WATER-LOCK';\n} else if (!soilFresh || !Number.isFinite(state.soil_percent)) {\n    decision = 'OFF'; rule = 'SOIL-DATA-STALE';\n} else if (!weatherFresh) {\n    decision = 'OFF'; rule = 'WEATHER-DATA-STALE';\n} else if (soilDemand === 'OFF') {\n    decision = 'OFF'; rule = state.soil_percent >= soilStop ? 'SOIL-WET' : 'SOIL-RECOVERY';\n} else if (rainExpected || Number(state.humidity_percent) >= humidityDelay) {\n    decision = 'DELAY'; rule = rainExpected ? 'RAIN-EXPECTED' : 'HIGH-HUMIDITY';\n} else {\n    decision = 'ON'; rule = state.soil_percent < soilStart ? 'DRY-NO-RAIN' : 'SOIL-HYSTERESIS';\n}\nreturn [[\n    { topic: 'smartfarm/rsd2s3g3/control/pump/auto', payload: decision, retain: true },\n    { topic: 'smartfarm/rsd2s3g3/module1/irrigation_rule', payload: rule, retain: true },\n    { topic: 'smartfarm/rsd2s3g3/weather/rain_expected', payload: rainExpected ? 'TRUE' : 'FALSE', retain: true }\n]];",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 1280,
+    "y": 640,
+    "wires": [
+      [
+        "mqtt-auto-pump"
+      ]
+    ]
+  },
+  {
+    "id": "mqtt-auto-pump",
+    "type": "mqtt out",
+    "z": "tab-smartfarm-cloud",
+    "name": "AUTO Pump Decision",
+    "topic": "",
+    "qos": "",
+    "retain": "",
+    "respTopic": "",
+    "contentType": "",
+    "userProps": "",
+    "correl": "",
+    "expiry": "",
+    "broker": "broker-hivemq-public",
+    "x": 1570,
+    "y": 640,
+    "wires": []
+  },
+  {
+    "id": "mqtt-automation-settings",
+    "type": "mqtt in",
+    "z": "tab-smartfarm-cloud",
+    "name": "Dashboard Automation Settings",
+    "topic": "smartfarm/rsd2s3g3/config/#",
+    "qos": "1",
+    "datatype": "auto-detect",
+    "broker": "broker-hivemq-public",
+    "nl": false,
+    "rap": true,
+    "rh": 0,
+    "inputs": 0,
+    "x": 190,
+    "y": 700,
+    "wires": [
+      [
+        "fn-automation-settings"
+      ]
+    ]
+  },
+  {
+    "id": "fn-automation-settings",
+    "type": "function",
+    "z": "tab-smartfarm-cloud",
+    "name": "Validate Automation Settings",
+    "func": "const defaults = { soilStart: 30, soilStop: 45, rainProbability: 65, humidityDelay: 85 };\nconst definitions = {\n    'smartfarm/rsd2s3g3/config/soil/pump_on_percent': ['soilStart', 5, 60],\n    'smartfarm/rsd2s3g3/config/soil/pump_off_percent': ['soilStop', 10, 90],\n    'smartfarm/rsd2s3g3/config/irrigation/rain_probability': ['rainProbability', 0, 100],\n    'smartfarm/rsd2s3g3/config/irrigation/humidity_percent': ['humidityDelay', 50, 100]\n};\nconst definition = definitions[String(msg.topic || '')];\nif (!definition) return null;\nconst value = Number(msg.payload);\nif (!Number.isFinite(value) || value < definition[1] || value > definition[2]) {\n    node.warn('Rejected invalid automation setting on ' + msg.topic);\n    return null;\n}\nconst settings = Object.assign({}, defaults, flow.get('automationSettings') || {});\nsettings[definition[0]] = value;\nflow.set('automationSettings', settings);\nnode.status({ fill: 'green', shape: 'dot', text: definition[0] + '=' + value });\nreturn { topic: msg.topic, payload: settings };",
+    "outputs": 1,
+    "timeout": 0,
+    "noerr": 0,
+    "initialize": "",
+    "finalize": "",
+    "libs": [],
+    "x": 500,
+    "y": 700,
+    "wires": [
+      [
+        "fn-irrigation-decision"
+      ]
+    ]
+  }
+]

@@ -29,7 +29,6 @@ used for the assignment prototype only; never publish credentials or images.
 | `module3/low_water` | `TRUE` or `FALSE` |
 | `module3/pump_lock` | `LOCKED` or `CLEAR` |
 | `module4/yellowing` | Prototype yellow-area percentage |
-| `module4/wilting` | Prototype stress percentage |
 | `module4/risk` | Prototype risk score, `0..100` |
 | `module4/status` | `GREEN`, `AMBER`, or `RED` |
 | `module4/alert` | Human-readable warning |

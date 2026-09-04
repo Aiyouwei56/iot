@@ -17,7 +17,6 @@ class ImageMetrics:
     plant_coverage_percent: float
     green_percent: float
     yellowing_percent: float
-    stress_percent: float
 
 
 class InvalidImageError(ValueError):
@@ -72,8 +71,6 @@ def analyze_image(frame: np.ndarray, settings: Settings) -> ImageMetrics:
     green_percent = _percentage(green_pixels, plant_pixels)
     yellowing_percent = _percentage(yellow_pixels, plant_pixels)
 
-    # This is a colour-stress proxy, not a scientific wilting measurement.
-    stress_percent = yellowing_percent
     return ImageMetrics(
         width=width,
         height=height,
@@ -82,6 +79,5 @@ def analyze_image(frame: np.ndarray, settings: Settings) -> ImageMetrics:
         plant_coverage_percent=round(coverage, 2),
         green_percent=round(green_percent, 2),
         yellowing_percent=round(yellowing_percent, 2),
-        stress_percent=round(stress_percent, 2),
     )
 

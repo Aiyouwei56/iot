@@ -7,7 +7,7 @@ from agrisense.risk import TrendTracker, evaluate_risk
 
 
 def metrics(yellowing: float) -> ImageMetrics:
-    return ImageMetrics(640, 480, 100, 100, 40, 100 - yellowing, yellowing, yellowing)
+    return ImageMetrics(640, 480, 100, 100, 40, 100 - yellowing, yellowing)
 
 
 class RiskTests(unittest.TestCase):

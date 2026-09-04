@@ -219,7 +219,7 @@ create index if not exists alerts_open_idx
 
 -- ---------------------------------------------------------------------------
 -- Module 4 image analysis and growth diary
--- HSV supports colour/yellowing evidence; stress_percent remains experimental.
+-- HSV supports colour/yellowing evidence.
 -- ---------------------------------------------------------------------------
 
 create table if not exists public.crop_health_records (
@@ -229,8 +229,6 @@ create table if not exists public.crop_health_records (
     check (green_percent is null or green_percent between 0 and 100),
   yellowing_percent numeric(5,2)
     check (yellowing_percent is null or yellowing_percent between 0 and 100),
-  stress_percent numeric(5,2)
-    check (stress_percent is null or stress_percent between 0 and 100),
   brightness_score numeric(10,2),
   blur_score numeric(10,2),
   temperature_c numeric(5,2)

@@ -134,7 +134,6 @@ class MqttService:
 
     def publish_analysis(self, metrics: ImageMetrics, assessment: RiskAssessment) -> None:
         self._publish("module4/yellowing", f"{metrics.yellowing_percent:.2f}")
-        self._publish("module4/wilting", f"{metrics.stress_percent:.2f}")
         self._publish("module4/risk", f"{assessment.score:.1f}")
         self._publish("module4/status", assessment.level)
         self._publish("module4/alert", assessment.alert)
@@ -178,7 +177,6 @@ class SupabaseService:
             "image_path": image_path,
             "green_percent": metrics.green_percent,
             "yellowing_percent": metrics.yellowing_percent,
-            "stress_percent": metrics.stress_percent,
             "brightness_score": metrics.brightness_score,
             "blur_score": metrics.blur_score,
             "temperature_c": temperature_c,

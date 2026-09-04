@@ -38,7 +38,7 @@ class MqttServiceTests(unittest.TestCase):
         )
         self.assertEqual(service.climate(), (29.5, 81.0))
 
-        metrics = ImageMetrics(640, 480, 100, 80, 40, 75, 25, 25)
+        metrics = ImageMetrics(640, 480, 100, 80, 40, 75, 25)
         assessment = RiskAssessment(55, "AMBER", "Inspect the crop", 4)
         service.publish_analysis(metrics, assessment)
 
@@ -46,7 +46,6 @@ class MqttServiceTests(unittest.TestCase):
             client.publish.call_args_list,
             [
                 call(service.topic("module4/yellowing"), "25.00", qos=0, retain=True),
-                call(service.topic("module4/wilting"), "25.00", qos=0, retain=True),
                 call(service.topic("module4/risk"), "55.0", qos=0, retain=True),
                 call(service.topic("module4/status"), "AMBER", qos=0, retain=True),
                 call(service.topic("module4/alert"), "Inspect the crop", qos=0, retain=True),
@@ -78,7 +77,7 @@ class SupabaseServiceTests(unittest.TestCase):
             supabase_url="https://example.supabase.co", supabase_key="test-key"
         )
         service = SupabaseService(settings)
-        metrics = ImageMetrics(640, 480, 110, 90, 42, 82, 18, 18)
+        metrics = ImageMetrics(640, 480, 110, 90, 42, 82, 18)
         assessment = RiskAssessment(46, "AMBER", "Inspect the crop", 2.5)
 
         service.store(

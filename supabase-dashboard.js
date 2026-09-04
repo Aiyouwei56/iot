@@ -246,7 +246,6 @@ async function renderCropHealth(records) {
     document.getElementById("cropRiskScore").textContent = displayValue(record.risk_score);
     document.getElementById("cropGreen").textContent = `${displayValue(record.green_percent)}%`;
     document.getElementById("cropYellowing").textContent = `${displayValue(record.yellowing_percent)}%`;
-    document.getElementById("cropStress").textContent = `${displayValue(record.stress_percent)}%`;
     document.getElementById("cropCamera").textContent = record.camera_status;
     document.getElementById("cropAlert").textContent = record.alert_message || "No crop-health alert.";
     document.getElementById("cropCaptured").textContent = `Captured: ${displayTime(record.captured_at)}`;
@@ -264,7 +263,7 @@ async function refreshCloudDashboard() {
             ),
             supabaseSelect(
                 "crop_health_records",
-                "select=image_path,green_percent,yellowing_percent,stress_percent,risk_score,risk_level,camera_status,alert_message,captured_at&order=captured_at.desc&limit=1"
+                "select=image_path,green_percent,yellowing_percent,risk_score,risk_level,camera_status,alert_message,captured_at&order=captured_at.desc&limit=1"
             ),
             supabaseSelect(
                 "alerts",

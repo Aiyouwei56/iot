@@ -52,6 +52,8 @@ const uint16_t MQTT_PORT = 1883;
 #define TOPIC_WATER_PERCENT  MQTT_BASE "/module3/water_percent"
 #define TOPIC_LOW_WATER      MQTT_BASE "/module3/low_water"
 #define TOPIC_PUMP_LOCK      MQTT_BASE "/module3/pump_lock"
+#define TOPIC_PUMP_RUNTIME   MQTT_BASE "/module3/pump_runtime_seconds"
+#define TOPIC_WATER_USAGE    MQTT_BASE "/module3/estimated_water_litres"
 
 // Module 4 inbound (from Laptop Python)
 #define TOPIC_MODULE4_STATUS MQTT_BASE "/module4/status"
@@ -74,6 +76,9 @@ const uint16_t MQTT_PORT = 1883;
 #define TOPIC_CONFIG_FAN_OFF    MQTT_BASE "/config/fan/off_temperature_c"
 #define TOPIC_CONFIG_LDR_DARK   MQTT_BASE "/config/light/dark_raw"
 #define TOPIC_CONFIG_LOW_WATER  MQTT_BASE "/config/water/low_percent"
+#define TOPIC_CONFIG_SOIL_ON    MQTT_BASE "/config/soil/pump_on_percent"
+#define TOPIC_CONFIG_SOIL_OFF   MQTT_BASE "/config/soil/pump_off_percent"
+#define TOPIC_CONFIG_PUMP_PULSE MQTT_BASE "/config/irrigation/pump_pulse_seconds"
 
 // ── Confirmed Pin Assignment ─────────────────────────────────────────────────
 // ADC1 pins are used for analog sensors so they remain compatible with ESP32 Wi-Fi.
@@ -105,7 +110,7 @@ const bool RELAYS_ACTIVE_LOW = false;
 // DEVELOPMENT TEST ONLY: allow a MANUAL pump command to bypass the low-water
 // lock briefly so relay/pump wiring can be tested with supervision.
 // Set this to false before the final demonstration/submission.
-const bool ENABLE_MANUAL_PUMP_TEST_BYPASS = true;
+const bool ENABLE_MANUAL_PUMP_TEST_BYPASS = false;
 const unsigned long MANUAL_PUMP_TEST_MAX_MS = 10UL * 1000UL;
 
 // Set true after confirming a common-anode RGB LED is wired.
@@ -124,16 +129,26 @@ const int WATER_FULL_RAW = 2500;   // ADC reading when tank is full
 // ── Threshold Constants ──────────────────────────────────────────────────────
 
 const float DEFAULT_LOW_WATER_PERCENT     = 20.0f;
+const float DEFAULT_SOIL_PUMP_ON_PERCENT  = 30.0f;
+const float DEFAULT_SOIL_PUMP_OFF_PERCENT = 45.0f;
 const float DEFAULT_FAN_ON_TEMPERATURE_C  = 30.0f;
 const float DEFAULT_FAN_OFF_TEMPERATURE_C = 28.0f;
 const int   DEFAULT_LDR_DARK_THRESHOLD    = 1200;
 const unsigned long SENSOR_INTERVAL_MS     = 5000;
 const unsigned long WATER_SAFETY_INTERVAL_MS = 1000;
 const unsigned long LCD_INTERVAL_MS        = 300;
-const unsigned long WEATHER_DECISION_TIMEOUT_MS = 10UL * 60UL * 1000UL; // 10 min
+const unsigned long WEATHER_DECISION_TIMEOUT_MS = 2UL * 60UL * 1000UL;
 const unsigned long BUTTON_DEBOUNCE_MS     = 50;
-const unsigned long AUTO_PUMP_MAX_ON_MS    = 10UL * 1000UL;
+const unsigned long DEFAULT_AUTO_PUMP_MAX_ON_MS = 1UL * 1000UL;
+const unsigned long AUTO_PUMP_BURST_ON_MS   = 500;
+const unsigned long AUTO_PUMP_BURST_GAP_MS  = 2500;
 const unsigned long AUTO_PUMP_SOAK_MS      = 60UL * 1000UL;
+
+// Prototype-only flow estimate, calibrated from physical measurements:
+// 3 s total ON time produced about 5 mL and 10 s produced about 15 mL.
+// A conservative 1.5 mL/s estimate is used. No flow sensor is installed, so
+// the dashboard must never describe this as a precise reading.
+const float PUMP_ESTIMATED_FLOW_LITRES_PER_SECOND = 0.0015f;
 
 // ── Control Mode ─────────────────────────────────────────────────────────────
 
@@ -217,6 +232,8 @@ bool lowWater     = true;
 
 bool autoPumpRequested = false;  // Set by Node-RED weather decision
 bool autoPumpDelayed   = false;  // DELAY = rain expected, defer irrigation
+bool autoPumpLocalFallback = true; // Used until a fresh weather decision arrives
+bool localSoilDemand = false;
 bool dhtValid = false;
 
 int   soilRaw     = 0;
@@ -230,9 +247,12 @@ float humidityPercent = NAN;
 // Dashboard-adjustable runtime thresholds. Retained MQTT settings restore
 // these values whenever the ESP32 reconnects; safe defaults apply before then.
 float lowWaterThresholdPercent = DEFAULT_LOW_WATER_PERCENT;
+float soilPumpOnPercent        = DEFAULT_SOIL_PUMP_ON_PERCENT;
+float soilPumpOffPercent       = DEFAULT_SOIL_PUMP_OFF_PERCENT;
 float fanOnTemperatureC        = DEFAULT_FAN_ON_TEMPERATURE_C;
 float fanOffTemperatureC       = DEFAULT_FAN_OFF_TEMPERATURE_C;
 int   ldrDarkThreshold         = DEFAULT_LDR_DARK_THRESHOLD;
+unsigned long autoPumpMaxOnMs = DEFAULT_AUTO_PUMP_MAX_ON_MS;
 
 String cropStatus   = "GREEN";    // Received from Module 4 via MQTT
 String systemWarning = "";
@@ -245,9 +265,13 @@ unsigned long lastPrevChangeAt      = 0;
 unsigned long lastNextChangeAt      = 0;
 unsigned long manualPumpTestStartedAt = 0;
 unsigned long autoPumpPulseStartedAt  = 0;
+unsigned long autoPumpGapStartedAt    = 0;
+unsigned long autoPumpDeliveredOnMs   = 0;
 unsigned long autoPumpSoakStartedAt   = 0;
 unsigned long lastWifiReconnectAttemptAt = 0;
 unsigned long lastMqttReconnectAttemptAt = 0;
+uint64_t pumpRuntimeMs = 0;
+unsigned long pumpStartedAt = 0;
 
 bool previousPrevReading = HIGH;
 bool previousNextReading = HIGH;
@@ -300,6 +324,24 @@ void publishInteger(const char* topic, int value) {
   publishRetained(topic, payload);
 }
 
+uint64_t currentPumpRuntimeMs() {
+  uint64_t total = pumpRuntimeMs;
+  if (pumpOn) total += (uint32_t)(millis() - pumpStartedAt);
+  return total;
+}
+
+void publishPumpResourceEstimate() {
+  uint64_t runtimeSeconds = currentPumpRuntimeMs() / 1000ULL;
+  char runtimePayload[24];
+  snprintf(runtimePayload, sizeof(runtimePayload), "%llu",
+           (unsigned long long)runtimeSeconds);
+  publishRetained(TOPIC_PUMP_RUNTIME, runtimePayload);
+
+  float estimatedLitres =
+      (currentPumpRuntimeMs() / 1000.0f) * PUMP_ESTIMATED_FLOW_LITRES_PER_SECOND;
+  publishNumber(TOPIC_WATER_USAGE, estimatedLitres, 3);
+}
+
 // ── Actuator Control Functions ────────────────────────────────────────────────
 // All actuator state changes go through these functions so that logging,
 // MQTT feedback, and safety-lock enforcement are always applied consistently.
@@ -328,9 +370,16 @@ void setPump(bool requestedOn, const char* reason, bool manualTestRequest = fals
   if (!allowedOn) manualPumpTestStartedAt = 0;
   bool changed = pumpOn != allowedOn;
   if (changed) {
+    unsigned long now = millis();
+    if (pumpOn && !allowedOn) {
+      pumpRuntimeMs += (uint32_t)(now - pumpStartedAt);
+    } else if (!pumpOn && allowedOn) {
+      pumpStartedAt = now;
+    }
     pumpOn = allowedOn;
     writeOutput(PUMP_RELAY_PIN, pumpOn, RELAYS_ACTIVE_LOW);
     Serial.printf("Pump %s (%s)\n", pumpOn ? "ON" : "OFF", reason);
+    publishPumpResourceEstimate();
   }
   if (changed || manualTestRequest)
     publishRetained(TOPIC_PUMP, pumpOn ? "ON" : "OFF");
@@ -432,6 +481,21 @@ void refreshWaterSafetyReading() {
 // Safety lock always takes precedence over AUTO decisions.
 // MANUAL mode actuators are NOT touched here — manual command holds.
 
+void updateLocalSoilDemand() {
+  if (soilPumpOffPercent <= soilPumpOnPercent) return;
+  if (soilPercent < soilPumpOnPercent)
+    localSoilDemand = true;
+  else if (soilPercent >= soilPumpOffPercent)
+    localSoilDemand = false;
+}
+
+void cancelAutoPumpCycle() {
+  autoPumpPulseStartedAt = 0;
+  autoPumpGapStartedAt = 0;
+  autoPumpDeliveredOnMs = 0;
+  autoPumpSoakStartedAt = 0;
+}
+
 void applyAutomaticControl() {
   // Module 1 — Irrigation AUTO rule
   if (pumpMode == AUTO_MODE) {
@@ -439,24 +503,37 @@ void applyAutomaticControl() {
       millis() - lastWeatherDecisionAt <= WEATHER_DECISION_TIMEOUT_MS;
     bool soaking = autoPumpSoakStartedAt > 0 &&
       millis() - autoPumpSoakStartedAt < AUTO_PUMP_SOAK_MS;
+    bool microPulseActive = autoPumpPulseStartedAt > 0 || autoPumpGapStartedAt > 0;
+
+    bool useLocalFallback = autoPumpLocalFallback || !decisionFresh;
+    if (!useLocalFallback && systemWarning == "WEATHER OFFLINE: SOIL FALLBACK") {
+      systemWarning = "";
+      publishRetained(TOPIC_SYSTEM_ALERT, "");
+    }
 
     if (pumpLocked) {
-      autoPumpPulseStartedAt = 0;
-      autoPumpSoakStartedAt = 0;
+      cancelAutoPumpCycle();
       setPump(false, "low-water AUTO lock");
-    } else if (!decisionFresh) {
-      // No weather data from Node-RED within timeout → fail safe: pump OFF
-      autoPumpPulseStartedAt = 0;
-      autoPumpSoakStartedAt = 0;
-      setPump(false, "weather decision stale");
-      systemWarning = "WEATHER DATA STALE";
-      publishRetained(TOPIC_SYSTEM_ALERT, systemWarning.c_str());
+    } else if (useLocalFallback) {
+      // Weather/Node-RED unavailable: keep the plant watered from the local
+      // soil sensor, while retaining the low-water lock and pulse limits.
+      updateLocalSoilDemand();
+      if (systemWarning == "" || systemWarning == "WEATHER DATA STALE") {
+        systemWarning = "WEATHER OFFLINE: SOIL FALLBACK";
+        publishRetained(TOPIC_SYSTEM_ALERT, systemWarning.c_str());
+      }
+      if (!localSoilDemand) {
+        cancelAutoPumpCycle();
+        setPump(false, "local soil fallback stop");
+      } else if (!pumpOn && !soaking && !microPulseActive) {
+        setPump(true, "local soil fallback micro-pulse");
+        if (pumpOn) autoPumpPulseStartedAt = millis();
+      }
     } else if (autoPumpDelayed || !autoPumpRequested) {
-      autoPumpPulseStartedAt = 0;
-      autoPumpSoakStartedAt = 0;
+      cancelAutoPumpCycle();
       setPump(false, autoPumpDelayed ? "rain delay" : "soil moisture AUTO stop");
-    } else if (!pumpOn && !soaking) {
-      setPump(true, "AUTO irrigation pulse");
+    } else if (!pumpOn && !soaking && !microPulseActive) {
+      setPump(true, "AUTO irrigation micro-pulse");
       if (pumpOn) autoPumpPulseStartedAt = millis();
     }
   }
@@ -475,19 +552,44 @@ void applyAutomaticControl() {
   }
 }
 
-// AUTO irrigation is pulsed rather than continuous: run for at most 10 seconds,
-// wait 60 seconds for water to soak into the soil, then re-evaluate the latest
-// Node-RED soil/weather demand before another pulse can begin.
+// AUTO irrigation uses non-blocking micro-pulses. The default 1-second water
+// budget is delivered as 0.5 s ON, 2.5 s OFF, 0.5 s ON. A 60-second soil soak
+// follows before the latest soil/weather demand is evaluated again.
 void updateAutoPumpCycle() {
   if (pumpMode != AUTO_MODE) return;
 
   unsigned long now = millis();
-  if (pumpOn && autoPumpPulseStartedAt > 0 &&
-      now - autoPumpPulseStartedAt >= AUTO_PUMP_MAX_ON_MS) {
-    setPump(false, "AUTO pulse complete; soil soak wait");
+  unsigned long remainingOnMs = autoPumpMaxOnMs > autoPumpDeliveredOnMs
+    ? autoPumpMaxOnMs - autoPumpDeliveredOnMs
+    : 0;
+  unsigned long currentBurstTargetMs = min(AUTO_PUMP_BURST_ON_MS, remainingOnMs);
+
+  if (pumpOn && autoPumpPulseStartedAt > 0 && currentBurstTargetMs > 0 &&
+      now - autoPumpPulseStartedAt >= currentBurstTargetMs) {
+    unsigned long deliveredThisBurst = now - autoPumpPulseStartedAt;
+    if (deliveredThisBurst > currentBurstTargetMs)
+      deliveredThisBurst = currentBurstTargetMs;
+    autoPumpDeliveredOnMs += deliveredThisBurst;
+    setPump(false, "AUTO micro-pulse pause");
     autoPumpPulseStartedAt = 0;
-    autoPumpSoakStartedAt = now;
-    Serial.println("AUTO pump: 10-second pulse complete, soaking for 60 seconds.");
+    if (autoPumpDeliveredOnMs >= autoPumpMaxOnMs) {
+      autoPumpDeliveredOnMs = 0;
+      autoPumpGapStartedAt = 0;
+      autoPumpSoakStartedAt = now;
+      Serial.printf("AUTO pump: %lu ms total ON time delivered; soaking for 60 seconds.\n",
+                    autoPumpMaxOnMs);
+    } else {
+      autoPumpGapStartedAt = now;
+      Serial.printf("AUTO pump: 500 ms burst complete; pausing 2500 ms (%lu ms remaining).\n",
+                    autoPumpMaxOnMs - autoPumpDeliveredOnMs);
+    }
+    return;
+  }
+
+  if (!pumpOn && autoPumpGapStartedAt > 0 &&
+      now - autoPumpGapStartedAt >= AUTO_PUMP_BURST_GAP_MS) {
+    autoPumpGapStartedAt = 0;
+    applyAutomaticControl();
     return;
   }
 
@@ -527,8 +629,8 @@ void mqttCallback(char* topicChars, byte* payload, unsigned int length) {
     if (pumpMode == AUTO_MODE) {
       applyAutomaticControl();
     } else {
-      autoPumpPulseStartedAt = 0;
-      autoPumpSoakStartedAt = 0;
+      cancelAutoPumpCycle();
+      setPump(false, "MANUAL mode safe stop", true);
     }
   }
   else if (topic == TOPIC_CONTROL_FAN_MODE) {
@@ -549,6 +651,36 @@ void mqttCallback(char* topicChars, byte* payload, unsigned int length) {
       lowWaterThresholdPercent = parsed;
       Serial.printf("Setting updated: low-water lock below %.1f%%\n", parsed);
       updateSafetyLock();
+    }
+  }
+  else if (topic == TOPIC_CONFIG_SOIL_ON) {
+    float parsed;
+    if (parseNumberInRange(value, 5.0f, 60.0f, parsed)) {
+      soilPumpOnPercent = parsed;
+      Serial.printf("Setting updated: local fallback pump ON below %.1f%%\n", parsed);
+      updateLocalSoilDemand();
+      if (pumpMode == AUTO_MODE) applyAutomaticControl();
+    }
+  }
+  else if (topic == TOPIC_CONFIG_SOIL_OFF) {
+    float parsed;
+    if (parseNumberInRange(value, 10.0f, 90.0f, parsed)) {
+      soilPumpOffPercent = parsed;
+      Serial.printf("Setting updated: local fallback pump OFF at %.1f%%\n", parsed);
+      updateLocalSoilDemand();
+      if (pumpMode == AUTO_MODE) applyAutomaticControl();
+    }
+  }
+  else if (topic == TOPIC_CONFIG_PUMP_PULSE) {
+    float parsed;
+    if (parseNumberInRange(value, 0.5f, 10.0f, parsed)) {
+      autoPumpMaxOnMs = (unsigned long)lroundf(parsed * 1000.0f);
+      Serial.printf("Setting updated: AUTO pump total ON time %.1f second(s)\n", parsed);
+      if (pumpMode == AUTO_MODE) {
+        cancelAutoPumpCycle();
+        setPump(false, "AUTO pulse setting changed");
+        applyAutomaticControl();
+      }
     }
   }
   else if (topic == TOPIC_CONFIG_FAN_ON) {
@@ -577,11 +709,13 @@ void mqttCallback(char* topicChars, byte* payload, unsigned int length) {
   }
 
   // ── Node-RED weather/irrigation decision ───────────────────────────────────
-  // Payload: "ON" (dry, no rain), "OFF" (moist), "DELAY" (rain expected)
+  // Payload: ON/OFF/DELAY when weather is available; LOCAL asks the ESP32 to
+  // fall back to its soil sensor because Node-RED or the weather API is stale.
   else if (topic == TOPIC_CONTROL_PUMP_AUTO &&
-           (value == "ON" || value == "OFF" || value == "DELAY")) {
+           (value == "ON" || value == "OFF" || value == "DELAY" || value == "LOCAL")) {
     autoPumpRequested = (value == "ON");
     autoPumpDelayed   = (value == "DELAY");
+    autoPumpLocalFallback = (value == "LOCAL");
     lastWeatherDecisionAt = millis();
     if (systemWarning == "WEATHER DATA STALE") {
       systemWarning = "";
@@ -635,6 +769,9 @@ void subscribeTopics() {
   mqtt.subscribe(TOPIC_CONFIG_FAN_OFF);
   mqtt.subscribe(TOPIC_CONFIG_LDR_DARK);
   mqtt.subscribe(TOPIC_CONFIG_LOW_WATER);
+  mqtt.subscribe(TOPIC_CONFIG_SOIL_ON);
+  mqtt.subscribe(TOPIC_CONFIG_SOIL_OFF);
+  mqtt.subscribe(TOPIC_CONFIG_PUMP_PULSE);
   mqtt.subscribe(TOPIC_MODULE4_STATUS);
   mqtt.subscribe(TOPIC_MODULE4_ALERT);
 }
@@ -653,6 +790,7 @@ bool connectMqtt() {
     publishRetained(TOPIC_FAN_MODE,   modeName(fanMode));
     publishRetained(TOPIC_LED_MODE,   modeName(ledMode));
     publishRetained(TOPIC_PUMP_LOCK,  pumpLocked ? "LOCKED" : "CLEAR");
+    publishPumpResourceEstimate();
     Serial.println("MQTT connected and topics subscribed.");
     return true;
   }
@@ -686,6 +824,7 @@ void readAndPublishSensors() {
   publishNumber(TOPIC_SOIL_PERCENT, soilPercent);
   publishInteger(TOPIC_WATER, waterRaw);
   publishNumber(TOPIC_WATER_PERCENT, waterPercent);
+  publishPumpResourceEstimate();
   publishInteger(TOPIC_LIGHT, lightRaw);
 
   if (dhtValid) {

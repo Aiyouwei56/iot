@@ -454,6 +454,8 @@
         light: topic("module2/light"),
         water: topic("module3/water"),
         waterPercent: topic("module3/water_percent"),
+        pumpRuntime: topic("module3/pump_runtime_seconds"),
+        estimatedWater: topic("module3/estimated_water_litres"),
         lowWater: topic("module3/low_water"),
         pumpLock: topic("module3/pump_lock"),
         pumpFeedback: topic("module1/pump"),
@@ -476,6 +478,7 @@
         source: topic("system/source"),
         configSoilStart: topic("config/soil/pump_on_percent"),
         configSoilStop: topic("config/soil/pump_off_percent"),
+        configPumpPulse: topic("config/irrigation/pump_pulse_seconds"),
         configFanOn: topic("config/fan/on_temperature_c"),
         configFanOff: topic("config/fan/off_temperature_c"),
         configLdrDark: topic("config/light/dark_raw"),
@@ -487,6 +490,7 @@
     const settings = {
         soilStart: 30,
         soilStop: 45,
+        pumpPulseSeconds: 1,
         fanOn: 30,
         fanOff: 28,
         ldrDark: 1200,
@@ -498,6 +502,7 @@
     const CONFIG_BY_TOPIC = {};
     CONFIG_BY_TOPIC[TOPICS.configSoilStart] = "soilStart";
     CONFIG_BY_TOPIC[TOPICS.configSoilStop] = "soilStop";
+    CONFIG_BY_TOPIC[TOPICS.configPumpPulse] = "pumpPulseSeconds";
     CONFIG_BY_TOPIC[TOPICS.configFanOn] = "fanOn";
     CONFIG_BY_TOPIC[TOPICS.configFanOff] = "fanOff";
     CONFIG_BY_TOPIC[TOPICS.configLdrDark] = "ldrDark";
@@ -520,8 +525,13 @@
         fan: "OFF",
         led: "OFF",
         pumpLocked: false,
-        autoPumpDecision: "OFF",
-        pumpSoaking: false
+        autoPumpDecision: "LOCAL",
+        lastAutoPumpDecisionAt: 0,
+        localSoilDemand: false,
+        pumpSoaking: false,
+        pumpRemainingOnMs: 0,
+        pumpRuntimeMs: 0,
+        pumpStartedAt: null
     };
 
     let publishTimer = null;
@@ -635,6 +645,17 @@
         if (!state.active && !force) return;
         let actualState = requestedState;
         if (name === "pump" && state.pumpLocked && requestedState === "ON") actualState = "OFF";
+        const previousState = state[name];
+
+        if (name === "pump" && previousState !== actualState) {
+            const now = Date.now();
+            if (previousState === "ON" && state.pumpStartedAt !== null) {
+                state.pumpRuntimeMs += Math.max(0, now - state.pumpStartedAt);
+                state.pumpStartedAt = null;
+            } else if (actualState === "ON") {
+                state.pumpStartedAt = now;
+            }
+        }
         state[name] = actualState;
 
         const stateElement = document.getElementById(name + "State");
@@ -648,40 +669,87 @@
         log(reason + ": " + name.toUpperCase() + " " + actualState);
     }
 
+    function currentPumpRuntimeMs() {
+        const activeMs = state.pump === "ON" && state.pumpStartedAt !== null
+            ? Math.max(0, Date.now() - state.pumpStartedAt)
+            : 0;
+        return state.pumpRuntimeMs + activeMs;
+    }
+
+    function publishPumpResourceEstimate() {
+        const runtimeSeconds = Math.floor(currentPumpRuntimeMs() / 1000);
+        const estimatedLitres = runtimeSeconds * 0.030;
+        client.publish(TOPICS.pumpRuntime, String(runtimeSeconds), { qos: 0, retain: true });
+        client.publish(TOPICS.estimatedWater, estimatedLitres.toFixed(3), { qos: 0, retain: true });
+    }
+
     function clearPumpTimers() {
         if (pumpPulseTimer) window.clearTimeout(pumpPulseTimer);
         if (pumpSoakTimer) window.clearTimeout(pumpSoakTimer);
         pumpPulseTimer = null;
         pumpSoakTimer = null;
         state.pumpSoaking = false;
+        state.pumpRemainingOnMs = 0;
+    }
+
+    function runPumpMicroBurst(reason) {
+        if (!state.active || state.modes.pump !== "AUTO" || state.pumpLocked) return;
+        const burstMs = Math.min(500, state.pumpRemainingOnMs);
+        if (burstMs <= 0) return;
+
+        setActuator("pump", "ON", reason + " (0.5 s micro-pulse)", false);
+        pumpPulseTimer = window.setTimeout(function () {
+            pumpPulseTimer = null;
+            setActuator("pump", "OFF", "AUTO micro-pulse pause", false);
+            state.pumpRemainingOnMs -= burstMs;
+            if (state.pumpRemainingOnMs <= 0) {
+                state.pumpSoaking = true;
+                pumpSoakTimer = window.setTimeout(function () {
+                    pumpSoakTimer = null;
+                    state.pumpSoaking = false;
+                    applyAutoPumpDecision(state.autoPumpDecision);
+                }, 60000);
+            } else {
+                pumpPulseTimer = window.setTimeout(function () {
+                    pumpPulseTimer = null;
+                    runPumpMicroBurst(reason);
+                }, 2500);
+            }
+        }, burstMs);
     }
 
     function applyAutoPumpDecision(decision) {
-        if (["ON", "OFF", "DELAY"].includes(decision)) state.autoPumpDecision = decision;
+        if (["ON", "OFF", "DELAY", "LOCAL"].includes(decision)) state.autoPumpDecision = decision;
         if (!state.active || state.modes.pump !== "AUTO") return;
 
-        if (state.pumpLocked || state.autoPumpDecision !== "ON") {
+        if (state.autoPumpDecision === "LOCAL") {
+            const soil = Number(inputs.soil.value);
+            if (soil < settings.soilStart) state.localSoilDemand = true;
+            else if (soil >= settings.soilStop) state.localSoilDemand = false;
+        }
+
+        const pumpRequested = state.autoPumpDecision === "ON" ||
+            (state.autoPumpDecision === "LOCAL" && state.localSoilDemand);
+
+        if (state.pumpLocked || !pumpRequested) {
             clearPumpTimers();
             const reason = state.pumpLocked
                 ? "LOW WATER: safety lock forced the pump OFF"
-                : "Node-RED AUTO decision: " + state.autoPumpDecision;
+                : (state.autoPumpDecision === "LOCAL"
+                    ? "Local soil fallback: moisture does not require irrigation"
+                    : "Node-RED AUTO decision: " + state.autoPumpDecision);
             setActuator("pump", "OFF", reason, false);
             return;
         }
 
-        if (state.pump === "ON" || state.pumpSoaking) return;
+        if (state.pump === "ON" || state.pumpSoaking || pumpPulseTimer) return;
 
-        setActuator("pump", "ON", "Node-RED AUTO: 10-second irrigation pulse", false);
-        pumpPulseTimer = window.setTimeout(function () {
-            pumpPulseTimer = null;
-            setActuator("pump", "OFF", "AUTO pulse complete; soaking for 60 seconds", false);
-            state.pumpSoaking = true;
-            pumpSoakTimer = window.setTimeout(function () {
-                pumpSoakTimer = null;
-                state.pumpSoaking = false;
-                applyAutoPumpDecision(state.autoPumpDecision);
-            }, 60000);
-        }, 10000);
+        state.pumpRemainingOnMs = settings.pumpPulseSeconds * 1000;
+        runPumpMicroBurst(
+            state.autoPumpDecision === "LOCAL"
+                ? "Weather unavailable: local drip cycle"
+                : "Node-RED AUTO drip cycle"
+        );
     }
 
     function applyLocalAutomaticRules(values) {
@@ -721,6 +789,7 @@
         client.publish(TOPICS.humidity, values.humidity.toFixed(1));
         client.publish(TOPICS.water, String(values.waterRaw));
         client.publish(TOPICS.waterPercent, values.waterPercent.toFixed(1));
+        publishPumpResourceEstimate();
         client.publish(TOPICS.light, String(values.light));
         client.publish(TOPICS.lowWater, state.pumpLocked ? "TRUE" : "FALSE");
         client.publish(TOPICS.pumpLock, state.pumpLocked ? "LOCKED" : "CLEAR");
@@ -729,6 +798,9 @@
             clearPumpTimers();
             setActuator("pump", "OFF", "LOW WATER: safety lock forced the pump OFF", false);
         } else {
+            if (!state.lastAutoPumpDecisionAt || Date.now() - state.lastAutoPumpDecisionAt > 120000) {
+                state.autoPumpDecision = "LOCAL";
+            }
             applyAutoPumpDecision(state.autoPumpDecision);
         }
 
@@ -847,7 +919,10 @@
                 client.publish(TOPICS[actuator + "ModeFeedback"], value, { qos: 0, retain: true });
                 if (actuator === "pump") {
                     if (value === "AUTO") applyAutoPumpDecision(state.autoPumpDecision);
-                    else clearPumpTimers();
+                    else {
+                        clearPumpTimers();
+                        setActuator("pump", "OFF", "MANUAL mode safe stop", true);
+                    }
                 } else {
                     applyLocalAutomaticRules(currentValues());
                 }
@@ -856,7 +931,8 @@
             return;
         }
 
-        if (messageTopic === TOPICS.pumpAuto && ["ON", "OFF", "DELAY"].includes(value)) {
+        if (messageTopic === TOPICS.pumpAuto && ["ON", "OFF", "DELAY", "LOCAL"].includes(value)) {
+            state.lastAutoPumpDecisionAt = Date.now();
             applyAutoPumpDecision(value);
             log("Node-RED AUTO pump decision received: " + value);
             return;
@@ -882,12 +958,18 @@
         if (CONFIG_BY_TOPIC[messageTopic]) {
             const numericValue = Number(payload.toString().trim());
             if (Number.isFinite(numericValue)) {
-                settings[CONFIG_BY_TOPIC[messageTopic]] = numericValue;
+                const settingName = CONFIG_BY_TOPIC[messageTopic];
+                settings[settingName] = numericValue;
                 renderThresholds();
                 if (state.active) {
+                    if (settingName === "pumpPulseSeconds") {
+                        clearPumpTimers();
+                        setActuator("pump", "OFF", "AUTO drip-cycle setting changed", true);
+                    }
                     const values = currentValues();
                     state.pumpLocked = values.waterPercent < settings.lowWater;
                     if (state.pumpLocked) setActuator("pump", "OFF", "LOW WATER: safety lock forced the pump OFF", false);
+                    else applyAutoPumpDecision(state.autoPumpDecision);
                     applyLocalAutomaticRules(values);
                 }
             }

@@ -94,15 +94,16 @@ class SupabaseServiceTests(unittest.TestCase):
         bucket.upload.assert_called_once_with(
             path="module4/2026/09/02/capture.jpg",
             file=b"jpeg-data",
-            file_options={"content-type": "image/jpeg", "upsert": "false"},
+            file_options={"content-type": "image/jpeg", "upsert": "true"},
         )
         client.table.assert_called_once_with("crop_health_records")
-        record = table.insert.call_args.args[0]
+        record = table.upsert.call_args.args[0]
+        self.assertEqual(table.upsert.call_args.kwargs["on_conflict"], "image_path")
         self.assertEqual(record["risk_level"], "AMBER")
         self.assertEqual(record["yellowing_percent"], 18)
         self.assertEqual(record["humidity_percent"], 80.0)
         self.assertFalse(record["metadata"]["diagnostic_claim"])
-        table.insert.return_value.execute.assert_called_once_with()
+        table.upsert.return_value.execute.assert_called_once_with()
 
 
 if __name__ == "__main__":

@@ -17,7 +17,7 @@ The active MQTT prefix is `smartfarm/rsd2s3g3`. See
 ## Repository layout
 
 - `firmware/smart_agriculture/`: canonical ESP32 firmware for Modules 1-3.
-- `index.html`: live MQTT and Supabase dashboard.
+- `index.html` + `dashboard.js`: live MQTT controls, automation settings and Supabase dashboard.
 - `simulator.html`: laptop sensor/actuator simulator.
 - `node-red/`: weather-aware irrigation and Supabase bridge.
 - `database/supabase_setup.sql`: idempotent database setup/migration.
@@ -32,7 +32,13 @@ LOW-WATER SAFETY LOCK > MANUAL > AUTO
 
 The pump cannot be switched on while the tank is below the configured low-water
 threshold. Manual commands are accepted only after the relevant actuator is put
-in MANUAL mode. Returning to AUTO resumes rules.
+in MANUAL mode. Returning to AUTO resumes rules. Module 3 publishes pump runtime
+since the latest ESP32 restart and a clearly labelled prototype water-use
+estimate based on runtime; it does not claim flow-sensor accuracy.
+
+AUTO irrigation uses a dashboard-adjustable 0.5–10 second total ON-time budget.
+The 1-second default is delivered as 0.5 seconds ON, 2.5 seconds OFF, then 0.5
+seconds ON, followed by a 60-second soil soak. This protects the small demo pot.
 
 During supervised bench testing only, the firmware flag
 `ENABLE_MANUAL_PUMP_TEST_BYPASS` may temporarily permit the pump to run in
@@ -55,8 +61,9 @@ arduino-cli compile --fqbn esp32:esp32:esp32 firmware\smart_agriculture
 ```
 
 Before the physical demo, update soil dry/wet and water empty/full calibration
-constants near the top of the sketch. Also confirm relay active level, RGB LED
-common-anode/common-cathode type, and LCD address (`0x27` or `0x3F`).
+constants near the top of the sketch. Also confirm relay active level and RGB LED
+common-anode/common-cathode type. The confirmed Seeed Grove JHD1802 LCD address
+used by this firmware is `0x3E`.
 
 ## Start Node-RED
 
@@ -82,6 +89,9 @@ flow may still subscribe to the legacy `smartfarm/#` topics.
 ```powershell
 node .\scripts\validate-scope.mjs
 ```
+
+Record physical exception-handling, validation and end-to-end evidence using
+[`docs/robustness-test-checklist.md`](docs/robustness-test-checklist.md).
 
 ## Run Module 4 safely
 

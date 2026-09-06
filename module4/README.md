@@ -3,9 +3,11 @@
 This laptop application uses a USB webcam, OpenCV HSV colour segmentation and
 Module 2 MQTT climate data to produce a prototype GREEN/AMBER/RED warning.
 
-It is not a plant-disease diagnosis system, does not measure wilting
-scientifically, and never applies automatic treatment. The MQTT `wilting` value
-is explicitly a colour-stress proxy retained for the agreed assignment topic.
+It is not a plant-disease diagnosis system and never applies automatic
+treatment. Published outputs are limited to HSV colour percentages
+(`module4/yellowing`), a prototype risk score (`module4/risk`), a
+GREEN/AMBER/RED status (`module4/status`) and a human-readable warning
+(`module4/alert`).
 
 ## Setup
 
@@ -17,8 +19,8 @@ C:\Users\wei\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\pyt
 ```
 
 Set `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` in the parent workspace
-`.env`. Optionally set `MODULE4_CAMERA_INDEX` and capture interval; see
-`.env.example`.
+`.env`; Module 4 loads that same file automatically. Optionally set
+`MODULE4_CAMERA_INDEX` and capture interval; see `.env.example`.
 
 This project defaults to camera index `1`, which is the external USB Webcam on
 the current Windows laptop. Use `--camera 0` only when intentionally testing the
@@ -33,6 +35,11 @@ $env:PYTHONPATH = ".\module4"
 
 Use `Ctrl+C` to stop. Captures and trend history remain under ignored local
 runtime folders if cloud synchronization fails.
+
+If Supabase is temporarily unavailable, a validated capture is stored under
+`module4/runtime/pending-uploads/`. Module 4 retries the oldest jobs on each
+capture cycle. Storage and database writes use the image path as an idempotent
+key, so retrying cannot create duplicate growth-diary rows.
 
 Every webcam attempt, including an image rejected by validation, is saved to:
 

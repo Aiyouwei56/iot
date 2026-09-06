@@ -14,6 +14,7 @@ from .analysis import InvalidImageError, analyze_image
 from .config import Settings
 from .risk import TrendTracker, evaluate_risk
 from .services import MqttService, SupabaseService
+from .upload_queue import enqueue_upload, retry_pending_uploads
 
 LOGGER = logging.getLogger(__name__)
 
@@ -64,7 +65,9 @@ def save_latest_capture(frame, latest_path: Path, settings: Settings) -> bool:
     return bool(ok)
 
 
-def encode_and_save(frame, capture_dir: Path, settings: Settings, captured_at: datetime) -> tuple[bytes, str]:
+def encode_and_save(
+    frame, capture_dir: Path, settings: Settings, captured_at: datetime
+) -> tuple[bytes, str, Path]:
     capture_dir.mkdir(parents=True, exist_ok=True)
     timestamp = captured_at.strftime("%Y%m%dT%H%M%S%fZ")
     filename = f"{timestamp}.jpg"
@@ -75,7 +78,7 @@ def encode_and_save(frame, capture_dir: Path, settings: Settings, captured_at: d
     jpeg_bytes = encoded.tobytes()
     local_path.write_bytes(jpeg_bytes)
     storage_path = f"module4/{captured_at:%Y/%m/%d}/{filename}"
-    return jpeg_bytes, storage_path
+    return jpeg_bytes, storage_path, local_path
 
 
 def main() -> int:
@@ -91,6 +94,7 @@ def main() -> int:
     supabase_service = SupabaseService(settings, enabled=not args.no_upload)
     tracker = TrendTracker(module_dir / "runtime" / "analysis-history.jsonl")
     capture_dir = module_dir / "captures"
+    upload_queue_dir = module_dir / "runtime" / "pending-uploads"
     latest_capture_path = module_dir / "runtime" / "latest_capture.jpg"
     camera = None if args.image else cv2.VideoCapture(settings.camera_index, cv2.CAP_DSHOW)
     if camera is not None:
@@ -121,6 +125,9 @@ def main() -> int:
 
     try:
         while not stop_requested:
+            recovered = retry_pending_uploads(upload_queue_dir, supabase_service)
+            if recovered:
+                LOGGER.info("Recovered %s pending Supabase upload(s)", recovered)
             captured_at = datetime.now(timezone.utc)
             frame = capture_frame(camera, args.image)
             if save_latest_capture(frame, latest_capture_path, settings):
@@ -144,7 +151,9 @@ def main() -> int:
                 temperature_c, humidity_percent = mqtt_service.climate()
                 trend = tracker.delta(metrics.yellowing_percent)
                 assessment = evaluate_risk(metrics, humidity_percent, temperature_c, trend)
-                jpeg_bytes, storage_path = encode_and_save(frame, capture_dir, settings, captured_at)
+                jpeg_bytes, storage_path, local_image_path = encode_and_save(
+                    frame, capture_dir, settings, captured_at
+                )
                 tracker.append(captured_at.isoformat(), metrics)
                 mqtt_service.publish_analysis(metrics, assessment)
                 LOGGER.info(
@@ -167,6 +176,18 @@ def main() -> int:
                     )
                 except Exception:
                     LOGGER.exception("Supabase sync failed; local image and analysis history were preserved")
+                    if supabase_service.enabled:
+                        queued_path = enqueue_upload(
+                            upload_queue_dir,
+                            local_image_path,
+                            storage_path,
+                            captured_at.isoformat(),
+                            metrics,
+                            assessment,
+                            temperature_c,
+                            humidity_percent,
+                        )
+                        LOGGER.warning("Queued Supabase upload for automatic retry: %s", queued_path)
 
                 if args.once or args.image:
                     return 0

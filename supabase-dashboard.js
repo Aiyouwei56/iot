@@ -54,15 +54,19 @@ function escapeHtml(value) {
 
 function setCloudConnection(text, state) {
     const element = document.getElementById("cloudConnection");
+    if (!element) return;
     element.textContent = text;
     element.className = `cloud-state ${state}`;
 }
 
 function updateQueueCount(value) {
     const count = Number(value);
-    document.getElementById("cloudQueueCount").textContent = Number.isFinite(count)
-        ? String(Math.max(0, count))
-        : "--";
+    const element = document.getElementById("cloudQueueCount");
+    if (element) {
+        element.textContent = Number.isFinite(count)
+            ? String(Math.max(0, count))
+            : "--";
+    }
 }
 
 function renderBridgeCloudStatus(payload) {
@@ -84,7 +88,7 @@ function renderBridgeCloudStatus(payload) {
 }
 
 function connectNodeRedStatusTopics() {
-    if (typeof client === "undefined") return;
+    if (typeof client === "undefined" || !client || typeof client.on !== "function") return;
 
     const topics = [`${MQTT_BASE}/system/cloud`, `${MQTT_BASE}/system/queue`];
     const subscribe = () => client.subscribe(topics);
@@ -124,7 +128,7 @@ function renderSensorTable(records) {
     const body = document.getElementById("sensorHistoryBody");
 
     if (!records.length) {
-        body.innerHTML = '<tr><td colspan="11">No sensor history yet. Start Node-RED and publish MQTT data.</td></tr>';
+        body.innerHTML = '<tr><td colspan="13">No sensor history yet. Start Node-RED and publish MQTT data.</td></tr>';
         return;
     }
 
@@ -136,6 +140,8 @@ function renderSensorTable(records) {
             <td>${escapeHtml(displayValue(record.humidity_percent))}</td>
             <td>${escapeHtml(displayValue(record.water_raw, 0))}</td>
             <td>${escapeHtml(displayValue(record.water_level_percent))}</td>
+            <td>${escapeHtml(displayValue(record.pump_runtime_seconds, 0))}</td>
+            <td>${escapeHtml(displayValue(record.estimated_water_litres, 3))}</td>
             <td>${escapeHtml(displayValue(record.light_raw, 0))}</td>
             <td>${escapeHtml(record.pump_state)}</td>
             <td>${escapeHtml(record.fan_state)}</td>
@@ -208,9 +214,11 @@ function renderAlerts(alerts) {
 async function loadPrivateCropImage(imagePath) {
     const image = document.getElementById("cropImage");
     const message = document.getElementById("cropImageMessage");
+    const placeholder = document.getElementById("cropPlaceholder");
 
     if (!imagePath) {
         image.style.display = "none";
+        if (placeholder) placeholder.style.display = "flex";
         message.textContent = "No image available.";
         return;
     }
@@ -223,6 +231,7 @@ async function loadPrivateCropImage(imagePath) {
 
     if (!response.ok) {
         image.style.display = "none";
+        if (placeholder) placeholder.style.display = "flex";
         message.textContent = `Image unavailable (HTTP ${response.status}).`;
         return;
     }
@@ -231,6 +240,7 @@ async function loadPrivateCropImage(imagePath) {
     currentCropObjectUrl = URL.createObjectURL(await response.blob());
     image.src = currentCropObjectUrl;
     image.style.display = "block";
+    if (placeholder) placeholder.style.display = "none";
     message.textContent = imagePath;
 }
 
@@ -239,13 +249,28 @@ async function renderCropHealth(records) {
 
     const record = records[0];
     const level = record.risk_level ?? "GREEN";
+    window.latestCropCaptureTimestamp = record.captured_at || "";
     const badge = document.getElementById("cropRiskLevel");
-    badge.textContent = level;
-    badge.className = `risk-badge ${level.toLowerCase()}`;
+    if (badge.classList.contains("status-pill")) {
+        badge.textContent = `RISK ${level}`;
+        badge.className = `status-pill ${level === "GREEN" ? "pill-on" : level === "AMBER" ? "pill-delay" : "pill-lock"}`;
+    } else {
+        badge.textContent = level;
+        badge.className = `risk-badge ${level.toLowerCase()}`;
+    }
 
-    document.getElementById("cropRiskScore").textContent = displayValue(record.risk_score);
+    const riskScore = Math.max(0, Math.min(100, Number(record.risk_score) || 0));
+    const green = Math.max(0, Math.min(100, Number(record.green_percent) || 0));
+    const yellow = Math.max(0, Math.min(100, Number(record.yellowing_percent) || 0));
+    document.getElementById("cropRiskScore").textContent = `${displayValue(record.risk_score)}/100`;
     document.getElementById("cropGreen").textContent = `${displayValue(record.green_percent)}%`;
     document.getElementById("cropYellowing").textContent = `${displayValue(record.yellowing_percent)}%`;
+    const riskBar = document.getElementById("cropRiskBar");
+    const greenBar = document.getElementById("cropGreenBar");
+    const yellowBar = document.getElementById("cropYellowBar");
+    if (riskBar) riskBar.style.width = `${riskScore}%`;
+    if (greenBar) greenBar.style.width = `${green}%`;
+    if (yellowBar) yellowBar.style.width = `${yellow}%`;
     document.getElementById("cropCamera").textContent = record.camera_status;
     document.getElementById("cropAlert").textContent = record.alert_message || "No crop-health alert.";
     document.getElementById("cropCaptured").textContent = `Captured: ${displayTime(record.captured_at)}`;
@@ -259,7 +284,7 @@ async function refreshCloudDashboard() {
             supabaseSelect("module_status", "select=module_id,health_status,last_seen&order=module_id"),
             supabaseSelect(
                 "sensor_data",
-                "select=soil_raw,soil_percent,temperature_c,humidity_percent,water_raw,water_level_percent,light_raw,pump_state,fan_state,led_state,data_quality,recorded_at&order=recorded_at.desc&limit=20"
+                "select=soil_raw,soil_percent,temperature_c,humidity_percent,water_raw,water_level_percent,pump_runtime_seconds,estimated_water_litres,light_raw,pump_state,fan_state,led_state,data_quality,recorded_at&order=recorded_at.desc&limit=20"
             ),
             supabaseSelect(
                 "crop_health_records",
@@ -291,10 +316,17 @@ async function refreshCloudDashboard() {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-    // Keep the original Modules 1-3 markup untouched, but display the new
-    // cloud and Module 4 sections after them.
-    const cloudSections = document.getElementById("cloudSections");
-    document.querySelector("main").appendChild(cloudSections);
+    // Keep live sensors and module controls first, followed by automation,
+    // cloud history and the optional technical activity log.
+    const main = document.querySelector(".dashboard-container") || document.querySelector("main");
+    const orderedSections = [
+        document.getElementById("automationSettingsSection"),
+        document.getElementById("cloudHistorySection"),
+        document.getElementById("mqttTechnicalActivity")
+    ];
+    orderedSections.forEach(section => {
+        if (main && section) main.appendChild(section);
+    });
 
     connectNodeRedStatusTopics();
     refreshCloudDashboard();

@@ -11,8 +11,10 @@ It also:
 - stores `smartfarm/rsd2s3g3/module4/alert` messages in the `alerts` table;
 - retrieves the next six hours of rain probability from Open-Meteo every 15 minutes;
 - publishes a weather-aware AUTO pump decision while preserving ESP32 safety priority;
+- requests ESP32 local soil-moisture fallback when weather or sensor data is stale;
 - applies retained soil, rain and humidity thresholds saved from the Dashboard;
-- keeps the Supabase credential outside the exported flow.
+- keeps the Supabase credential outside the exported flow;
+- stores pump runtime and the clearly labelled runtime-based water-use estimate;
 - stores every pending cloud write in a disk-backed queue before upload;
 - retries failed Supabase writes with exponential backoff;
 - publishes cloud and queue status over MQTT for the web dashboard.
@@ -56,8 +58,9 @@ $env:WEATHER_LONGITUDE = "101.6869"
 .\start-node-red.ps1
 ```
 
-The values above are only a Kuala Lumpur demonstration default. The flow fails
-safe: missing, invalid, or stale weather data produces an `OFF` AUTO decision.
+The values above are only a Kuala Lumpur demonstration default. Missing,
+invalid, or stale weather data produces a `LOCAL` decision so the ESP32 keeps
+the low-water lock and soil-based pulse/soak fallback active without Node-RED.
 
 ## Supported topics
 
@@ -66,6 +69,7 @@ safe: missing, invalid, or stale weather data produces an `OFF` AUTO decision.
 | Soil raw / percent | `smartfarm/rsd2s3g3/module1/soil`, `.../soil_percent` |
 | Temperature / humidity / light | `smartfarm/rsd2s3g3/module2/temperature`, `.../humidity`, `.../light` |
 | Water raw / percent | `smartfarm/rsd2s3g3/module3/water`, `.../water_percent` |
+| Pump runtime / estimated use | `smartfarm/rsd2s3g3/module3/pump_runtime_seconds`, `.../estimated_water_litres` |
 | Pump safety lock | `smartfarm/rsd2s3g3/module3/pump_lock` |
 | Actuator feedback | `smartfarm/rsd2s3g3/module1/pump`, `.../module2/fan`, `.../module2/led` |
 | Dashboard controls and modes | `smartfarm/rsd2s3g3/control/#` |

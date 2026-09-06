@@ -33,6 +33,9 @@ class MqttService:
         if enabled:
             client_id = f"AgriSense-Module4-{uuid.uuid4().hex[:10]}"
             self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id=client_id)
+            self.client.will_set(
+                self.topic("module4/online"), "OFFLINE", qos=0, retain=True
+            )
             self.client.on_connect = self._on_connect
             self.client.on_disconnect = self._on_disconnect
             self.client.on_message = self._on_message
@@ -51,6 +54,8 @@ class MqttService:
     def stop(self) -> None:
         if not self.enabled or self.client is None:
             return
+        if self.connected:
+            self._publish("module4/online", "OFFLINE")
         self.client.disconnect()
         self.client.loop_stop()
 
@@ -60,6 +65,7 @@ class MqttService:
             LOGGER.error("MQTT connection failed: %s", reason_code)
             return
         self._connected_event.set()
+        self._publish("module4/online", "ONLINE")
         client.subscribe(self.topic("module2/temperature"))
         client.subscribe(self.topic("module2/humidity"))
         client.subscribe(self.topic("control/module4/capture"))
@@ -171,7 +177,7 @@ class SupabaseService:
         self.client.storage.from_("crop-images").upload(
             path=image_path,
             file=jpeg_bytes,
-            file_options={"content-type": "image/jpeg", "upsert": "false"},
+            file_options={"content-type": "image/jpeg", "upsert": "true"},
         )
         record = {
             "image_path": image_path,
@@ -194,5 +200,7 @@ class SupabaseService:
             },
             "captured_at": captured_at,
         }
-        self.client.table("crop_health_records").insert(record).execute()
+        self.client.table("crop_health_records").upsert(
+            record, on_conflict="image_path"
+        ).execute()
         LOGGER.info("Supabase growth-diary upload completed: %s", image_path)
